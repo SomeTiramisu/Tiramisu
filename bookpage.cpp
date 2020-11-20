@@ -1,13 +1,15 @@
 #include "bookpage.h"
 #include "book.h"
 #include <QByteArray>
+#include <image.h>
 
 BookPage::BookPage()
 {
     book = new Book();
     current = new page;
-    current->img = new QPixmap();
-    current->img->loadFromData(QByteArray(book->getCurrent(), book->getLength()));
+    Image img = Image(book->getCurrent(), book->getLength());
+    current->img = img.toQPixmap();
+
     setPixmap(*current->img);
 
 }
@@ -24,8 +26,8 @@ void BookPage::nextPage()
         current->next = new page;
         current->next->previous = current;
         current = current->next;
-        current->img = new QPixmap();
-        current->img->loadFromData(QByteArray(book->getNext(), book->getLength()));
+        Image img = Image(book->getNext(), book->getLength());
+        current->img = img.toQPixmap();
     } else {
         current = current->next;
     }
