@@ -20,7 +20,6 @@ private:
     struct archive_entry *entry;
     char* buf;
     unsigned int length;
-    int n = 0;
 };
 
 #endif // BOOK_H

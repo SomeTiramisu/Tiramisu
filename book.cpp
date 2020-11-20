@@ -37,8 +37,9 @@ char* Book::getNext()
 {
     archive_read_next_header(archive, &entry);
     length = archive_entry_size(entry);
+    delete[] buf;
+    buf = new char[length];
     archive_read_data(archive, buf, length);
-    n++;
     return buf;
 }
 
