@@ -11,6 +11,7 @@ public:
     Image(char *buf, unsigned int length);
     QPixmap *toQPixmap();
     void createAlpha();
+    void scale();
 private:
     Mat img;
 };

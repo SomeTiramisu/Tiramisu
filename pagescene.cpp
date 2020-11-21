@@ -1,7 +1,7 @@
 #include "pagescene.h"
 #include "bookpage.h"
 
-PageScene::PageScene(QObject *parent)
+PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
 {
     /*
     QPixmap p;
@@ -12,6 +12,11 @@ PageScene::PageScene(QObject *parent)
     */
     bp = new BookPage;
     addItem(bp);
+    addRect(0, 0, 10, 10, QPen(), Qt::red);
+    addRect(1070, 1910, 10, 10, QPen(), Qt::red);
+    setBackgroundBrush(Qt::blue);
+    //setSceneRect(0, 0, 3*width(), height());
+
 }
 
 PageScene::~PageScene()

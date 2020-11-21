@@ -8,8 +8,9 @@ PageView::PageView(QWidget *parent)
     setStyleSheet("border: 0px");
     pagescene = new PageScene(this);
     setScene(pagescene);
-    setBackgroundBrush(QBrush(QColor(0, 0, 0)));
-    //setRenderHint(QPainter::Antialiasing);
+    setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    setSceneRect(0, 0, width(), height());
+
 }
 
 PageView::~PageView() {
@@ -19,7 +20,7 @@ PageView::~PageView() {
 
 void PageView::resizeEvent(QResizeEvent *event) {
     QGraphicsItem *px = scene()->items()[0];
-    fitInView(px, Qt::KeepAspectRatio);
+
 }
 
 void PageView::mouseReleaseEvent(QMouseEvent *event)
