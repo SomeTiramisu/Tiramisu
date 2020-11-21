@@ -22,7 +22,8 @@ SOURCES += \
     main.cpp \
     mainwindowreader.cpp \
     pagescene.cpp \
-    pageview.cpp
+    pageview.cpp \
+    strnatcmp/strnatcmp.c
 
 HEADERS += \
     book.h \
@@ -30,7 +31,8 @@ HEADERS += \
     image.h \
     mainwindowreader.h \
     pagescene.h \
-    pageview.h
+    pageview.h \
+    strnatcmp/strnatcmp.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
