@@ -11,9 +11,13 @@ public:
     Image(char *buf, unsigned int length);
     QPixmap *toQPixmap();
     void createAlpha();
-    void scale();
+    void createMask();
+    void removeBorders();
+    void addBackground();
+    void scale(double view_width, double view_height);
 private:
     Mat img;
+    Mat mask;
 };
 
 #endif

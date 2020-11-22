@@ -15,7 +15,6 @@ PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
     addRect(0, 0, 10, 10, QPen(), Qt::red);
     addRect(1070, 1910, 10, 10, QPen(), Qt::red);
     setBackgroundBrush(Qt::blue);
-    //setSceneRect(0, 0, 3*width(), height());
 
 }
 
