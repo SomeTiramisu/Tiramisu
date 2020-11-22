@@ -18,7 +18,7 @@ Image::Image(char *buf, unsigned int length) {
 
 void Image::createAlpha() {
     cvtColor(img, img, COLOR_BGR2RGBA);
-
+    /*
     int treshold = 235; //245
     for (int y=0; y<img.rows; y++)
     for (int x=0; x<img.cols; x++) {
@@ -27,6 +27,7 @@ void Image::createAlpha() {
             pixel[3] = 0;
         }
     }
+    */
 }
 
 void Image::createMask() {
@@ -67,10 +68,12 @@ void Image::scale(double view_width, double view_height) {
     double img_height  = static_cast<double>(img.rows);
     double fx = view_width / img_width;
     double fy = view_height / img_height;
-    if (fx > fy) {
-        resize(img, img, Size(), fy, fy);
+    double f = min(fx, fy);
+    int interpolation;
+    if (f > 1) {
+        interpolation = INTER_CUBIC;
     } else {
-        resize(img, img, Size(), fx, fx);
+        interpolation = INTER_AREA;
     }
-
+    resize(img, img, Size(), f, f, interpolation);
 }
