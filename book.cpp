@@ -21,11 +21,18 @@ Book::Book()
             .filename = std::string(archive_entry_pathname(entry)),
             .index = i
         };
-        headers.push_back(h);
+        if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
+            headers.push_back(h);
+        }
         archive_read_data_skip(archive);
         i++;
     }
     archive_read_free(archive);
+    /*
+    for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
+        qWarning("%s", it->filename.c_str());
+    }
+    */
     std::sort(headers.begin(), headers.end(), naturalCompare);
 
     loadBufAt(cindex);
@@ -48,7 +55,6 @@ char* Book::getCurrent()
 char* Book::getNext()
 {
     int n = headers[++cindex].index;
-    qWarning("loading %s", headers[cindex].filename.c_str());
     loadBufAt(n);
     return buf;
 }
