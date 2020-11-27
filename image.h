@@ -15,6 +15,8 @@ public:
     void removeBorders();
     void addBackground();
     void scale(double view_width, double view_height);
+    Mat scale_max(Mat src, double view_width, double view_height);
+    void process(double width, double height);
 private:
     Mat img;
     Mat mask;

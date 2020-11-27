@@ -9,16 +9,12 @@ using namespace cv;
 
 Image::Image(char *buf, unsigned int length) {
     img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
-    createAlpha();
-    removeBorders();
-    createMask();
-    //addBackground();
-    scale(1200, 1920);
 };
 
+/*
 void Image::createAlpha() {
     cvtColor(img, img, COLOR_BGR2RGBA);
-    /*
+
     int treshold = 235; //245
     for (int y=0; y<img.rows; y++)
     for (int x=0; x<img.cols; x++) {
@@ -27,9 +23,9 @@ void Image::createAlpha() {
             pixel[3] = 0;
         }
     }
-    */
-}
 
+}
+*/
 void Image::createMask() {
     Mat gs;
     cvtColor(img, gs, COLOR_BGR2GRAY);
@@ -43,22 +39,29 @@ void Image::removeBorders() {
     cvtColor(img, gs, COLOR_BGR2GRAY);
     threshold(gs, b, 235, 255, THRESH_BINARY_INV);
     Rect roi = boundingRect(b);
-    if (roi != Rect(0, 0, 0, 0)) { //fix for while images
+    if (roi != Rect(0, 0, 0, 0)) { //fix for white images
             img = img(roi);
     }
 }
 
 void Image::addBackground() {
     Mat bg = imread("/storage/emulated/0/b.png", IMREAD_COLOR);
+    //cvtColor(bg, bg, COLOR_BGR2RGBA);
+    bg = scale_max(bg, 1080, 1920);
     Rect roi = Rect(0, 0, img.cols, img.rows);
-    bg = bg(roi);
-    add(img, bg, img, mask);
+    //bg = bg(roi);
+    qWarning("%i %i %i %i", bg.cols, bg.rows, img.cols, img.rows);
+
+    //add(bg(roi),img, img, mask);
+    //addWeighted(img, alpha, img, 1, 0, img);
+    bitwise_and( bg(roi), img, img, mask);
+
 }
 
 
 QPixmap *Image::toQPixmap() {
     QPixmap *r = new QPixmap;
-    r->convertFromImage(QImage(img.data, img.cols, img.rows, QImage::Format_RGBA8888));
+    r->convertFromImage(QImage(img.data, img.cols, img.rows, QImage::Format_BGR888));
     return r;
     
 };
@@ -76,4 +79,31 @@ void Image::scale(double view_width, double view_height) {
         interpolation = INTER_AREA;
     }
     resize(img, img, Size(), f, f, interpolation);
+}
+
+Mat Image::scale_max(Mat src, double view_width, double view_height) {
+    double img_width  = static_cast<double>(src.cols);
+    double img_height  = static_cast<double>(src.rows);
+    double fx = view_width / img_width;
+    double fy = view_height / img_height;
+    double f = max(fx, fy);
+    int interpolation;
+    if (f > 1) {
+        interpolation = INTER_CUBIC;
+    } else {
+        interpolation = INTER_AREA;
+    }
+    resize(src, src, Size(), f, f, interpolation);
+    Rect roi = Rect(0, 0, view_width, view_height);
+    return src(roi);
+}
+
+
+
+void Image::process(double width, double height) {
+    //createAlpha();
+    removeBorders();
+    scale(width, height);
+    createMask();
+    addBackground();
 }
