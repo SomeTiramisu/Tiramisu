@@ -26,9 +26,22 @@ void Image::setROI() {
     }
 }
 
+void Image::createAlpha(Mat src, Mat dst) {
+    cvtColor(src, dst, COLOR_BGR2RGBA);
+
+    int treshold = 235; //245
+    for (int y=0; y<dst.rows; y++)
+    for (int x=0; x<dst.cols; x++) {
+        Vec4b &pixel = dst.at<Vec4b>(y, x);
+        if (pixel[0]>= treshold && pixel[1]>= treshold && pixel[2]>=treshold) {
+            pixel[3] = 0;
+        }
+    }
+
+}
 
 
-void Image::addBackground() {
+void Image::addBackground(Mat src, Mat bg, Mat dst) {
     Mat bg = imread("/storage/emulated/0/b.png", IMREAD_COLOR);
     scaleFit(bg, bg, 1200, 1920);
     Rect roi = Rect(0, 0, img.cols, img.rows);
