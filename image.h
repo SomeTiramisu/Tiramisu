@@ -13,7 +13,7 @@ public:
     Mat createMask(Mat* src);
     Rect createROI(Mat* src);
     void createAlpha(Mat* src, Mat* dst);
-    void addAlphaAware(Mat* src1, Mat* src2, Mat* dst );
+    void addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst );
     void addBackground(Mat* src, Mat* bg, Mat* dst, Mat* mask);
     void scale(Mat* src, Mat* dst, double view_width, double view_height);
     void scaleFit(Mat* src, Mat* dst, double view_width, double view_height);
