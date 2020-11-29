@@ -45,7 +45,9 @@ void Image::createAlpha(Mat* src, Mat* dst) {
 
 
 void Image::addBackground(Mat* src, Mat* bg, Mat* dst, Mat* mask) {
-    Rect roi = Rect(0, 0, src->cols, src->rows);
+    double hm = floor(abs(bg->cols-src->cols)/2);
+    double vm = floor(abs(bg->rows-src->rows)/2);
+    Rect roi = Rect(hm, vm, src->cols, src->rows);
     //add(bg(roi),img, img, mask);
     //addWeighted(img, alpha, img, 1, 0, img);
     Mat bg_roi = bg->operator()(roi);
@@ -150,7 +152,7 @@ void Image::process(double width, double height) {
     scale(&imgROI, &img, width, height);
     Mat bg = imread("/storage/emulated/0/b.png", IMREAD_COLOR);
     //scaleFit(&bg, &bg, 1200, 1920);
-    tileFit(&bg, &bg, 1200, 1920);
+    tileFit(&bg, &bg, width, height);
     mask = createMask(&img);
     //bitwise_not(mask, mask);
     addBackground(&img, &bg, &img, &mask);

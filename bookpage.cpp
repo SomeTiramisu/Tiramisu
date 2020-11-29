@@ -3,12 +3,15 @@
 #include <QByteArray>
 #include <image.h>
 
-BookPage::BookPage()
+#define WIDTH 1080
+#define HEIGHT 1920
+
+BookPage::BookPage(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 {
     book = new Book();
     current = new page;
     Image img = Image(book->getCurrent(), book->getLength());
-    img.process(1200, 1920);
+    img.process(WIDTH, HEIGHT);
     current->img = img.toQPixmap();
 
     setPixmap(*current->img);
@@ -28,7 +31,7 @@ void BookPage::nextPage()
         current->next->previous = current;
         current = current->next;
         Image img = Image(book->getNext(), book->getLength());
-        img.process(1200, 1920);
+        img.process(WIDTH, HEIGHT);
         current->img = img.toQPixmap();
     } else {
         current = current->next;

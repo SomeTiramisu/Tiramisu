@@ -16,7 +16,7 @@ struct page {
 class BookPage : public QGraphicsPixmapItem
 {
 public:
-    BookPage();
+    BookPage(QGraphicsItem *parent = nullptr);
     ~BookPage();
     void nextPage();
     void previousPage();
