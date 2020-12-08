@@ -11,9 +11,11 @@ extern "C" {
 #include "strnatcmp/strnatcmp.h"
 };
 
+#define ARCHIVE_FILENAME "/home/guillaume/reader/b.zip"
+
 Book::Book()
 {
-    openArchive("/storage/emulated/0/b.cbr");
+    openArchive(ARCHIVE_FILENAME);
 
     int i = 0;
     while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
@@ -83,7 +85,7 @@ void Book::openArchive(std::string filename) {
 }
 
 void Book::loadBufAt(int n) {
-    openArchive("/storage/emulated/0/b.cbr");
+    openArchive(ARCHIVE_FILENAME);
     for (int i=0; i<=n; i++) {
         archive_read_next_header(bookArchive, &entry);
     }
