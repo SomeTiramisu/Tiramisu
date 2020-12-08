@@ -2,6 +2,7 @@
 #define BOOK_H
 #include <vector>
 #include <string>
+#include <QSettings>
 
 extern "C" {
 #include <archive.h>
@@ -23,14 +24,15 @@ public:
     char* getPrevious();
     unsigned int getLength();
 private:
-    archive *archive;
+    archive *bookArchive;
     archive_entry *entry;
     char* buf = new char[0];
     unsigned int length;
     std::vector<header> headers;
     void openArchive(std::string filename);
     void loadBufAt(int n);
-    int cindex = 0;
+    int cindex;
+    QSettings settings;
 };
 
 bool naturalCompare(const header &a, const header &b);

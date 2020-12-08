@@ -16,7 +16,7 @@ Book::Book()
     openArchive("/storage/emulated/0/b.cbr");
 
     int i = 0;
-    while (archive_read_next_header(archive, &entry) == ARCHIVE_OK) {
+    while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
         header h = {
             .filename = std::string(archive_entry_pathname(entry)),
             .index = i
@@ -24,10 +24,10 @@ Book::Book()
         if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
             headers.push_back(h);
         }
-        archive_read_data_skip(archive);
+        archive_read_data_skip(bookArchive);
         i++;
     }
-    archive_read_free(archive);
+    archive_read_free(bookArchive);
     /*
     for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
         qWarning("%s", it->filename.c_str());
@@ -35,6 +35,7 @@ Book::Book()
     */
     std::sort(headers.begin(), headers.end(), naturalCompare);
 
+    cindex = settings.value("currentPage", 0).toInt();
     loadBufAt(cindex);
 
 
@@ -43,6 +44,7 @@ Book::Book()
 Book::~Book()
 {
     delete[] buf;
+    settings.setValue("currentPage", cindex);
 }
 
 char* Book::getCurrent()
@@ -73,23 +75,23 @@ unsigned int Book::getLength()
 }
 
 void Book::openArchive(std::string filename) {
-    archive = archive_read_new();
-    archive_read_support_filter_all(archive);
-    archive_read_support_format_zip(archive);
-    archive_read_support_format_rar(archive);
-    archive_read_open_filename(archive, filename.c_str(), 10240);
+    bookArchive = archive_read_new();
+    archive_read_support_filter_all(bookArchive);
+    archive_read_support_format_zip(bookArchive);
+    archive_read_support_format_rar(bookArchive);
+    archive_read_open_filename(bookArchive, filename.c_str(), 10240);
 }
 
 void Book::loadBufAt(int n) {
     openArchive("/storage/emulated/0/b.cbr");
     for (int i=0; i<=n; i++) {
-        archive_read_next_header(archive, &entry);
+        archive_read_next_header(bookArchive, &entry);
     }
     length = archive_entry_size(entry);
     delete[] buf;
     buf = new char[length];
-    archive_read_data(archive, buf, length);
-    archive_read_free(archive);
+    archive_read_data(bookArchive, buf, length);
+    archive_read_free(bookArchive);
 }
 
 bool naturalCompare(const header &a, const header &b) {
