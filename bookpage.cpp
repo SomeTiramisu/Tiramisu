@@ -1,6 +1,7 @@
 #include "bookpage.h"
 #include "book.h"
 #include <QByteArray>
+#include <QObject>
 #include <image.h>
 
 #define WIDTH 1080
@@ -8,13 +9,9 @@
 
 BookPage::BookPage(QGraphicsItem *parent): QGraphicsPixmapItem(parent)
 {
-    book = new Book();
-    current = new page;
     Image img = Image(book->getCurrent(), book->getLength());
     img.process(WIDTH, HEIGHT);
-    current->img = img.toQPixmap();
-
-    setPixmap(*current->img);
+    setPixmap(*img.toQPixmap());
 
 }
 
@@ -26,23 +23,14 @@ BookPage::~BookPage()
 
 void BookPage::nextPage()
 {
-    if (current->next == nullptr) {
-        current->next = new page;
-        current->next->previous = current;
-        current = current->next;
-        Image img = Image(book->getNext(), book->getLength());
-        img.process(WIDTH, HEIGHT);
-        current->img = img.toQPixmap();
-    } else {
-        current = current->next;
-    }
-    setPixmap(*current->img);
+    Image img = Image(book->getNext(), book->getLength());
+    img.process(WIDTH, HEIGHT);
+    setPixmap(*img.toQPixmap());
 }
 
 void BookPage::previousPage()
 {
-    if (current->previous != nullptr) {
-        current = current->previous;
-        setPixmap(*current->img);
-    }
+    Image img = Image(book->getPrevious(), book->getLength());
+    img.process(WIDTH, HEIGHT);
+    setPixmap(*img.toQPixmap());
 }

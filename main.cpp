@@ -4,6 +4,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QCoreApplication::setOrganizationName("custro");
+    QCoreApplication::setOrganizationDomain("org.custro");
+    QCoreApplication::setApplicationName("reader");
     MainWindowReader mainWindowReader;
     mainWindowReader.showFullScreen();
     return a.exec();

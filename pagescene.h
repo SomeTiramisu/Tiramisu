@@ -13,7 +13,8 @@ public:
     void nextPage();
     void previousPage();
 private:
-    BookPage *bp;
+    QGraphicsPixmapItem *bp;
+    Book *book;
 };
 
 #endif // PAGESCENE_H

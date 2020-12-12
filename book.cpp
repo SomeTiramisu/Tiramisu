@@ -11,7 +11,8 @@ extern "C" {
 #include "strnatcmp/strnatcmp.h"
 };
 
-#define ARCHIVE_FILENAME "/home/guillaume/reader/b.zip"
+//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
+#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
 
 Book::Book()
 {
@@ -37,7 +38,8 @@ Book::Book()
     */
     std::sort(headers.begin(), headers.end(), naturalCompare);
 
-    cindex = settings.value("currentPage", 0).toInt();
+    //cindex = settings.value("currentPage", 0).toInt();
+    cindex = 0;
     loadBufAt(cindex);
 
 
@@ -46,7 +48,7 @@ Book::Book()
 Book::~Book()
 {
     delete[] buf;
-    settings.setValue("currentPage", cindex);
+    //settings.setValue("currentPage", cindex);
 }
 
 char* Book::getCurrent()

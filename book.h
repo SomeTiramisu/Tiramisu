@@ -1,5 +1,6 @@
 #ifndef BOOK_H
 #define BOOK_H
+
 #include <vector>
 #include <string>
 #include <QSettings>

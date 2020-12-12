@@ -1,7 +1,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
+
 #include <opencv2/core.hpp>
 #include <QPixmap>
+#include <QThread>
 
 using namespace cv;
 
@@ -22,6 +24,16 @@ public:
 
 private:
     Mat img;
+};
+
+class ImageWorker : public QObject
+{
+    Q_OBJECT
+public:
+    void processImage(Image *img, double width, double height);
+
+signals:
+    void imageReady();
 };
 
 #endif

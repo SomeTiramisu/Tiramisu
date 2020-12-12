@@ -1,5 +1,6 @@
 #ifndef MAINWINDOWREADER_H
 #define MAINWINDOWREADER_H
+
 #include <QMainWindow>
 
 class MainWindowReader : public QMainWindow

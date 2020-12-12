@@ -3,6 +3,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QPixmap>
+#include <QThread>
 #include "book.h"
 
 struct page {
@@ -15,6 +16,7 @@ struct page {
 
 class BookPage : public QGraphicsPixmapItem
 {
+
 public:
     BookPage(QGraphicsItem *parent = nullptr);
     ~BookPage();
@@ -23,8 +25,10 @@ public:
 
 
 private:
-    Book *book;
     page *current;
+    Book *book;
+    std::vector<QPixmap*> pixVect;
+    QThread workerThread;
 
 };
 

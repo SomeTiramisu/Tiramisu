@@ -4,10 +4,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+android {
 LIBS += -L/run/media/guillaume/DATA/ReaderProject/libarchive-3.4.3/android/prefix/lib/ -larchive
 LIBS += -L/run/media/guillaume/DATA/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/libs/arm64-v8a/ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
 INCLUDEPATH +=/run/media/guillaume/DATA/ReaderProject/libarchive-3.4.3/android/prefix/include/
 INCLUDEPATH +=/run/media/guillaume/DATA/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/jni/include/
+}
+
+unix {
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
+INCLUDEPATH += /usr/include/opencv4/
+}
 
 
 
@@ -17,7 +24,7 @@ INCLUDEPATH +=/run/media/guillaume/DATA/ReaderProject/opencv-4.5.0/android/prefi
 
 SOURCES += \
     book.cpp \
-    bookpage.cpp \
+    #bookpage.cpp \
     image.cpp \
     main.cpp \
     mainwindowreader.cpp \
@@ -27,7 +34,7 @@ SOURCES += \
 
 HEADERS += \
     book.h \
-    bookpage.h \
+    #bookpage.h \
     image.h \
     mainwindowreader.h \
     pagescene.h \

@@ -5,6 +5,9 @@
 #include <QPixmap>
 #include <QImage>
 
+//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
+#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
+
 using namespace cv;
 
 Image::Image(char *buf, unsigned int length) {
@@ -150,7 +153,7 @@ void Image::process(double width, double height) {
     qWarning("ROI: %i %i", roi.width, roi.height);
     Mat imgROI = img(roi);
     scale(&imgROI, &img, width, height);
-    Mat bg = imread("/storage/emulated/0/b.png", IMREAD_COLOR);
+    Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
     //scaleFit(&bg, &bg, 1200, 1920);
     tileFit(&bg, &bg, width, height);
     mask = createMask(&img);
@@ -177,3 +180,8 @@ void Image::process(double width, double height) {
     img = bg;
 }
 */
+
+void ImageWorker::processImage(Image *img, double width, double height) {
+    img->process(width, height);
+    emit imageReady();
+}
