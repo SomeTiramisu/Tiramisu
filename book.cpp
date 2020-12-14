@@ -73,6 +73,13 @@ char* Book::getPrevious()
 }
 
 
+char* Book::getAt(int index)
+{
+    cindex = index;
+    return getCurrent();
+}
+
+
 unsigned int Book::getLength()
 {
     return length;

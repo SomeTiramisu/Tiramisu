@@ -23,6 +23,7 @@ public:
     char* getCurrent();
     char* getNext();
     char* getPrevious();
+    char* getAt(int index);
     unsigned int getLength();
 private:
     archive *bookArchive;
