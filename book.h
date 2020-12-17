@@ -34,6 +34,7 @@ private:
     void openArchive(std::string filename);
     void loadBufAt(int n);
     int cindex;
+    int size;
     QSettings settings;
 };
 

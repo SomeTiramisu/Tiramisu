@@ -30,6 +30,7 @@ Book::Book()
         archive_read_data_skip(bookArchive);
         i++;
     }
+    size = i;
     archive_read_free(bookArchive);
     /*
     for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
@@ -60,14 +61,21 @@ char* Book::getCurrent()
 
 char* Book::getNext()
 {
-    int n = headers[++cindex].index;
+    //qWarning("Loading %s", headers[cindex].filename.c_str());
+    if (cindex < size) {
+        cindex++;
+    }
+    int n = headers[cindex].index;
     loadBufAt(n);
     return buf;
 }
 
 char* Book::getPrevious()
 {
-    int n = headers[--cindex].index;
+    if (cindex > 0) {
+        cindex--;
+    }
+    int n = headers[cindex].index;
     loadBufAt(n);
     return buf;
 }
@@ -99,7 +107,7 @@ void Book::loadBufAt(int n) {
         archive_read_next_header(bookArchive, &entry);
     }
     length = archive_entry_size(entry);
-    delete[] buf;
+    //delete[] buf; deleted after Image creation
     buf = new char[length];
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
