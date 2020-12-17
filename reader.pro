@@ -5,10 +5,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 
 android {
-LIBS += -L/run/media/guillaume/DATA/ReaderProject/libarchive-3.4.3/android/prefix/lib/ -larchive
-LIBS += -L/run/media/guillaume/DATA/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/libs/arm64-v8a/ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
-INCLUDEPATH +=/run/media/guillaume/DATA/ReaderProject/libarchive-3.4.3/android/prefix/include/
-INCLUDEPATH +=/run/media/guillaume/DATA/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/jni/include/
+LIBS += -L/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/lib/ -larchive
+LIBS += -L/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/libs/arm64-v8a/ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
+INCLUDEPATH +=/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/include/
+INCLUDEPATH +=/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/jni/include/
 }
 
 unix {
