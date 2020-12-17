@@ -12,11 +12,12 @@ using namespace cv;
 
 Image::Image(char *buf, unsigned int length) {
     img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
+    bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
 };
 
-Mat Image::createMask(Mat* src) {
+Mat Image::createMask(Mat& src) {
     Mat gs;
-    cvtColor(*src, gs, COLOR_BGR2GRAY);
+    cvtColor(src, gs, COLOR_BGR2GRAY);
     threshold(gs, gs, 235, 255, THRESH_BINARY_INV);
     return gs;
 
@@ -47,22 +48,14 @@ void Image::createAlpha(Mat* src, Mat* dst) {
 }
 
 
-void Image::addBackground(Mat* src, Mat* bg, Mat* dst, Mat* mask) {
-    double hm = floor(abs(bg->cols-src->cols)/2);
-    double vm = floor(abs(bg->rows-src->rows)/2);
-    Rect roi = Rect(hm, vm, src->cols, src->rows);
-    //add(bg(roi),img, img, mask);
-    //addWeighted(img, alpha, img, 1, 0, img);
-    Mat bg_roi = bg->operator()(roi);
-    qWarning("bg: %i %i %i %i %i %i", bg_roi.cols, bg_roi.rows, src->cols, src->rows, mask->cols, mask->rows);
-    /*
-    Mat afe;
-    bitwise_and(bg_roi, *src,  afe, *mask);
-    afe.copyTo(bg_roi);
-    bg->copyTo(*dst);
-    */
-    src->copyTo(bg_roi, *mask);
-    bg->copyTo(*dst);
+void Image::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
+    double hm = floor(abs(bg.cols - src.cols)/2);
+    double vm = floor(abs(bg.rows - src.rows)/2);
+    Rect roi = Rect(hm, vm, src.cols, src.rows);
+    Mat bg_roi = bg.operator()(roi);
+    qWarning("bg: %i %i %i %i %i %i", bg_roi.cols, bg_roi.rows, src.cols, src.rows, mask.cols, mask.rows);
+    src.copyTo(bg_roi, mask);
+    bg.copyTo(dst);
 
 }
 
@@ -74,9 +67,9 @@ QPixmap *Image::toQPixmap() {
     
 };
 
-void Image::scale(Mat* src, Mat* dst, double view_width, double view_height) {
-    double img_width  = static_cast<double>(src->cols);
-    double img_height  = static_cast<double>(src->rows);
+void Image::scale(Mat& src, Mat& dst, double view_width, double view_height) {
+    double img_width  = static_cast<double>(src.cols);
+    double img_height  = static_cast<double>(src.rows);
     double fx = view_width / img_width;
     double fy = view_height / img_height;
     double f = min(fx, fy);
@@ -87,8 +80,8 @@ void Image::scale(Mat* src, Mat* dst, double view_width, double view_height) {
     } else {
         interpolation = INTER_AREA;
     }
-    resize(*src, *dst, Size(), f, f, interpolation);
-     qWarning("%i %i", dst->cols, dst->rows);
+    resize(src, dst, Size(), f, f, interpolation);
+     qWarning("%i %i", dst.cols, dst.rows);
 }
 
 void Image::scaleFit(Mat* src, Mat* dst, double view_width, double view_height) {
@@ -108,24 +101,24 @@ void Image::scaleFit(Mat* src, Mat* dst, double view_width, double view_height) 
     *dst = dst->operator()(roi);
 }
 
-void Image::tileFit(Mat* src, Mat* dst, double view_width, double view_height) {
+void Image::tileFit(Mat& src, Mat& dst, double view_width, double view_height) {
     int h = 1;
     int v = 1; 
-    if (src->cols < view_width) {
-        h = view_width / src->cols + 1;
+    if (src.cols < view_width) {
+        h = view_width / src.cols + 1;
     }
-    if (src->rows < view_height) {
-        v = view_height / src->rows + 1;
+    if (src.rows < view_height) {
+        v = view_height / src.rows + 1;
     }
-    src->copyTo(*dst);
+    src.copyTo(dst);
     for (int i=0; i<h; i++) {
-        hconcat(*dst, *src, *dst);
+        hconcat(dst, src, dst);
     }
     for (int i=0; i<v; i++) {
-        vconcat(*dst, *src, *dst);
+        vconcat(dst, src, dst);
     }
     Rect roi = Rect(0, 0, view_width, view_height);
-    *dst = dst->operator()(roi);
+    dst = dst.operator()(roi);
 }
 
 void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 should be background
@@ -146,42 +139,37 @@ void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 
 
 void Image::process(double width, double height) {
     qWarning("img: %i %i", img.cols, img.rows);
-    Mat mask = createMask(&img);
+    Mat mask = createMask(img);
     //bitwise_not(mask, mask);
     qWarning("mask: %i %i", mask.cols, mask.rows);
     Rect roi = createROI(&mask);
     qWarning("ROI: %i %i", roi.width, roi.height);
     Mat imgROI = img(roi);
-    scale(&imgROI, &img, width, height);
-    Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
+    scale(imgROI, img, width, height);
+    //Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
     //scaleFit(&bg, &bg, 1200, 1920);
-    tileFit(&bg, &bg, width, height);
-    mask = createMask(&img);
-    //bitwise_not(mask, mask);
-    addBackground(&img, &bg, &img, &mask);
+    tileFit(bg, bg, width, height);
+    mask = createMask(img);
+    addBackground(img, bg, img, mask);
 }
-/*
-void Image::process(double width, double height) {
-    qWarning("img: %i %i", img.cols, img.rows);
-    Mat mask = createMask(&img);
-    bitwise_not(mask, mask);
-    qWarning("mask: %i %i", mask.cols, mask.rows);
-    Rect roi = createROI(&mask);
-    qWarning("ROI: %i %i", roi.width, roi.height);
-    Mat imgROI = img(roi);
-    scale(&imgROI, &img, width, height);
-    Mat bg = imread("/storage/emulated/0/b.png", IMREAD_COLOR);
-    //scaleFit(&bg, &bg, 1200, 1920);
-    tileFit(&bg, &bg, 1200, 1920);
-    Mat alpha;
-    createAlpha(&img, &alpha);
-    Mat bg_roi = bg(roi);
-    addAlphaAware(&img, &bg_roi, &alpha, &bg_roi);
-    img = bg;
-}
-*/
 
-void ImageWorker::processImage(Image *img, double width, double height) {
-    img->process(width, height);
-    emit imageReady();
+void ImageWorker::setBook(Book *b) {
+    book = b;
+}
+void ImageWorker::addImage() {
+    char* buf = book->getNext();
+    unsigned int length = book->getLength();
+    Image *img = new Image(buf, length);
+    delete[] buf;
+    imgs.push(img);
+}
+
+void ImageWorker::processImage(double width, double height) {
+    while (!imgs.empty()) {
+        Image *img = imgs.front();
+        imgs.pop();
+        img->process(width, height);
+        emit imageReady(img->toQPixmap());
+        delete img;
+    }
 }
