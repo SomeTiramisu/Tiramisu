@@ -18,6 +18,7 @@ public:
 private:
     std::deque<QGraphicsPixmapItem*> nextItems;
     std::deque<QGraphicsPixmapItem*> previousItems;
+    QGraphicsPixmapItem* currentItem;
     int nextItemRequest = 0;
     int previousItemRequest = 0;
     Book *book;
@@ -26,8 +27,7 @@ private:
 public slots:
     void handleImage(QPixmap *img);
 signals:
-    void operateImage(double width, double height);
-    void addImage();
+    void addImage(double width, double height);
 };
 
 #endif // PAGESCENE_H
