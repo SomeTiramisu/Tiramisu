@@ -2,6 +2,7 @@
 
 #include "bookpage.h"
 #include "image.h"
+#include "pageworker.h"
 #include <QGraphicsPixmapItem>
 #define WIDTH 1200
 #define HEIGHT 1920

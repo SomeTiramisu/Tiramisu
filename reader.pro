@@ -30,6 +30,7 @@ SOURCES += \
     mainwindowreader.cpp \
     pagescene.cpp \
     pageview.cpp \
+    pageworker.cpp \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
     mainwindowreader.h \
     pagescene.h \
     pageview.h \
+    pageworker.h \
     strnatcmp/strnatcmp.h
 
 # Default rules for deployment.

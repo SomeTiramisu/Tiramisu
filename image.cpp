@@ -152,15 +152,3 @@ void Image::process(double width, double height) {
     mask = createMask(img);
     addBackground(img, bg, img, mask);
 }
-
-void ImageWorker::setBook(Book *b) {
-    book = b;
-}
-void ImageWorker::addImage(double width, double height) {
-    char* buf = book->getNext();
-    unsigned int length = book->getLength();
-    Image img = Image(buf, length);
-    delete[] buf;
-    img.process(width, height);
-    emit imageReady(img.toQPixmap());
-}
