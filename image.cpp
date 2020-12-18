@@ -156,20 +156,11 @@ void Image::process(double width, double height) {
 void ImageWorker::setBook(Book *b) {
     book = b;
 }
-void ImageWorker::addImage() {
+void ImageWorker::addImage(double width, double height) {
     char* buf = book->getNext();
     unsigned int length = book->getLength();
-    Image *img = new Image(buf, length);
+    Image img = Image(buf, length);
     delete[] buf;
-    imgs.push(img);
-}
-
-void ImageWorker::processImage(double width, double height) {
-    while (!imgs.empty()) {
-        Image *img = imgs.front();
-        imgs.pop();
-        img->process(width, height);
-        emit imageReady(img->toQPixmap());
-        delete img;
-    }
+    img.process(width, height);
+    emit imageReady(img.toQPixmap());
 }

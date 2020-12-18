@@ -35,12 +35,10 @@ class ImageWorker : public QObject
 public:
     void setBook(Book* b);
 private:
-    std::queue<Image*> imgs;
     Book* book;
 
 public slots:
-    void processImage(double width, double height);
-    void addImage();
+    void addImage(double width, double height);
 
 signals:
     void imageReady(QPixmap *img);
