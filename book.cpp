@@ -83,7 +83,9 @@ char* Book::getPrevious()
 
 char* Book::getAt(int index)
 {
-    cindex = index;
+    if (index > 0 && index < size) {
+        cindex = index;
+    }
     return getCurrent();
 }
 
