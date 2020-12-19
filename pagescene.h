@@ -24,6 +24,7 @@ private:
     int previousItemRequest = 0;
     Book *book;
     QThread workerThread;
+    int pageIndex;
 
 public slots:
     void handleNextImage(QPixmap *img);

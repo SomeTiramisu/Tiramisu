@@ -26,6 +26,9 @@ public:
     char* getSeek(int s);
     char* getAt(int index);
     unsigned int getLength();
+    void setIndex(int n);
+    void incIndex(int n);
+    void decIndex(int n);
 private:
     archive *bookArchive;
     archive_entry *entry;

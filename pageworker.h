@@ -15,7 +15,6 @@ private:
 public slots:
     void addNextImage();
     void addPreviousImage();
-    void addImage(int n);
 
 signals:
     void nextImageReady(QPixmap *img);

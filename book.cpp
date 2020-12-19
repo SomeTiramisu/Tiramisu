@@ -30,7 +30,7 @@ Book::Book()
         archive_read_data_skip(bookArchive);
         i++;
     }
-    size = i;
+    size = i -1;
     archive_read_free(bookArchive);
     /*
     for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
@@ -95,9 +95,7 @@ char* Book::getSeek(int s)
 
 char* Book::getAt(int index)
 {
-    if (index > 0 && index < size) {
-        cindex = index;
-    }
+    setIndex(index);
     return getCurrent();
 }
 
@@ -125,6 +123,23 @@ void Book::loadBufAt(int n) {
     buf = new char[length];
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
+}
+
+void Book::setIndex(int n) {
+    if (n <= 0) {
+        cindex = 0;
+    } else if (n >= size) {
+        cindex = size-1;
+    } else {
+        cindex = n;
+    }
+}
+void Book::incIndex(int n) {
+    setIndex(cindex + n);
+}
+
+void Book::decIndex(int n) {
+    setIndex(cindex - n);
 }
 
 bool naturalCompare(const header &a, const header &b) {
