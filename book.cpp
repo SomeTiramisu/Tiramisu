@@ -80,6 +80,18 @@ char* Book::getPrevious()
     return buf;
 }
 
+char* Book::getSeek(int s)
+{
+    int index = cindex + s;
+    if (index <= 0) {
+        loadBufAt(headers[0].index);
+    } else if (index >= size){
+        loadBufAt(headers[size].index); //tocheck if not size-1
+    } else {
+        loadBufAt(headers[index].index);
+    }
+    return buf;
+}
 
 char* Book::getAt(int index)
 {
