@@ -13,10 +13,13 @@ private:
     Book* book;
 
 public slots:
-    void addImage(double width, double height);
+    void addNextImage();
+    void addPreviousImage();
+    void addImage(int n);
 
 signals:
-    void imageReady(QPixmap *img);
+    void nextImageReady(QPixmap *img);
+    void previousImageReady(QPixmap *img);
 };
 
 #endif // PAGEWORKER_H

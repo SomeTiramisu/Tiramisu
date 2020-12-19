@@ -16,8 +16,10 @@ PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
     worker->setBook(book);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(worker, &ImageWorker::imageReady, this, &PageScene::handleImage);
-    connect(this, &PageScene::addImage, worker, &ImageWorker::addImage);
+    connect(worker, &ImageWorker::nextImageReady, this, &PageScene::handleNextImage);
+    connect(worker, &ImageWorker::previousImageReady, this, &PageScene::handlePreviousImage);
+    connect(this, &PageScene::addNextImage, worker, &ImageWorker::addNextImage);
+    connect(this, &PageScene::addPreviousImage, worker, &ImageWorker::addPreviousImage);
     workerThread.start();
 
     initPage();
@@ -35,6 +37,14 @@ PageScene::~PageScene()
     workerThread.wait();
 }
 
+QGraphicsPixmapItem* PageScene::setPage(QGraphicsPixmapItem *bp) {
+    removeItem(currentItem);
+    QGraphicsPixmapItem* oldItem = currentItem;
+    currentItem = bp;
+    addItem(bp);
+    return oldItem;
+}
+
 void PageScene::initPage() {
     QGraphicsPixmapItem *bp = new QGraphicsPixmapItem;
     Image img = Image(book->getCurrent(), book->getLength());
@@ -42,12 +52,13 @@ void PageScene::initPage() {
     //could be earlier
     int size = nextItems.size();
     while (size < IMAGE_PRELOAD && nextItemRequest < IMAGE_PRELOAD-size) {
-        emit addImage(WIDTH, HEIGHT);
+        emit addNextImage();
         nextItemRequest++;
     }
 
     img.process(WIDTH, HEIGHT);
     bp->setPixmap(*img.toQPixmap());
+    currentItem = bp;
     addItem(bp);
 }
 
@@ -55,31 +66,51 @@ void PageScene::nextPage()
 {
     int size = nextItems.size();
     while (size < IMAGE_PRELOAD && nextItemRequest < IMAGE_PRELOAD-size) {
-        emit addImage(WIDTH, HEIGHT);
+        emit addNextImage();
         nextItemRequest++;
     }
     if (!nextItems.empty()) {
-        QGraphicsItem* previous = items()[0];
-        removeItem(previous);
-        delete previous; //seul l'item pas la pixmap!!!
-
-        addItem(nextItems.front());
+        QGraphicsPixmapItem* oldItem = setPage(nextItems.front());
+        previousItems.push_front(oldItem);
         nextItems.pop_front();
+        if (previousItems.size() > IMAGE_PRELOAD) {
+            delete previousItems.back();
+            previousItems.pop_back();
+        }
     }
+    qWarning("nextItems: %i", nextItems.size());
 }
+
 
 void PageScene::previousPage()
 {
-    QGraphicsPixmapItem *bp = new QGraphicsPixmapItem;
-    Image img = Image(book->getPrevious(), book->getLength());
-    img.process(WIDTH, HEIGHT);
-    bp->setPixmap(*img.toQPixmap());
-    addItem(bp);
+    int size = previousItems.size();
+    while (size < IMAGE_PRELOAD && previousItemRequest < IMAGE_PRELOAD-size) {
+        emit addPreviousImage();
+        previousItemRequest++;
+    }
+    if (!previousItems.empty()) {
+        QGraphicsPixmapItem* oldItem = setPage(previousItems.front());
+        nextItems.push_front(oldItem);
+        previousItems.pop_front();
+        if (nextItems.size() > IMAGE_PRELOAD) {
+            delete nextItems.back();
+            nextItems.pop_back();
+        }
+    }
+    qWarning("previousItems: %i", previousItems.size());
 }
 
-void PageScene::handleImage(QPixmap *img) {
+void PageScene::handleNextImage(QPixmap *img) {
     QGraphicsPixmapItem *pixItem = new QGraphicsPixmapItem;
     pixItem->setPixmap(*img);
     nextItems.push_back(pixItem);
     nextItemRequest--;
+}
+
+void PageScene::handlePreviousImage(QPixmap *img) {
+    QGraphicsPixmapItem *pixItem = new QGraphicsPixmapItem;
+    pixItem->setPixmap(*img);
+    previousItems.push_back(pixItem);
+    previousItemRequest--;
 }

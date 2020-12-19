@@ -16,6 +16,7 @@ public:
     void nextPage();
     void previousPage();
 private:
+    QGraphicsPixmapItem* setPage(QGraphicsPixmapItem *bp);
     std::deque<QGraphicsPixmapItem*> nextItems;
     std::deque<QGraphicsPixmapItem*> previousItems;
     QGraphicsPixmapItem* currentItem;
@@ -25,9 +26,11 @@ private:
     QThread workerThread;
 
 public slots:
-    void handleImage(QPixmap *img);
+    void handleNextImage(QPixmap *img);
+    void handlePreviousImage(QPixmap *img);
 signals:
-    void addImage(double width, double height);
+    void addNextImage();
+    void addPreviousImage();
 };
 
 #endif // PAGESCENE_H
