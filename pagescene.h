@@ -17,6 +17,7 @@ public:
     void previousPage();
 private:
     void setPage(int index);
+    void delPage(int index);
     int nextItemRequest = 0;
     int previousItemRequest = 0;
     Book *book;

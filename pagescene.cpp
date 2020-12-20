@@ -13,6 +13,9 @@ PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
 {
     book = new Book();
     pages = new QGraphicsPixmapItem*[book->getSize()];
+    for (int i=0; i<book->getSize(); i++) {
+        pages[i] = nullptr;
+    }
 
     ImageWorker *worker = new ImageWorker;
     worker->setBook(book);
@@ -49,6 +52,13 @@ void PageScene::setPage(int index) {
     addItem(pages[index]);
 }
 
+void PageScene::delPage(int index) {
+    qWarning("deleting: %i", index);
+    delete pages[index];
+    pages[index] = nullptr;
+
+}
+
 void PageScene::initPage() {
     book->setIndex(pageIndex);
     QGraphicsPixmapItem *bp = new QGraphicsPixmapItem;
@@ -78,10 +88,14 @@ void PageScene::nextPage()
     }
     if (rightIndex>pageIndex) {
 
-        //leftIndex++;
+        if (pageIndex-leftIndex>=IMAGE_PRELOAD) { //to check seem correct could lead to adress fault
+            delPage(leftIndex);
+            leftIndex++;
+        }
+
         setPage(pageIndex+1);
     }
-    qWarning("nextItems: %i", pageIndex);
+    //qWarning("nextItems: %i", pageIndex);
 }
 
 void PageScene::previousPage() {
@@ -91,15 +105,20 @@ void PageScene::previousPage() {
     }
     if (leftIndex<pageIndex) {
 
-        //rightIndex--;
+        if (rightIndex-pageIndex>=IMAGE_PRELOAD) { //to check seem correct could lead to adress fault
+            delPage(rightIndex);
+            rightIndex--;
+        }
+
         setPage(pageIndex-1);
     }
-    qWarning("previousItems: %i", pageIndex);
+    //qWarning("previousItems: %i", pageIndex);
 }
 
 void PageScene::handleImage(QPixmap *img, int index) {
     QGraphicsPixmapItem *pixItem = new QGraphicsPixmapItem;
     pixItem->setPixmap(*img);
+    delete img;
     pages[index] = pixItem;
     if (index > pageIndex) {
         rightIndex++;
@@ -108,6 +127,5 @@ void PageScene::handleImage(QPixmap *img, int index) {
         leftIndex--;
         previousItemRequest--;
     }
-
 }
 

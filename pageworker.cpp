@@ -9,7 +9,7 @@ void ImageWorker::setBook(Book *b) {
 }
 
 void ImageWorker::addImage(int index) {
-    //qWarning("requesting %i", index);
+    qWarning("requesting %i", index);
     char* buf = book->getAt(index);
     unsigned int length = book->getLength();
     Image img = Image(buf, length);
