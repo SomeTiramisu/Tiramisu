@@ -8,20 +8,12 @@ void ImageWorker::setBook(Book *b) {
     book = b;
 }
 
-void ImageWorker::addNextImage() {
-    char* buf = book->getNext();
+void ImageWorker::addImage(int index) {
+    //qWarning("requesting %i", index);
+    char* buf = book->getAt(index);
     unsigned int length = book->getLength();
     Image img = Image(buf, length);
     delete[] buf;
     img.process(WIDTH, HEIGHT);
-    emit nextImageReady(img.toQPixmap());
-}
-
-void ImageWorker::addPreviousImage() {
-    char* buf = book->getPrevious();
-    unsigned int length = book->getLength();
-    Image img = Image(buf, length);
-    delete[] buf;
-    img.process(WIDTH, HEIGHT);
-    emit previousImageReady(img.toQPixmap());
+    emit imageReady(img.toQPixmap(), index);
 }

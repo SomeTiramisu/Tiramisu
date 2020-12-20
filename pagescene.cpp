@@ -8,21 +8,25 @@
 #define HEIGHT 1920
 #define IMAGE_PRELOAD 10
 
+
 PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
 {
     book = new Book();
+    pages = new QGraphicsPixmapItem*[book->getSize()];
 
     ImageWorker *worker = new ImageWorker;
     worker->setBook(book);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(worker, &ImageWorker::nextImageReady, this, &PageScene::handleNextImage);
-    connect(worker, &ImageWorker::previousImageReady, this, &PageScene::handlePreviousImage);
-    connect(this, &PageScene::addNextImage, worker, &ImageWorker::addNextImage);
-    connect(this, &PageScene::addPreviousImage, worker, &ImageWorker::addPreviousImage);
+    connect(worker, &ImageWorker::imageReady, this, &PageScene::handleImage);
+    connect(this, &PageScene::addImage, worker, &ImageWorker::addImage);
     workerThread.start();
 
     pageIndex = 0;
+    leftIndex = pageIndex; //inclus
+    rightIndex = pageIndex; //inclus
+    maxIndex = book->getSize()-1;
+    qWarning("maxIndex %i", maxIndex);
     initPage();
 
     //addRect(0, 0, 10, 10, QPen(), Qt::red);
@@ -38,12 +42,11 @@ PageScene::~PageScene()
     workerThread.wait();
 }
 
-QGraphicsPixmapItem* PageScene::setPage(QGraphicsPixmapItem *bp) {
-    removeItem(currentItem);
-    QGraphicsPixmapItem* oldItem = currentItem;
-    currentItem = bp;
-    addItem(bp);
-    return oldItem;
+void PageScene::setPage(int index) {
+    qWarning("Removing: %i, Showing: %i", pageIndex, index);
+    removeItem(pages[pageIndex]);
+    pageIndex = index;
+    addItem(pages[index]);
 }
 
 void PageScene::initPage() {
@@ -52,71 +55,59 @@ void PageScene::initPage() {
     Image img = Image(book->getCurrent(), book->getLength());
 
     //could be earlier
-    int size = nextItems.size();
-    while (size < IMAGE_PRELOAD && nextItemRequest < IMAGE_PRELOAD-size) {
-        emit addNextImage();
+    while(nextItemRequest<IMAGE_PRELOAD && pageIndex+nextItemRequest<maxIndex) {
         nextItemRequest++;
+        addImage(pageIndex+nextItemRequest);
+    }
+    while(previousItemRequest<IMAGE_PRELOAD && pageIndex-previousItemRequest>0) {
+        previousItemRequest++;
+        addImage(pageIndex-previousItemRequest);
     }
 
     img.process(WIDTH, HEIGHT);
     bp->setPixmap(*img.toQPixmap());
-    currentItem = bp;
+    pages[pageIndex] = bp;
     addItem(bp);
 }
 
 void PageScene::nextPage()
 {
-    int size = nextItems.size();
-    book->setIndex(pageIndex+nextItemRequest+nextItems.size());
-    while (size < IMAGE_PRELOAD && nextItemRequest < IMAGE_PRELOAD-size) {
-        emit addNextImage();
+    if (nextItemRequest<IMAGE_PRELOAD && rightIndex+nextItemRequest<maxIndex) {
         nextItemRequest++;
+        emit addImage(rightIndex+nextItemRequest);
     }
-    if (!nextItems.empty()) {
-        QGraphicsPixmapItem* oldItem = setPage(nextItems.front());
-        previousItems.push_front(oldItem);
-        nextItems.pop_front();
-        if (previousItems.size() > IMAGE_PRELOAD) {
-            delete previousItems.back();
-            previousItems.pop_back();
-        }
-        pageIndex++;
+    if (rightIndex>pageIndex) {
+
+        //leftIndex++;
+        setPage(pageIndex+1);
     }
-    qWarning("nextItems: %i", nextItems.size());
+    qWarning("nextItems: %i", pageIndex);
 }
 
-
-void PageScene::previousPage()
-{
-    int size = previousItems.size();
-    book->setIndex(pageIndex-previousItemRequest-previousItems.size());
-    while (size < IMAGE_PRELOAD && previousItemRequest < IMAGE_PRELOAD-size) {
-        emit addPreviousImage();
+void PageScene::previousPage() {
+    if (previousItemRequest<IMAGE_PRELOAD && leftIndex-previousItemRequest>0) {
         previousItemRequest++;
+        emit addImage(leftIndex-previousItemRequest);
     }
-    if (!previousItems.empty()) {
-        QGraphicsPixmapItem* oldItem = setPage(previousItems.front());
-        nextItems.push_front(oldItem);
-        previousItems.pop_front();
-        if (nextItems.size() > IMAGE_PRELOAD) {
-            delete nextItems.back();
-            nextItems.pop_back();
-        }
-        pageIndex--;
+    if (leftIndex<pageIndex) {
+
+        //rightIndex--;
+        setPage(pageIndex-1);
     }
-    qWarning("previousItems: %i", previousItems.size());
+    qWarning("previousItems: %i", pageIndex);
 }
 
-void PageScene::handleNextImage(QPixmap *img) {
+void PageScene::handleImage(QPixmap *img, int index) {
     QGraphicsPixmapItem *pixItem = new QGraphicsPixmapItem;
     pixItem->setPixmap(*img);
-    nextItems.push_back(pixItem);
-    nextItemRequest--;
+    pages[index] = pixItem;
+    if (index > pageIndex) {
+        rightIndex++;
+        nextItemRequest--;
+    } else {
+        leftIndex--;
+        previousItemRequest--;
+    }
+
 }
 
-void PageScene::handlePreviousImage(QPixmap *img) {
-    QGraphicsPixmapItem *pixItem = new QGraphicsPixmapItem;
-    pixItem->setPixmap(*img);
-    previousItems.push_back(pixItem);
-    previousItemRequest--;
-}

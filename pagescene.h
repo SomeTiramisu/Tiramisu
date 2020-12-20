@@ -16,22 +16,21 @@ public:
     void nextPage();
     void previousPage();
 private:
-    QGraphicsPixmapItem* setPage(QGraphicsPixmapItem *bp);
-    std::deque<QGraphicsPixmapItem*> nextItems;
-    std::deque<QGraphicsPixmapItem*> previousItems;
-    QGraphicsPixmapItem* currentItem;
+    void setPage(int index);
     int nextItemRequest = 0;
     int previousItemRequest = 0;
     Book *book;
     QThread workerThread;
     int pageIndex;
+    int leftIndex;
+    int rightIndex;
+    int maxIndex;
+    QGraphicsPixmapItem** pages = new QGraphicsPixmapItem*[0];
 
 public slots:
-    void handleNextImage(QPixmap *img);
-    void handlePreviousImage(QPixmap *img);
+    void handleImage(QPixmap *img, int index);
 signals:
-    void addNextImage();
-    void addPreviousImage();
+    void addImage(int index);
 };
 
 #endif // PAGESCENE_H
