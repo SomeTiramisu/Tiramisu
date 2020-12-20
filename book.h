@@ -29,6 +29,7 @@ public:
     void setIndex(int n);
     void incIndex(int n);
     void decIndex(int n);
+    int getSize();
 private:
     archive *bookArchive;
     archive_entry *entry;

@@ -30,7 +30,8 @@ Book::Book()
         archive_read_data_skip(bookArchive);
         i++;
     }
-    size = i -1;
+    size = i;
+    qWarning("book size: %i", size);
     archive_read_free(bookArchive);
     /*
     for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
@@ -133,6 +134,7 @@ void Book::setIndex(int n) {
     } else {
         cindex = n;
     }
+    //qWarning("index at: %i", cindex);
 }
 void Book::incIndex(int n) {
     setIndex(cindex + n);
@@ -140,6 +142,10 @@ void Book::incIndex(int n) {
 
 void Book::decIndex(int n) {
     setIndex(cindex - n);
+}
+
+int Book::getSize() {
+    return size;
 }
 
 bool naturalCompare(const header &a, const header &b) {
