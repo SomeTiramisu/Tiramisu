@@ -53,7 +53,7 @@ void Image::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
     double vm = floor(abs(bg.rows - src.rows)/2);
     Rect roi = Rect(hm, vm, src.cols, src.rows);
     Mat bg_roi = bg.operator()(roi);
-    qWarning("bg: %i %i %i %i %i %i", bg_roi.cols, bg_roi.rows, src.cols, src.rows, mask.cols, mask.rows);
+    //qWarning("bg: %i %i %i %i %i %i", bg_roi.cols, bg_roi.rows, src.cols, src.rows, mask.cols, mask.rows);
     src.copyTo(bg_roi, mask);
     bg.copyTo(dst);
 
@@ -73,7 +73,7 @@ void Image::scale(Mat& src, Mat& dst, double view_width, double view_height) {
     double fx = view_width / img_width;
     double fy = view_height / img_height;
     double f = min(fx, fy);
-    qWarning("f: %f", f);
+    //qWarning("f: %f", f);
     int interpolation;
     if (f > 1) {
         interpolation = INTER_CUBIC;
@@ -81,7 +81,7 @@ void Image::scale(Mat& src, Mat& dst, double view_width, double view_height) {
         interpolation = INTER_AREA;
     }
     resize(src, dst, Size(), f, f, interpolation);
-     qWarning("%i %i", dst.cols, dst.rows);
+     //qWarning("%i %i", dst.cols, dst.rows);
 }
 
 void Image::scaleFit(Mat* src, Mat* dst, double view_width, double view_height) {
@@ -138,12 +138,12 @@ void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 
 
 
 void Image::process(double width, double height) {
-    qWarning("img: %i %i", img.cols, img.rows);
+    //qWarning("img: %i %i", img.cols, img.rows);
     Mat mask = createMask(img);
     //bitwise_not(mask, mask);
-    qWarning("mask: %i %i", mask.cols, mask.rows);
+    //qWarning("mask: %i %i", mask.cols, mask.rows);
     Rect roi = createROI(&mask);
-    qWarning("ROI: %i %i", roi.width, roi.height);
+    //qWarning("ROI: %i %i", roi.width, roi.height);
     Mat imgROI = img(roi);
     scale(imgROI, img, width, height);
     //Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
