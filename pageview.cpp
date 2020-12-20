@@ -6,7 +6,7 @@ PageView::PageView(QWidget *parent)
     :QGraphicsView(parent)
 {
     setStyleSheet("border: 0px");
-    pagescene = new PageScene(this);
+    pagescene = new PageScene(width(), height(), this);
     setScene(pagescene);
     setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setSceneRect(0, 0, width(), height());

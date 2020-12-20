@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("reader");
     MainWindowReader mainWindowReader;
     mainWindowReader.showFullScreen();
+    //mainWindowReader.show();
     return a.exec();
 };
 

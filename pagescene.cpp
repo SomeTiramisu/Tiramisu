@@ -9,8 +9,10 @@
 #define IMAGE_PRELOAD 10
 
 
-PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
+PageScene::PageScene(int w, int h, QObject *parent): QGraphicsScene(parent)
 {
+    pageWidth = WIDTH;
+    pageHeight = HEIGHT;
     book = new Book();
     pages = new QGraphicsPixmapItem*[book->getSize()];
     for (int i=0; i<book->getSize(); i++) {
@@ -19,6 +21,7 @@ PageScene::PageScene(QObject *parent): QGraphicsScene(parent)
 
     ImageWorker *worker = new ImageWorker;
     worker->setBook(book);
+    worker->setImageSize(pageWidth, pageHeight);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &ImageWorker::imageReady, this, &PageScene::handleImage);
@@ -74,7 +77,7 @@ void PageScene::initPage() {
         addImage(pageIndex-previousItemRequest);
     }
 
-    img.process(WIDTH, HEIGHT);
+    img.process(pageWidth, pageHeight);
     bp->setPixmap(*img.toQPixmap());
     pages[pageIndex] = bp;
     addItem(bp);

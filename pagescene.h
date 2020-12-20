@@ -10,12 +10,15 @@ class PageScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    PageScene(QObject *parent = nullptr);
+    PageScene(int w, int h, QObject *parent = nullptr);
     ~PageScene();
     void initPage();
     void nextPage();
     void previousPage();
+    void setPageSize(int w, int h);
 private:
+    int pageWidth = 0;
+    int pageHeight = 0;
     void setPage(int index);
     void delPage(int index);
     int nextItemRequest = 0;
