@@ -19,6 +19,7 @@ Book::Book()
     openArchive(ARCHIVE_FILENAME);
 
     int i = 0;
+    size = 0;
     while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
         header h = {
             .filename = std::string(archive_entry_pathname(entry)),
@@ -26,11 +27,11 @@ Book::Book()
         };
         if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
             headers.push_back(h);
+            size++;
         }
         archive_read_data_skip(bookArchive);
         i++;
     }
-    size = i;
     qWarning("book size: %i", size);
     archive_read_free(bookArchive);
     /*
