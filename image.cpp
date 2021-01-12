@@ -67,11 +67,11 @@ QPixmap *Image::toQPixmap() {
     
 };
 
-void Image::scale(Mat& src, Mat& dst, double view_width, double view_height) {
-    double img_width  = static_cast<double>(src.cols);
-    double img_height  = static_cast<double>(src.rows);
-    double fx = view_width / img_width;
-    double fy = view_height / img_height;
+void Image::scale(Mat& src, Mat& dst, int view_width, int view_height) {
+    int img_width  = src.cols;
+    int img_height  = src.rows;
+    double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
+    double fy = static_cast<double>(view_height) / static_cast<double>(img_height);
     double f = min(fx, fy);
     //qWarning("f: %f", f);
     int interpolation;
@@ -82,13 +82,20 @@ void Image::scale(Mat& src, Mat& dst, double view_width, double view_height) {
     }
     resize(src, dst, Size(), f, f, interpolation);
      //qWarning("%i %i", dst.cols, dst.rows);
+/*
+    if (dst.cols > view_width) {
+        dst = dst(Rect(0, 0, view_width, dst.rows));
+    }
+    if (dst.rows > view_height) {
+        dst = dst(Rect(0, 0, dst.cols, view_height));
+    }*/
 }
 
-void Image::scaleFit(Mat* src, Mat* dst, double view_width, double view_height) {
-    double img_width  = static_cast<double>(src->cols);
-    double img_height  = static_cast<double>(src->rows);
-    double fx = view_width / img_width;
-    double fy = view_height / img_height;
+void Image::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
+    int img_width  = src->cols;
+    int img_height  = src->rows;
+    double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
+    double fy = static_cast<double>(view_height) / static_cast<double>(img_height);
     double f = max(fx, fy);
     int interpolation;
     if (f > 1) {
@@ -101,7 +108,7 @@ void Image::scaleFit(Mat* src, Mat* dst, double view_width, double view_height) 
     *dst = dst->operator()(roi);
 }
 
-void Image::tileFit(Mat& src, Mat& dst, double view_width, double view_height) {
+void Image::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
     int h = 1;
     int v = 1; 
     if (src.cols < view_width) {
@@ -137,7 +144,7 @@ void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 
 }
 
 
-void Image::process(double width, double height) {
+void Image::process(int width, int height) {
     //qWarning("img: %i %i", img.cols, img.rows);
     Mat mask = createMask(img);
     //bitwise_not(mask, mask);

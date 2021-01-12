@@ -19,10 +19,10 @@ public:
     void createAlpha(Mat* src, Mat* dst);
     void addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst );
     void addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask);
-    void scale(Mat& src, Mat& dst, double view_width, double view_height);
-    void scaleFit(Mat* src, Mat* dst, double view_width, double view_height);
-    void tileFit(Mat& src, Mat& dst, double view_width, double view_height);
-    void process(double width, double height);
+    void scale(Mat& src, Mat& dst, int view_width, int view_height);
+    void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
+    void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
+    void process(int width, int height);
 
 private:
     Mat img;
