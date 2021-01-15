@@ -15,6 +15,10 @@ void ImageWorker::addImage(int index) {
     unsigned int length = book->getLength();
     Image img = Image(buf, length);
     delete[] buf;
-    img.process(width, height);
-    emit imageReady(img.toQPixmap(), index);
+    try {
+        img.process(width, height);
+        emit imageReady(img.toQPixmap(), index);
+    }  catch (...) {
+        qWarning("Something goes wrong with %i", index);
+    }
 }
