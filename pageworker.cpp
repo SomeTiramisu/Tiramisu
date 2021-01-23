@@ -20,5 +20,6 @@ void ImageWorker::addImage(int index) {
         emit imageReady(img.toQPixmap(), index);
     }  catch (...) {
         qWarning("Something goes wrong with %i", index);
+        emit imageReady(new QPixmap, index);
     }
 }
