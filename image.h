@@ -22,6 +22,7 @@ public:
     void scale(Mat& src, Mat& dst, int view_width, int view_height);
     void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
     void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
+    void sharpen(Mat& src, Mat& dst);
     void process(int width, int height);
 
 private:

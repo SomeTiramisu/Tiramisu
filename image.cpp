@@ -143,6 +143,16 @@ void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 
     
 }
 
+void Image::sharpen(Mat &src, Mat &dst) {
+    Mat blurred;
+    double sigma = 1;
+    double threshold = 5;
+    double amount = 1;
+    GaussianBlur(src, blurred, Size(), sigma, sigma);
+    Mat lowContrastMask = abs(img - blurred) < threshold;
+    Mat sharpened = src*(1+amount) + blurred*(-amount);
+    dst.copyTo(sharpened, lowContrastMask);
+}
 
 void Image::process(int width, int height) {
     //qWarning("img: %i %i", img.cols, img.rows);
@@ -153,6 +163,7 @@ void Image::process(int width, int height) {
     //qWarning("ROI: %i %i", roi.width, roi.height);
     Mat imgROI = img(roi);
     scale(imgROI, img, width, height);
+    //sharpen(img, img);
     //Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
     //scaleFit(&bg, &bg, 1200, 1920);
     tileFit(bg, bg, width, height);
