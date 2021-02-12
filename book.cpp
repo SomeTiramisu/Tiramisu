@@ -22,7 +22,8 @@ Book::Book(std::string fn)
     while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
         header h = {
             .filename = std::string(archive_entry_pathname(entry)),
-            .index = i
+            .index = i,
+            .length = archive_entry_size(entry)
         };
         if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
             headers.push_back(h);
@@ -40,108 +41,38 @@ Book::Book(std::string fn)
     */
     std::sort(headers.begin(), headers.end(), naturalCompare);
 
-    //cindex = settings.value("currentPage", 0).toInt();
-    cindex = 0;
-    loadBufAt(cindex);
-
-
 }
 
 Book::~Book()
 {
-    //delete[] buf; //PageWorker already did that
-    //settings.setValue("currentPage", cindex);
-}
-
-char* Book::getCurrent()
-{
-    int n = headers[cindex].index;
-    loadBufAt(n);
-    return buf;
-}
-
-char* Book::getNext()
-{
-    //qWarning("Loading %s", headers[cindex].filename.c_str());
-    if (cindex < size) {
-        cindex++;
-    }
-    int n = headers[cindex].index;
-    loadBufAt(n);
-    return buf;
-}
-
-char* Book::getPrevious()
-{
-    if (cindex > 0) {
-        cindex--;
-    }
-    int n = headers[cindex].index;
-    loadBufAt(n);
-    return buf;
-}
-
-char* Book::getSeek(int s)
-{
-    int index = cindex + s;
-    if (index <= 0) {
-        loadBufAt(headers[0].index);
-    } else if (index >= size){
-        loadBufAt(headers[size].index); //tocheck if not size-1
-    } else {
-        loadBufAt(headers[index].index);
-    }
-    return buf;
-}
-
-char* Book::getAt(int index)
-{
-    setIndex(index);
-    return getCurrent();
 }
 
 
-unsigned int Book::getLength()
+long long Book::getLength(int index)
 {
-    return length;
+    return headers[index].length;
 }
 
 void Book::openArchive(std::string filename) {
     bookArchive = archive_read_new();
     archive_read_support_filter_all(bookArchive);
     archive_read_support_format_zip(bookArchive);
-    archive_read_support_format_rar(bookArchive);
+    //archive_read_support_format_rar(bookArchive); buggy
     archive_read_open_filename(bookArchive, filename.c_str(), 10240);
 }
 
-void Book::loadBufAt(int n) {
+char* Book::getAt(int index) {
+    int n= headers[index].index;
     openArchive(filename);
     for (int i=0; i<=n; i++) {
         archive_read_next_header(bookArchive, &entry);
     }
-    length = archive_entry_size(entry);
+    long long length = headers[index].length;
     //delete[] buf; deleted after Image creation
-    buf = new char[length];
+    char* buf = new char[length];
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
-}
-
-void Book::setIndex(int n) {
-    if (n <= 0) {
-        cindex = 0;
-    } else if (n >= size) {
-        cindex = size-1;
-    } else {
-        cindex = n;
-    }
-    //qWarning("index at: %i", cindex);
-}
-void Book::incIndex(int n) {
-    setIndex(cindex + n);
-}
-
-void Book::decIndex(int n) {
-    setIndex(cindex - n);
+    return buf;
 }
 
 int Book::getSize() {
@@ -150,8 +81,5 @@ int Book::getSize() {
 
 bool naturalCompare(const header &a, const header &b) {
     int r = strnatcasecmp(a.filename.c_str(), b.filename.c_str());
-    if (r < 0) {
-        return true;
-    }
-    return false;
+    return r < 0;
 }

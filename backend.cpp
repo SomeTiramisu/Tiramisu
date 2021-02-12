@@ -31,7 +31,7 @@ void Backend::setHeight(int &h) {
 }
 
 void Backend::setPageIndex(int &i) {
-    m_pageIndex = i;
+    if (i>=0 && i<m_book->getSize()) m_pageIndex = i;
 };
 
 QString Backend::filename() {

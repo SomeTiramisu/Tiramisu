@@ -2,16 +2,16 @@ import QtQuick 2.15
 
 Item {
     id: root
-    width: 480; height: 854
-    //width: 1080; height: 1920
-    //width: 1200; height: 1920
-
+    //width:500; height: 500
+    width:1080; height: 1920
+    onWidthChanged: {backend.height = height}
+    onHeightChanged: {backend.width = width}
     Image {
         id: page
-        width: root.width; height: root.height
+        anchors.fill: parent
         sourceSize.width: root.width; sourceSize.height: root.height
         fillMode: Image.Pad
-        source: "image://pages/" + backend.pageIndex
+        source: "image://pages/first"
         TapHandler {
             onTapped: {
                 if (eventPoint.position.x > root.width / 2) {

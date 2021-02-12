@@ -13,6 +13,7 @@ extern "C" {
 struct header {
     std::string filename;
     int index;
+    long long length;
 };
 
 class Book
@@ -20,25 +21,14 @@ class Book
 public:
     Book(std::string fn);
     ~Book();
-    char* getCurrent();
-    char* getNext();
-    char* getPrevious();
-    char* getSeek(int s);
     char* getAt(int index);
-    unsigned int getLength();
-    void setIndex(int n);
-    void incIndex(int n);
-    void decIndex(int n);
+    long long getLength(int index);
     int getSize();
 private:
     archive *bookArchive;
     archive_entry *entry;
-    char* buf = new char[0];
-    unsigned int length;
     std::vector<header> headers;
     void openArchive(std::string filename);
-    void loadBufAt(int n);
-    int cindex;
     int size;
     std::string filename;
 

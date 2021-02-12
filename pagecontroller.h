@@ -12,14 +12,12 @@ class PageController : public QObject
 public:
     PageController(Book *b, QObject *parent = nullptr);
     ~PageController();
-    void setPageSize(int w, int h);
-    QPixmap* getPage(int index);
-    QPixmap* initPage(int index);
-    void requestPages(int index);
+    QPixmap* getPage(int index, int w, int h);
+    QPixmap* initPage(int index, int w, int h);
+
 
 private:
-    int pageWidth;
-    int pageHeight;
+    void preloadPages(int index, int w, int h);
     Book *book;
     QThread workerThread;
     QPixmap* *pages;

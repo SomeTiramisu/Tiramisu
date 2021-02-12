@@ -5,12 +5,12 @@
 #include <QPixmap>
 #include <QImage>
 
-#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
+//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
+#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 using namespace cv;
 
-ImageProc::ImageProc(char *buf, unsigned int length) {
+ImageProc::ImageProc(char *buf, long long length) {
     img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
     bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
 };

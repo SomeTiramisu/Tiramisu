@@ -2,7 +2,6 @@
 #include <QtQuick/QQuickView>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
-#include "mainwindowreader.h"
 #include "pageimageprovider.h"
 #include "book.h"
 #include "backend.h"

@@ -25,27 +25,19 @@ INCLUDEPATH += /usr/include/opencv4/
 SOURCES += \
     backend.cpp \
     book.cpp \
-    #bookpage.cpp \
     image.cpp \
     main.cpp \
-    #mainwindowreader.cpp \
     pagecontroller.cpp \
     pageimageprovider.cpp \
-    #pagescene.cpp \
-    #pageview.cpp \
     pageworker.cpp \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
     backend.h \
     book.h \
-    #bookpage.h \
     image.h \
-    #mainwindowreader.h \
     pagecontroller.h \
     pageimageprovider.h \
-    #pagescene.h \
-    #pageview.h \
     pageworker.h \
     strnatcmp/strnatcmp.h
 
