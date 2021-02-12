@@ -1,6 +1,5 @@
 #include "pagescene.h"
 
-#include "bookpage.h"
 #include "image.h"
 #include "pageworker.h"
 #include <QGraphicsPixmapItem>
@@ -65,7 +64,7 @@ void PageScene::delPage(int index) {
 void PageScene::initPage() {
     book->setIndex(pageIndex);
     QGraphicsPixmapItem *bp = new QGraphicsPixmapItem;
-    Image img = Image(book->getCurrent(), book->getLength());
+    ImageProc img = ImageProc(book->getCurrent(), book->getLength());
 
     //could be earlier
     while(nextItemRequest<IMAGE_PRELOAD && pageIndex+nextItemRequest<maxIndex) {

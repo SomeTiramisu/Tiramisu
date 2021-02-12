@@ -18,7 +18,7 @@ struct header {
 class Book
 {
 public:
-    Book();
+    Book(std::string fn);
     ~Book();
     char* getCurrent();
     char* getNext();
@@ -40,7 +40,8 @@ private:
     void loadBufAt(int n);
     int cindex;
     int size;
-    QSettings settings;
+    std::string filename;
+
 };
 
 bool naturalCompare(const header &a, const header &b);

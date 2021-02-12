@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui qml quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,23 +23,29 @@ INCLUDEPATH += /usr/include/opencv4/
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    backend.cpp \
     book.cpp \
     #bookpage.cpp \
     image.cpp \
     main.cpp \
-    mainwindowreader.cpp \
-    pagescene.cpp \
-    pageview.cpp \
+    #mainwindowreader.cpp \
+    pagecontroller.cpp \
+    pageimageprovider.cpp \
+    #pagescene.cpp \
+    #pageview.cpp \
     pageworker.cpp \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
+    backend.h \
     book.h \
     #bookpage.h \
     image.h \
-    mainwindowreader.h \
-    pagescene.h \
-    pageview.h \
+    #mainwindowreader.h \
+    pagecontroller.h \
+    pageimageprovider.h \
+    #pagescene.h \
+    #pageview.h \
     pageworker.h \
     strnatcmp/strnatcmp.h
 
@@ -57,7 +63,11 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew \
     android/gradlew.bat \
-    android/res/values/libs.xml
+    android/res/values/libs.xml \
+    ui.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+RESOURCES += \
+    res.qrc
 

@@ -1,16 +1,36 @@
-#include <QApplication>
+#include <QGuiApplication>
+#include <QtQuick/QQuickView>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
 #include "mainwindowreader.h"
+#include "pageimageprovider.h"
+#include "book.h"
+#include "backend.h"
+
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QGuiApplication app(argc, argv);
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
     QCoreApplication::setApplicationName("reader");
-    MainWindowReader mainWindowReader;
-    mainWindowReader.showFullScreen();
-    //mainWindowReader.show();
-    return a.exec();
+    QQuickView view;
+    QQmlEngine *engine = view.engine();
+
+    PageImageProvider *imp = new PageImageProvider();
+
+    Backend *backend = imp->getBackend();
+
+    engine->addImageProvider("pages", imp);
+    engine->rootContext()->setContextProperty("backend", backend);
+    view.setSource(QUrl::fromLocalFile(":/res/ui.qml"));
+
+    if (QSysInfo::productType() == "android") {
+        view.showFullScreen();
+    } else {
+        view.show();
+    }
+    return app.exec();
 };
 
 

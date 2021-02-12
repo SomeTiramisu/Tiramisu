@@ -11,12 +11,11 @@ extern "C" {
 #include "strnatcmp/strnatcmp.h"
 };
 
-//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
-#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
 
-Book::Book()
+Book::Book(std::string fn)
 {
-    openArchive(ARCHIVE_FILENAME);
+    filename = fn;
+    openArchive(filename);
 
     int i = 0;
     size = 0;
@@ -50,7 +49,7 @@ Book::Book()
 
 Book::~Book()
 {
-    delete[] buf;
+    //delete[] buf; //PageWorker already did that
     //settings.setValue("currentPage", cindex);
 }
 
@@ -116,7 +115,7 @@ void Book::openArchive(std::string filename) {
 }
 
 void Book::loadBufAt(int n) {
-    openArchive(ARCHIVE_FILENAME);
+    openArchive(filename);
     for (int i=0; i<=n; i++) {
         archive_read_next_header(bookArchive, &entry);
     }

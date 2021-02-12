@@ -9,11 +9,11 @@
 
 using namespace cv;
 
-class Image
+class ImageProc
 {
 public:
-    Image(char *buf, unsigned int length);
-    QPixmap *toQPixmap();
+    ImageProc(char *buf, unsigned int length);
+    QPixmap* toQPixmap();
     Mat createMask(Mat& src);
     Rect createROI(Mat* src);
     void createAlpha(Mat* src, Mat* dst);
