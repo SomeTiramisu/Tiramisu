@@ -1,7 +1,12 @@
 #include "backend.h"
 
+#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
+//#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
+
 Backend::Backend() {
     m_pageIndex = 0;
+    QString fn(ARCHIVE_FILENAME);
+    setFilename(fn);
 }
 
 Backend::~Backend() {
@@ -48,6 +53,10 @@ int Backend::height() {
 
 int Backend::pageIndex() {
     return m_pageIndex;
+}
+
+QString Backend::productName() {
+    return QSysInfo::productType();
 }
 
 Book* Backend::book() {

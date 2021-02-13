@@ -1,9 +1,7 @@
 #include <QGuiApplication>
-#include <QtQuick/QQuickView>
-#include <QtQml/QQmlEngine>
+#include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include "pageimageprovider.h"
-#include "book.h"
 #include "backend.h"
 
 
@@ -13,22 +11,15 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
     QCoreApplication::setApplicationName("reader");
-    QQuickView view;
-    QQmlEngine *engine = view.engine();
+    QQmlApplicationEngine engine;
 
     PageImageProvider *imp = new PageImageProvider();
-
     Backend *backend = imp->getBackend();
 
-    engine->addImageProvider("pages", imp);
-    engine->rootContext()->setContextProperty("backend", backend);
-    view.setSource(QUrl::fromLocalFile(":/res/ui.qml"));
+    engine.addImageProvider("pages", imp);
+    engine.rootContext()->setContextProperty("backend", backend);
 
-    if (QSysInfo::productType() == "android") {
-        view.showFullScreen();
-    } else {
-        view.show();
-    }
+    engine.load(":/res/ui.qml");
     return app.exec();
 };
 

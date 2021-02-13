@@ -5,8 +5,8 @@
 #include <QPixmap>
 #include <QImage>
 
-//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
+#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
+//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 using namespace cv;
 

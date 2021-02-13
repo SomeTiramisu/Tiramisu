@@ -1,11 +1,19 @@
-import QtQuick 2.15
+import QtQuick 2.12
+import QtQuick.Controls 2.12
 
-Item {
+ApplicationWindow {
     id: root
-    //width:500; height: 500
-    width:1080; height: 1920
-    onWidthChanged: {backend.height = height}
-    onHeightChanged: {backend.width = width}
+    width:500; height: 500
+    //width:1080; height: 1920
+    visible: true
+    visibility: chooseVisibility()
+    function chooseVisibility() {
+        if (backend.productName === "android") {
+             return "FullScreen"
+        }
+        return "Windowed"
+    }
+
     Image {
         id: page
         anchors.fill: parent

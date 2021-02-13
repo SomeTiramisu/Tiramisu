@@ -11,6 +11,7 @@ class Backend : public QObject
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
+    Q_PROPERTY(QString productName READ productName CONSTANT)
 
 public:
     Backend();
@@ -23,6 +24,7 @@ public:
     int width();
     int height();
     int pageIndex();
+    QString productName();
     Book* book();
 
 private:

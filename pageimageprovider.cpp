@@ -4,14 +4,9 @@
 #include "pageworker.h"
 #include <QGraphicsPixmapItem>
 
-//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
-#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
-
 PageImageProvider::PageImageProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
     backend = new Backend();
-    QString fn(ARCHIVE_FILENAME);
-    backend->setFilename(fn);
     controller = new PageController(backend->book());
     previousIndex = 0;
 }
