@@ -12,7 +12,7 @@ using namespace cv;
 class ImageProc
 {
 public:
-    ImageProc(char *buf, long long length);
+    ImageProc(char *buf, long long length, std::string bg_filename);
     QPixmap* toQPixmap();
     Mat createMask(Mat& src);
     Rect createROI(Mat* src);

@@ -5,14 +5,12 @@
 #include <QPixmap>
 #include <QImage>
 
-#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
-
 using namespace cv;
 
-ImageProc::ImageProc(char *buf, long long length) {
+ImageProc::ImageProc(char *buf, long long length, std::string bg_filename) {
     img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
-    bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
+    //qWarning("buf len: %llong", length);
+    bg = imread(bg_filename, IMREAD_COLOR);
 };
 
 Mat ImageProc::createMask(Mat& src) {
@@ -157,13 +155,11 @@ void ImageProc::sharpen(Mat &src, Mat &dst) {
 void ImageProc::process(int width, int height) {
     //qWarning("img: %i %i", img.cols, img.rows);
     Mat mask = createMask(img);
-    //bitwise_not(mask, mask);
     //qWarning("mask: %i %i", mask.cols, mask.rows);
     Rect roi = createROI(&mask);
     //qWarning("ROI: %i %i", roi.width, roi.height);
     Mat imgROI = img(roi);
     scale(imgROI, img, width, height);
-    //sharpen(img, img);
     tileFit(bg, bg, width, height);
     mask = createMask(img);
     addBackground(img, bg, img, mask);

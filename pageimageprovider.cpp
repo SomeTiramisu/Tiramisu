@@ -7,7 +7,7 @@
 PageImageProvider::PageImageProvider() : QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
     backend = new Backend();
-    controller = new PageController(backend->book());
+    controller = new PageController(backend);
     previousIndex = 0;
 }
 
@@ -30,7 +30,7 @@ QPixmap PageImageProvider::requestPixmap(const QString &id, QSize *size, const Q
     QPixmap* img(controller->getPage(rindex, fwidth, fheight));
     if (img==nullptr) {
         backend->setPageIndex(previousIndex);
-        qWarning("showing %i", previousIndex);
+        qWarning("showing previous %i", previousIndex);
         return *controller->getPage(previousIndex, 100, 100); //TODO return correct size
     }
     previousIndex = rindex;

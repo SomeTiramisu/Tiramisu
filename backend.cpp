@@ -1,25 +1,37 @@
 #include "backend.h"
 
 #define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
+#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
 //#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
+//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 Backend::Backend() {
     m_pageIndex = 0;
-    QString fn(ARCHIVE_FILENAME);
-    setFilename(fn);
+    QString bkfn(ARCHIVE_FILENAME);
+    QString bgfn(BACKGROUND_FILENAME);
+    setBookFilename(bkfn);
+    setBgFilename(bgfn);
 }
 
 Backend::~Backend() {
     delete m_book;
 }
 
-void Backend::setFilename(QString &f) {
-    if (f != m_filename) {
-        m_filename = f;
+void Backend::setBookFilename(QString &f) {
+    if (f != m_bookFilename) {
+        m_bookFilename = f;
         m_book = new Book(f.toStdString());
-        emit filenameChanged();
+        emit bookFilenameChanged();
     }
 }
+
+void Backend::setBgFilename(QString &f) {
+    if (f != m_bgFilename) {
+        m_bgFilename = f;
+        emit bgFilenameChanged();
+    }
+}
+
 
 void Backend::setWidth(int &w) {
     if (w != m_width) {
@@ -39,8 +51,12 @@ void Backend::setPageIndex(int &i) {
     if (i>=0 && i<m_book->getSize()) m_pageIndex = i;
 };
 
-QString Backend::filename() {
-    return m_filename;
+QString Backend::bookFilename() {
+    return m_bookFilename;
+}
+
+QString Backend::bgFilename() {
+    return m_bgFilename;
 }
 
 int Backend::width() {

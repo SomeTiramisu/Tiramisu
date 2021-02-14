@@ -7,7 +7,8 @@
 class Backend : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString filename READ filename WRITE setFilename NOTIFY filenameChanged)
+    Q_PROPERTY(QString bookFilename READ bookFilename WRITE setBookFilename NOTIFY bookFilenameChanged)
+    Q_PROPERTY(QString bgFilename READ bgFilename WRITE setBgFilename NOTIFY bgFilenameChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
@@ -16,11 +17,13 @@ class Backend : public QObject
 public:
     Backend();
     ~Backend();
-    void setFilename(QString &f);
+    void setBookFilename(QString &f);
+    void setBgFilename(QString &f);
     void setWidth(int &w);
     void setHeight(int &h);
     void setPageIndex(int &i);
-    QString filename();
+    QString bookFilename();
+    QString bgFilename();
     int width();
     int height();
     int pageIndex();
@@ -28,7 +31,8 @@ public:
     Book* book();
 
 private:
-    QString m_filename;
+    QString m_bookFilename;
+    QString m_bgFilename;
     int m_width;
     int m_height;
     int m_pageIndex;
@@ -36,7 +40,8 @@ private:
 
 
 signals:
-    void filenameChanged();
+    void bookFilenameChanged();
+    void bgFilenameChanged();
     void widthChanged();
     void heightChanged();
     void pageIndexChanged();
