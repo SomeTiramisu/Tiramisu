@@ -1,26 +1,31 @@
 #include "backend.h"
+#include "book.h"
 
-#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
-#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
+//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
+//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
 //#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
 //#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 Backend::Backend() {
     m_pageIndex = 0;
+    m_previousIndex = 0;
+    m_maxIndex = 0;
     QString bkfn(ARCHIVE_FILENAME);
     QString bgfn(BACKGROUND_FILENAME);
     setBookFilename(bkfn);
     setBgFilename(bgfn);
+    m_width = 1080; //tofix
+    m_height = 1920;
 }
 
 Backend::~Backend() {
-    delete m_book;
 }
 
 void Backend::setBookFilename(QString &f) {
     if (f != m_bookFilename) {
         m_bookFilename = f;
-        m_book = new Book(f.toStdString());
+        Book b = Book(f.toStdString());
+        m_maxIndex = b.getSize()-1;
         emit bookFilenameChanged();
     }
 }
@@ -48,7 +53,10 @@ void Backend::setHeight(int &h) {
 }
 
 void Backend::setPageIndex(int &i) {
-    if (i>=0 && i<m_book->getSize()) m_pageIndex = i;
+    if (i>=0 && i<=m_maxIndex) {
+        m_previousIndex = m_pageIndex;
+        m_pageIndex = i;
+    }
 };
 
 QString Backend::bookFilename() {
@@ -71,10 +79,15 @@ int Backend::pageIndex() {
     return m_pageIndex;
 }
 
-QString Backend::productName() {
-    return QSysInfo::productType();
+int Backend::previousIndex() {
+    m_pageIndex = m_previousIndex;
+    return m_previousIndex;
 }
 
-Book* Backend::book() {
-    return m_book;
+int Backend::maxIndex() {
+    return m_maxIndex;
+}
+
+QString Backend::productName() {
+    return QSysInfo::productType();
 }

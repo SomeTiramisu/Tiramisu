@@ -13,8 +13,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("reader");
     QQmlApplicationEngine engine;
 
-    PageImageProvider *imp = new PageImageProvider();
-    Backend *backend = imp->getBackend();
+    Backend *backend = new Backend();
+    PageImageProvider *imp = new PageImageProvider(backend);
+
 
     engine.addImageProvider("pages", imp);
     engine.rootContext()->setContextProperty("backend", backend);

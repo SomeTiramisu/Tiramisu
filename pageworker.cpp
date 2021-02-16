@@ -1,8 +1,20 @@
 #include "pageworker.h"
 #include "image.h"
 
-void ImageWorker::addImage(Book* book, QString bg_filename, int index, int width, int height) {
+ImageWorker::ImageWorker() {
+    book = nullptr;
+}
+
+ImageWorker::~ImageWorker() {
+    delete book;
+}
+
+void ImageWorker::addImage(QString book_filename, QString bg_filename, int index, int width, int height) {
     qWarning("requesting %i", index);
+    if (book == nullptr || book_filename.toStdString() != book->getFilename()) {
+        delete book;
+        book = new Book(book_filename.toStdString());
+    }
     char* buf = book->getAt(index);
     long long length = book->getLength(index);
     ImageProc img = ImageProc(buf, length, bg_filename.toStdString());

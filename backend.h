@@ -2,7 +2,6 @@
 #define BACKEND_H
 
 #include <QObject>
-#include "book.h"
 
 class Backend : public QObject
 {
@@ -27,8 +26,9 @@ public:
     int width();
     int height();
     int pageIndex();
+    int previousIndex();
+    int maxIndex();
     QString productName();
-    Book* book();
 
 private:
     QString m_bookFilename;
@@ -36,7 +36,8 @@ private:
     int m_width;
     int m_height;
     int m_pageIndex;
-    Book *m_book;
+    int m_previousIndex;
+    int m_maxIndex;
 
 
 signals:

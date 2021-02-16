@@ -24,6 +24,8 @@ public:
     char* getAt(int index);
     long long getLength(int index);
     int getSize();
+    std::string getFilename();
+
 private:
     archive *bookArchive;
     archive_entry *entry;

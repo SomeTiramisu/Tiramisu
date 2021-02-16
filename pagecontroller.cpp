@@ -10,19 +10,20 @@
 PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
 {
     backend = b;
-    int bookSize = backend->book()->getSize();
-    pages = new QPixmap*[bookSize];
-    pagesStatus = new char[bookSize];
-    for (int i = 0; i<bookSize; i++) {
+    pages = new QPixmap*[backend->maxIndex()+1]; //tocheck
+    pagesStatus = new char[backend->maxIndex()+1];
+    for (int i = 0; i<=backend->maxIndex(); i++) {
         pages[i] = nullptr;
         pagesStatus[i] = NOT_REQUESTED;
     }
-    ImageWorker *worker = new ImageWorker;
+    ImageWorker *worker = new ImageWorker();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
     connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
     workerThread.start();
+
+    initPage(backend->pageIndex());
 }
 
 PageController::~PageController() {
@@ -32,48 +33,38 @@ PageController::~PageController() {
     workerThread.wait();
 }
 
-QPixmap* PageController::getPage(int index, int w, int h) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
-    preloadPages(index, w, h);
+QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
+    int index = backend->pageIndex();
+    if (pagesStatus[index] != RECIEVED)
+        index = backend->previousIndex();
+    int w = backend->width();
+    int h = backend->height();
+    preloadPages(index);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(backend->book(), backend->bgFilename(), index, w, h);
-        return nullptr;
-    } else if (pagesStatus[index]==REQUESTED) {
-        return nullptr;
+        emit addImage(backend->bookFilename(), backend->bgFilename(), index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
         return pages[index];
     }
     return nullptr;
 }
 
-QPixmap* PageController::initPage(int index, int w, int h) {
-    char* buf = backend->book()->getAt(index);
-    long long length = backend->book()->getLength(index);
-    ImageProc img = ImageProc(buf, length, backend->bgFilename().toStdString());
-    delete[] buf;
-    try {
-        img.process(w, h);
-        pages[index] = img.toQPixmap();
-        pagesStatus[index] = RECIEVED;
-        return pages[index];
-    }  catch (...) {
-        qWarning("Something goes wrong with %i", index);
-        QPixmap* r = new QPixmap;
-        pages[index] = r;
-        return r;
-    }
+void PageController::initPage(int index) {
+    emit addImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
 }
 
-void PageController::preloadPages(int index, int w, int h) {
-    int maxIndex = backend->book()->getSize()-1;
+void PageController::preloadPages(int index) {
+    int w = backend->width();
+    int h = backend->height();
+    int maxIndex = backend->maxIndex();
     for (int i=1; i<IMAGE_PRELOAD; i++) {
         if (pagesStatus[index+i] == NOT_REQUESTED && index+i<=maxIndex) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(backend->book(), backend->bgFilename(), index+i, w, h);
+            emit addImage(backend->bookFilename(), backend->bgFilename(), index+i, w, h);
         }
         if (pagesStatus[index-i] == NOT_REQUESTED && index-i>=0) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(backend->book(), backend->bgFilename(), index-i, w, h);
+            emit addImage(backend->bookFilename(), backend->bgFilename(), index-i, w, h);
         }
     }
     for (int i=0; i<=maxIndex; i++) {

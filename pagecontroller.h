@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QThread>
 #include <QPixmap>
-#include "book.h"
 #include "backend.h"
 
 class PageController : public QObject
@@ -13,12 +12,12 @@ class PageController : public QObject
 public:
     PageController(Backend* b, QObject *parent = nullptr);
     ~PageController();
-    QPixmap* getPage(int index, int w, int h);
-    QPixmap* initPage(int index, int w, int h);
+    QPixmap* getPage();
+    void initPage(int index);
 
 
 private:
-    void preloadPages(int index, int w, int h);
+    void preloadPages(int index);
     Backend* backend;
     QThread workerThread;
     QPixmap* *pages;
@@ -27,7 +26,7 @@ private:
 public slots:
     void handleImage(QPixmap* img, int index);
 signals:
-    void addImage(Book* book, QString bg_filename, int index, int width, int height);
+    void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
 
 };
 

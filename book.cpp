@@ -79,6 +79,10 @@ int Book::getSize() {
     return size;
 }
 
+std::string Book::getFilename() {
+    return filename;
+}
+
 bool naturalCompare(const header &a, const header &b) {
     int r = strnatcasecmp(a.filename.c_str(), b.filename.c_str());
     return r < 0;

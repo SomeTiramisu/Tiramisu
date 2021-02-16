@@ -8,9 +8,14 @@
 class ImageWorker : public QObject
 {
     Q_OBJECT
+public:
+    ImageWorker();
+    ~ImageWorker();
+private:
+    Book *book;
 
 public slots:
-    void addImage(Book* book, QString bg_filename, int index, int width, int height);
+    void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
 
 signals:
     void imageReady(QPixmap* img, int index);

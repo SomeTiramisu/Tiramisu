@@ -11,15 +11,12 @@ class PageImageProvider :  public QQuickImageProvider
 {
 
 public:
-    PageImageProvider();
+    PageImageProvider(Backend *b);
     ~PageImageProvider();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
-    Backend* getBackend();
 
 private:
-    Backend *backend;
     PageController *controller;
-    int previousIndex;
 };
 
 
