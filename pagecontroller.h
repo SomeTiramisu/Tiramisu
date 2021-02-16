@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QPixmap>
 #include "backend.h"
+#include "pageworker.h"
 
 class PageController : public QObject
 {
@@ -19,9 +20,11 @@ public:
 private:
     void preloadPages(int index);
     Backend* backend;
+    ImageWorker *worker;
     QThread workerThread;
     QPixmap* *pages;
     char *pagesStatus;
+    int lastIndex;
 
 public slots:
     void handleImage(QPixmap* img, int index);

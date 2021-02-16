@@ -8,7 +8,6 @@
 
 Backend::Backend() {
     m_pageIndex = 0;
-    m_previousIndex = 0;
     m_maxIndex = 0;
     QString bkfn(ARCHIVE_FILENAME);
     QString bgfn(BACKGROUND_FILENAME);
@@ -54,8 +53,8 @@ void Backend::setHeight(int &h) {
 
 void Backend::setPageIndex(int &i) {
     if (i>=0 && i<=m_maxIndex) {
-        m_previousIndex = m_pageIndex;
         m_pageIndex = i;
+        emit pageIndexChanged();
     }
 };
 
@@ -77,11 +76,6 @@ int Backend::height() {
 
 int Backend::pageIndex() {
     return m_pageIndex;
-}
-
-int Backend::previousIndex() {
-    m_pageIndex = m_previousIndex;
-    return m_previousIndex;
 }
 
 int Backend::maxIndex() {

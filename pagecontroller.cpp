@@ -16,7 +16,7 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
         pages[i] = nullptr;
         pagesStatus[i] = NOT_REQUESTED;
     }
-    ImageWorker *worker = new ImageWorker();
+    worker = new ImageWorker();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
@@ -24,6 +24,7 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     workerThread.start();
 
     initPage(backend->pageIndex());
+    lastIndex = backend->pageIndex();
 }
 
 PageController::~PageController() {
@@ -35,8 +36,10 @@ PageController::~PageController() {
 
 QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = backend->pageIndex();
-    if (pagesStatus[index] != RECIEVED)
-        index = backend->previousIndex();
+    if (pagesStatus[index] != RECIEVED) {
+        index = lastIndex;
+        backend->setPageIndex(lastIndex);
+    }
     int w = backend->width();
     int h = backend->height();
     preloadPages(index);
@@ -44,13 +47,16 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
         pagesStatus[index] = REQUESTED;
         emit addImage(backend->bookFilename(), backend->bgFilename(), index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
+        lastIndex = index;
         return pages[index];
     }
+    qWarning("not recieved i:%i s:%i", index, pagesStatus[index]);
     return nullptr;
 }
 
 void PageController::initPage(int index) {
-    emit addImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
+    pages[index] = worker->requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
+    pagesStatus[index] = RECIEVED;
 }
 
 void PageController::preloadPages(int index) {
@@ -69,7 +75,7 @@ void PageController::preloadPages(int index) {
     }
     for (int i=0; i<=maxIndex; i++) {
         if (pagesStatus[i] == RECIEVED && (i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD)) {
-            qWarning("deleting %i", i);
+            //qWarning("deleting %i", i);
             delete pages[i];
             pages[i] = nullptr;
             pagesStatus[i] = NOT_REQUESTED;

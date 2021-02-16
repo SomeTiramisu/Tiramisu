@@ -11,6 +11,7 @@ class ImageWorker : public QObject
 public:
     ImageWorker();
     ~ImageWorker();
+    QPixmap* requestImage(QString book_filename, QString bg_filename, int index, int width, int height);
 private:
     Book *book;
 

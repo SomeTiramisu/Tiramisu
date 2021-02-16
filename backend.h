@@ -26,7 +26,6 @@ public:
     int width();
     int height();
     int pageIndex();
-    int previousIndex();
     int maxIndex();
     QString productName();
 
@@ -36,7 +35,6 @@ private:
     int m_width;
     int m_height;
     int m_pageIndex;
-    int m_previousIndex;
     int m_maxIndex;
 
 

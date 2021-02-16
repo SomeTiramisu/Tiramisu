@@ -15,6 +15,7 @@ PageImageProvider::~PageImageProvider()
 }
 
 QPixmap PageImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) {
+    Q_UNUSED(id)
     QPixmap* img(controller->getPage());
     if (img == nullptr)
         return QPixmap();

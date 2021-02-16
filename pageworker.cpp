@@ -10,6 +10,10 @@ ImageWorker::~ImageWorker() {
 }
 
 void ImageWorker::addImage(QString book_filename, QString bg_filename, int index, int width, int height) {
+    emit imageReady(requestImage(book_filename, bg_filename, index, width, height), index);
+}
+
+QPixmap* ImageWorker::requestImage(QString book_filename, QString bg_filename, int index, int width, int height) {
     qWarning("requesting %i", index);
     if (book == nullptr || book_filename.toStdString() != book->getFilename()) {
         delete book;
@@ -21,10 +25,10 @@ void ImageWorker::addImage(QString book_filename, QString bg_filename, int index
     delete[] buf;
     try {
         img.process(width, height);
-        emit imageReady(img.toQPixmap(), index);
+        return img.toQPixmap();
     }  catch (...) {
         qWarning("Something goes wrong with %i", index);
         QPixmap* r = new QPixmap(width, height);
-        emit imageReady(r, index);
+        return r;
     }
 }
