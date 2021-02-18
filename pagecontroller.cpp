@@ -36,7 +36,7 @@ PageController::~PageController() {
 
 QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = backend->pageIndex();
-    if (index == lastIndex) //aucune page n'a encre ete demandees
+    if (backend->init()) //aucune page n'a encre ete demandees
         initPage(index);
     if (pagesStatus[index] != RECIEVED) {
         index = lastIndex;
@@ -56,9 +56,16 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
     return nullptr;
 }
 
+/*
 void PageController::initPage(int index) {
     pages[index] = worker->requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
     pagesStatus[index] = RECIEVED;
+}*/
+void PageController::initPage(int index) {
+    ImageWorker w;
+    pages[index] = w.requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
+    pagesStatus[index] = RECIEVED;
+    qWarning("initializing %i", index);
 }
 
 void PageController::preloadPages(int index) {

@@ -3,6 +3,7 @@
 #include <QtQml/QQmlContext>
 #include "pageimageprovider.h"
 #include "backend.h"
+Q_DECLARE_METATYPE(QPixmap*)
 
 
 int main(int argc, char *argv[])
@@ -11,6 +12,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
     QCoreApplication::setApplicationName("reader");
+
+    qRegisterMetaType<QPixmap*>();
     QQmlApplicationEngine engine;
 
     Backend *backend = new Backend();

@@ -16,7 +16,7 @@ void ImageWorker::addImage(QString book_filename, QString bg_filename, int index
 }
 
 QPixmap* ImageWorker::requestImage(QString book_filename, QString bg_filename, int index, int width, int height) {
-    qWarning("requesting %i", index);
+    qWarning("requesting %i, %i, %i", index, width, height);
     if (book_filename.toStdString() != book.getFilename()) {
         book = Book(book_filename.toStdString());
     }

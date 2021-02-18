@@ -28,6 +28,7 @@ public:
     int pageIndex();
     int maxIndex();
     QString productName();
+    bool init();
 
 private:
     QString m_bookFilename;
@@ -36,6 +37,7 @@ private:
     int m_height;
     int m_pageIndex;
     int m_maxIndex;
+    bool m_init;
 
 
 signals:

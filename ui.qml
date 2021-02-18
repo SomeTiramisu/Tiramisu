@@ -14,8 +14,8 @@ ApplicationWindow {
         return "Windowed"
     }
     Component.onCompleted: {
-        backend.width = width
-        backend.height = height
+        //backend.width = width
+        //backend.height = height
         page.source = "image://pages/first"
     }
 

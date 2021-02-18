@@ -7,6 +7,7 @@
 //#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 Backend::Backend() {
+    m_init = true;
     m_pageIndex = 0;
     m_maxIndex = 0;
     QString bkfn(ARCHIVE_FILENAME);
@@ -84,4 +85,12 @@ int Backend::maxIndex() {
 
 QString Backend::productName() {
     return QSysInfo::productType();
+}
+
+bool Backend::init() {
+    if (m_init) {
+        m_init = false;
+        return true;
+    }
+    return false;
 }
