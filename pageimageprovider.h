@@ -16,7 +16,7 @@ public:
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    PageController *controller;
+    PageController controller;
 };
 
 

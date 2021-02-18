@@ -4,19 +4,19 @@
 #include "pageworker.h"
 #include <QGraphicsPixmapItem>
 
-PageImageProvider::PageImageProvider(Backend *b) : QQuickImageProvider(QQuickImageProvider::Pixmap)
+PageImageProvider::PageImageProvider(Backend *b)
+    : QQuickImageProvider(QQuickImageProvider::Pixmap),
+      controller(b)
 {
-    controller = new PageController(b);
 }
 
 PageImageProvider::~PageImageProvider()
 {
-    delete controller;
 }
 
 QPixmap PageImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) {
     Q_UNUSED(id)
-    QPixmap* img(controller->getPage());
+    QPixmap* img(controller.getPage());
     if (img == nullptr)
         return QPixmap();
     qWarning("showing page");

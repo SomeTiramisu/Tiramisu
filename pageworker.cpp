@@ -1,5 +1,7 @@
 #include "pageworker.h"
 #include "image.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 ImageWorker::ImageWorker() {
     book = nullptr;
@@ -19,16 +21,14 @@ QPixmap* ImageWorker::requestImage(QString book_filename, QString bg_filename, i
         delete book;
         book = new Book(book_filename.toStdString());
     }
-    char* buf = book->getAt(index);
-    long long length = book->getLength(index);
-    ImageProc img = ImageProc(buf, length, bg_filename.toStdString());
-    delete[] buf;
-    try {
-        img.process(width, height);
-        return img.toQPixmap();
-    }  catch (...) {
-        qWarning("Something goes wrong with %i", index);
-        QPixmap* r = new QPixmap(width, height);
-        return r;
-    }
+    cv::Mat img = book->getAt(index);
+    cv::Mat bg = cv::imread(bg_filename.toStdString(), cv::IMREAD_COLOR);
+    //try {
+        ImageProc::classicProcess(img, bg, img, width, height);
+        return ImageProc::toQPixmap(img);
+    //}  catch (...) {
+    //    qWarning("Something goes wrong with %i", index);
+    //    QPixmap* r = new QPixmap(width, height);
+    //    return r;
+    //}
 }

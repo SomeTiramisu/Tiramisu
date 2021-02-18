@@ -3,12 +3,18 @@
 
 #include <vector>
 #include <string>
-#include <QSettings>
+#include <opencv2/core.hpp>
 
 extern "C" {
 #include <archive.h>
 #include <archive_entry.h>
 };
+
+#define UNSUPPORTED 0
+#define DUMMY 1
+#define LIBARCHIVE 2
+#define UNARR 3
+#define POPPLER 4
 
 struct header {
     std::string filename;
@@ -16,14 +22,14 @@ struct header {
     long long length;
 };
 
-class Book
-{
+class LibarchiveBook {
+
 public:
-    Book(std::string fn);
-    ~Book();
-    char* getAt(int index);
-    long long getLength(int index);
+    LibarchiveBook(std::string fn);
+    ~LibarchiveBook();
+    cv::Mat getAt(int index);
     int getSize();
+    static bool isSupported(std::string fn);
     std::string getFilename();
 
 private:
@@ -34,6 +40,21 @@ private:
     int size;
     std::string filename;
 
+};
+
+class Book {
+
+public:
+    Book(std::string fn);
+    ~Book();
+    cv::Mat getAt(int index);
+    int getSize();
+    std::string getFilename();
+private:
+    int book_lib;
+    std::string filename;
+    int getBookLib(std::string fn);
+    LibarchiveBook libarchive_book;
 };
 
 bool naturalCompare(const header &a, const header &b);

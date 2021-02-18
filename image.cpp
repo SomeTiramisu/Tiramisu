@@ -7,24 +7,15 @@
 
 using namespace cv;
 
-ImageProc::ImageProc(char *buf, long long length, std::string bg_filename) {
-    img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
-    //qWarning("buf len: %llong", length);
-    bg = imread(bg_filename, IMREAD_COLOR);
-};
-
-Mat ImageProc::createMask(Mat& src) {
-    Mat gs;
-    cvtColor(src, gs, COLOR_BGR2GRAY);
-    threshold(gs, gs, 235, 255, THRESH_BINARY_INV);
-    return gs;
-
+void ImageProc::createMask(Mat& src, Mat& dst) {
+    cvtColor(src, dst, COLOR_BGR2GRAY);
+    threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
 }
 
-Rect ImageProc::createROI(Mat* src) {
-    Rect roi = boundingRect(*src); //may be inverted
+Rect ImageProc::createROI(Mat& src) {
+    Rect roi = boundingRect(src); //may be inverted
     if (roi == Rect(0, 0, 0, 0)) { //fix for while images
-            roi = Rect(0,0, src->cols, src->rows);
+            roi = Rect(0,0, src.cols, src.rows);
     }
     return roi;
 }
@@ -58,9 +49,9 @@ void ImageProc::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
 }
 
 
-QPixmap* ImageProc::toQPixmap() {
+QPixmap* ImageProc::toQPixmap(Mat& src) {
     QPixmap *r = new QPixmap();
-    r->convertFromImage(QImage(img.data, img.cols, img.rows, QImage::Format_BGR888));
+    r->convertFromImage(QImage(src.data, src.cols, src.rows, QImage::Format_BGR888));
     return r;
     
 };
@@ -120,7 +111,7 @@ void ImageProc::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
         hconcat(dst, src, dst);
     }
     for (int i=0; i<v; i++) {
-        vconcat(dst, src, dst);
+        vconcat(dst, dst, dst);
     }
     Rect roi = Rect(0, 0, view_width, view_height);
     dst = dst.operator()(roi);
@@ -147,20 +138,23 @@ void ImageProc::sharpen(Mat &src, Mat &dst) {
     double threshold = 5;
     double amount = 1;
     GaussianBlur(src, blurred, Size(), sigma, sigma);
-    Mat lowContrastMask = abs(img - blurred) < threshold;
+    Mat lowContrastMask = abs(src - blurred) < threshold;
     Mat sharpened = src*(1+amount) + blurred*(-amount);
     dst.copyTo(sharpened, lowContrastMask);
 }
 
-void ImageProc::process(int width, int height) {
+void ImageProc::classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height) { //src2 is background
+    Mat img;
+    Mat bg;
+    Mat mask;
     //qWarning("img: %i %i", img.cols, img.rows);
-    Mat mask = createMask(img);
+    createMask(src, mask);
     //qWarning("mask: %i %i", mask.cols, mask.rows);
-    Rect roi = createROI(&mask);
+    Rect roi = createROI(mask);
     //qWarning("ROI: %i %i", roi.width, roi.height);
-    Mat imgROI = img(roi);
-    scale(imgROI, img, width, height);
-    tileFit(bg, bg, width, height);
-    mask = createMask(img);
-    addBackground(img, bg, img, mask);
+    img = src(roi);
+    scale(img, img, width, height);
+    tileFit(src2, bg, width, height);
+    createMask(img, mask);
+    addBackground(img, bg, dst, mask);
 }
