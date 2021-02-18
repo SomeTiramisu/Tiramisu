@@ -23,7 +23,7 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
     workerThread.start();
 
-    initPage(backend->pageIndex());
+    //initPage(backend->pageIndex());
     lastIndex = backend->pageIndex();
 }
 
@@ -36,6 +36,8 @@ PageController::~PageController() {
 
 QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = backend->pageIndex();
+    if (index == lastIndex) //aucune page n'a encre ete demandees
+        initPage(index);
     if (pagesStatus[index] != RECIEVED) {
         index = lastIndex;
         backend->setPageIndex(lastIndex);

@@ -13,13 +13,18 @@ ApplicationWindow {
         }
         return "Windowed"
     }
+    Component.onCompleted: {
+        backend.width = width
+        backend.height = height
+        page.source = "image://pages/first"
+    }
 
     Image {
         id: page
         anchors.fill: parent
         sourceSize.width: root.width; sourceSize.height: root.height
         fillMode: Image.Pad
-        source: "image://pages/first"
+        //source: "image://pages/first"
         TapHandler {
             onTapped: {
                 if (eventPoint.position.x > root.width / 2) {
