@@ -17,12 +17,15 @@ Book::Book(std::string fn)
     : libarchive_book(fn) {
     filename = fn;
     book_lib = getBookLib(fn);
+    qWarning("booklib: %i", book_lib);
 }
 
 Book::~Book() {
 }
 
 int Book::getBookLib(std::string fn) {
+    if (fn == "dummy")
+        return DUMMY;
     if (LibarchiveBook::isSupported(fn))
         return LIBARCHIVE;
     return UNSUPPORTED;
@@ -66,7 +69,6 @@ LibarchiveBook::LibarchiveBook(std::string fn)
             archive_read_data_skip(bookArchive);
             i++;
         }
-    }
     qWarning("book size: %i", size);
     archive_read_free(bookArchive);
     /*
@@ -75,7 +77,7 @@ LibarchiveBook::LibarchiveBook(std::string fn)
     }
     */
     std::sort(headers.begin(), headers.end(), naturalCompare);
-
+    }
 }
 
 LibarchiveBook::~LibarchiveBook()
@@ -113,6 +115,8 @@ std::string LibarchiveBook::getFilename() {
 }
 
 bool LibarchiveBook::isSupported(std::string fn) {
+    if (fn == "dummy")
+        return false;
     struct archive *a;
     int r;
     a = archive_read_new();

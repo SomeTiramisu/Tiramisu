@@ -13,7 +13,7 @@ public:
     ~ImageWorker();
     QPixmap* requestImage(QString book_filename, QString bg_filename, int index, int width, int height);
 private:
-    Book *book;
+    Book book;
 
 public slots:
     void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
