@@ -5,33 +5,22 @@
 #include <QPixmap>
 #include <QImage>
 
-//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
-
 using namespace cv;
 
-Image::Image(char *buf, unsigned int length) {
-    img = imdecode(Mat(1, length, CV_8UC1, buf), IMREAD_COLOR);
-    bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
-};
-
-Mat Image::createMask(Mat& src) {
-    Mat gs;
-    cvtColor(src, gs, COLOR_BGR2GRAY);
-    threshold(gs, gs, 235, 255, THRESH_BINARY_INV);
-    return gs;
-
+void ImageProc::createMask(Mat& src, Mat& dst) {
+    cvtColor(src, dst, COLOR_BGR2GRAY);
+    threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
 }
 
-Rect Image::createROI(Mat* src) {
-    Rect roi = boundingRect(*src); //may be inverted
+Rect ImageProc::createROI(Mat& src) {
+    Rect roi = boundingRect(src); //may be inverted
     if (roi == Rect(0, 0, 0, 0)) { //fix for while images
-            roi = Rect(0,0, src->cols, src->rows);
+            roi = Rect(0,0, src.cols, src.rows);
     }
     return roi;
 }
 
-void Image::createAlpha(Mat* src, Mat* dst) {
+void ImageProc::createAlpha(Mat* src, Mat* dst) {
     dst->create(src->cols, src->rows, CV_8UC1);
     int treshold = 235; //245
     for (int y=0; y<dst->rows; y++)
@@ -48,7 +37,7 @@ void Image::createAlpha(Mat* src, Mat* dst) {
 }
 
 
-void Image::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
+void ImageProc::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
     double hm = floor(abs(bg.cols - src.cols)/2);
     double vm = floor(abs(bg.rows - src.rows)/2);
     Rect roi = Rect(hm, vm, src.cols, src.rows);
@@ -60,14 +49,14 @@ void Image::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
 }
 
 
-QPixmap *Image::toQPixmap() {
-    QPixmap *r = new QPixmap;
-    r->convertFromImage(QImage(img.data, img.cols, img.rows, QImage::Format_BGR888));
+QPixmap* ImageProc::toQPixmap(Mat& src) {
+    QPixmap *r = new QPixmap();
+    r->convertFromImage(QImage(src.data, src.cols, src.rows, QImage::Format_BGR888));
     return r;
     
 };
 
-void Image::scale(Mat& src, Mat& dst, int view_width, int view_height) {
+void ImageProc::scale(Mat& src, Mat& dst, int view_width, int view_height) {
     int img_width  = src.cols;
     int img_height  = src.rows;
     double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
@@ -91,7 +80,7 @@ void Image::scale(Mat& src, Mat& dst, int view_width, int view_height) {
     }*/
 }
 
-void Image::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
+void ImageProc::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
     int img_width  = src->cols;
     int img_height  = src->rows;
     double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
@@ -108,7 +97,7 @@ void Image::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
     *dst = dst->operator()(roi);
 }
 
-void Image::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
+void ImageProc::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
     int h = 1;
     int v = 1; 
     if (src.cols < view_width) {
@@ -122,13 +111,13 @@ void Image::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
         hconcat(dst, src, dst);
     }
     for (int i=0; i<v; i++) {
-        vconcat(dst, src, dst);
+        vconcat(dst, dst, dst);
     }
     Rect roi = Rect(0, 0, view_width, view_height);
     dst = dst.operator()(roi);
 }
 
-void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 should be background
+void ImageProc::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 should be background
     dst->create(src1->cols, src1->rows, CV_8UC3);
     for (int y=0; y<dst->rows; y++)
     for (int x=0; x<dst->cols; x++) {
@@ -143,30 +132,29 @@ void Image::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 
     
 }
 
-void Image::sharpen(Mat &src, Mat &dst) {
+void ImageProc::sharpen(Mat &src, Mat &dst) {
     Mat blurred;
     double sigma = 1;
     double threshold = 5;
     double amount = 1;
     GaussianBlur(src, blurred, Size(), sigma, sigma);
-    Mat lowContrastMask = abs(img - blurred) < threshold;
+    Mat lowContrastMask = abs(src - blurred) < threshold;
     Mat sharpened = src*(1+amount) + blurred*(-amount);
     dst.copyTo(sharpened, lowContrastMask);
 }
 
-void Image::process(int width, int height) {
+void ImageProc::classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height) { //src2 is background
+    Mat img;
+    Mat bg;
+    Mat mask;
     //qWarning("img: %i %i", img.cols, img.rows);
-    Mat mask = createMask(img);
-    //bitwise_not(mask, mask);
+    createMask(src, mask);
     //qWarning("mask: %i %i", mask.cols, mask.rows);
-    Rect roi = createROI(&mask);
+    Rect roi = createROI(mask);
     //qWarning("ROI: %i %i", roi.width, roi.height);
-    Mat imgROI = img(roi);
-    scale(imgROI, img, width, height);
-    //sharpen(img, img);
-    //Mat bg = imread(BACKGROUND_FILENAME, IMREAD_COLOR);
-    //scaleFit(&bg, &bg, 1200, 1920);
-    tileFit(bg, bg, width, height);
-    mask = createMask(img);
-    addBackground(img, bg, img, mask);
+    img = src(roi);
+    scale(img, img, width, height);
+    tileFit(src2, bg, width, height);
+    createMask(img, mask);
+    addBackground(img, bg, dst, mask);
 }

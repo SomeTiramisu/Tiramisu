@@ -1,16 +1,30 @@
-#include <QApplication>
-#include "mainwindowreader.h"
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QtQml/QQmlContext>
+#include "pageimageprovider.h"
+#include "backend.h"
+Q_DECLARE_METATYPE(QPixmap*)
+
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QGuiApplication app(argc, argv);
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
     QCoreApplication::setApplicationName("reader");
-    MainWindowReader mainWindowReader;
-    mainWindowReader.showFullScreen();
-    //mainWindowReader.show();
-    return a.exec();
+
+    qRegisterMetaType<QPixmap*>();
+    QQmlApplicationEngine engine;
+
+    Backend *backend = new Backend();
+    PageImageProvider *imp = new PageImageProvider(backend);
+
+
+    engine.addImageProvider("pages", imp);
+    engine.rootContext()->setContextProperty("backend", backend);
+
+    engine.load(":/res/ui.qml");
+    return app.exec();
 };
 
 

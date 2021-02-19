@@ -3,31 +3,24 @@
 
 #include <opencv2/core.hpp>
 #include <QPixmap>
-#include <QThread>
-#include <queue>
 #include "book.h"
 
 using namespace cv;
 
-class Image
+class ImageProc
 {
 public:
-    Image(char *buf, unsigned int length);
-    QPixmap *toQPixmap();
-    Mat createMask(Mat& src);
-    Rect createROI(Mat* src);
-    void createAlpha(Mat* src, Mat* dst);
-    void addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst );
-    void addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask);
-    void scale(Mat& src, Mat& dst, int view_width, int view_height);
-    void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
-    void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
-    void sharpen(Mat& src, Mat& dst);
-    void process(int width, int height);
-
-private:
-    Mat img;
-    Mat bg;
+    static QPixmap* toQPixmap(Mat& src);
+    static void createMask(Mat& src, Mat& dst);
+    static Rect createROI(Mat& src);
+    static void createAlpha(Mat* src, Mat* dst);
+    static void addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst );
+    static void addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask);
+    static void scale(Mat& src, Mat& dst, int view_width, int view_height);
+    static void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
+    static void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
+    static void sharpen(Mat& src, Mat& dst);
+    static void classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height);
 };
 
 #endif

@@ -1,25 +1,33 @@
 #include "pageworker.h"
 #include "image.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
 
-void ImageWorker::setBook(Book *b) {
-    book = b;
-}
-void ImageWorker::setImageSize(int w, int h) {
-    width = w;
-    height = h;
+ImageWorker::ImageWorker()
+    : book("dummy")
+{
 }
 
-void ImageWorker::addImage(int index) {
-    qWarning("requesting %i", index);
-    char* buf = book->getAt(index);
-    unsigned int length = book->getLength();
-    Image img = Image(buf, length);
-    delete[] buf;
-    try {
-        img.process(width, height);
-        emit imageReady(img.toQPixmap(), index);
-    }  catch (...) {
-        qWarning("Something goes wrong with %i", index);
-        emit imageReady(new QPixmap, index);
+ImageWorker::~ImageWorker() {
+}
+
+void ImageWorker::addImage(QString book_filename, QString bg_filename, int index, int width, int height) {
+    emit imageReady(requestImage(book_filename, bg_filename, index, width, height), index);
+}
+
+QPixmap* ImageWorker::requestImage(QString book_filename, QString bg_filename, int index, int width, int height) {
+    qWarning("requesting %i, %i, %i", index, width, height);
+    if (book_filename.toStdString() != book.getFilename()) {
+        book = Book(book_filename.toStdString());
     }
+    cv::Mat img = book.getAt(index);
+    cv::Mat bg = cv::imread(bg_filename.toStdString(), cv::IMREAD_COLOR);
+    //try {
+        ImageProc::classicProcess(img, bg, img, width, height);
+        return ImageProc::toQPixmap(img);
+    //}  catch (...) {
+    //    qWarning("Something goes wrong with %i", index);
+    //    QPixmap* r = new QPixmap(width, height);
+    //    return r;
+    //}
 }

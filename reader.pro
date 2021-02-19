@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui qml quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -7,13 +7,21 @@ CONFIG += c++11
 android {
 LIBS += -L/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/lib/ -larchive
 LIBS += -L/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/libs/arm64-v8a/ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
+LIBS += -L/home/guillaume/ReaderProject/unarr-1.0.1/android/prefix/lib/ -lunarr
 INCLUDEPATH +=/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/include/
 INCLUDEPATH +=/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/jni/include/
+INCLUDEPATH +=/home/guillaume/ReaderProject/unarr-1.0.1/android/prefix/include/
+DEFINES += \
+    ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \
+    BACKGROUND_FILENAME=\\\"/storage/emulated/0/b.png\\\"
 }
 
-unix {
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
+!android {
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /usr/include/opencv4/
+DEFINES += \
+    ARCHIVE_FILENAME=\\\"/home/guillaume/reader/b.cbr\\\" \
+    BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
 }
 
 
@@ -23,23 +31,21 @@ INCLUDEPATH += /usr/include/opencv4/
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    backend.cpp \
     book.cpp \
-    #bookpage.cpp \
     image.cpp \
     main.cpp \
-    mainwindowreader.cpp \
-    pagescene.cpp \
-    pageview.cpp \
+    pagecontroller.cpp \
+    pageimageprovider.cpp \
     pageworker.cpp \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
+    backend.h \
     book.h \
-    #bookpage.h \
     image.h \
-    mainwindowreader.h \
-    pagescene.h \
-    pageview.h \
+    pagecontroller.h \
+    pageimageprovider.h \
     pageworker.h \
     strnatcmp/strnatcmp.h
 
@@ -57,7 +63,11 @@ DISTFILES += \
     android/gradle/wrapper/gradle-wrapper.properties \
     android/gradlew \
     android/gradlew.bat \
-    android/res/values/libs.xml
+    android/res/values/libs.xml \
+    ui.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+RESOURCES += \
+    res.qrc
 

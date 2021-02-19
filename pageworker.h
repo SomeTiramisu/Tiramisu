@@ -3,23 +3,23 @@
 
 #include <QObject>
 #include <book.h>
+#include <memory>
 
 class ImageWorker : public QObject
 {
     Q_OBJECT
 public:
-    void setBook(Book* b);
-    void setImageSize(int w, int h);
+    ImageWorker();
+    ~ImageWorker();
+    QPixmap* requestImage(QString book_filename, QString bg_filename, int index, int width, int height);
 private:
-    Book* book;
-    int height;
-    int width;
+    Book book;
 
 public slots:
-    void addImage(int index);
+    void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
 
 signals:
-    void imageReady(QPixmap *img, int index);
+    void imageReady(QPixmap* img, int index);
 };
 
 #endif // PAGEWORKER_H
