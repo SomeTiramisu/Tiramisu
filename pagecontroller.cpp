@@ -23,6 +23,8 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
     workerThread.start();
 
+    connect(backend, &Backend::bookFilenameChanged, this, &PageController::changeBookFilename);
+
     //initPage(backend->pageIndex());
     lastIndex = backend->pageIndex();
 }
@@ -47,7 +49,7 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
     preloadPages(index);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(backend->bookFilename(), backend->bgFilename(), index, w, h);
+        emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -63,7 +65,7 @@ void PageController::initPage(int index) {
 }*/
 void PageController::initPage(int index) {
     ImageWorker w;
-    pages[index] = w.requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
+    pages[index] = w.requestImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, backend->width(), backend->height());
     pagesStatus[index] = RECIEVED;
     qWarning("initializing %i", index);
 }
@@ -75,11 +77,11 @@ void PageController::preloadPages(int index) {
     for (int i=1; i<IMAGE_PRELOAD; i++) {
         if (pagesStatus[index+i] == NOT_REQUESTED && index+i<=maxIndex) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(backend->bookFilename(), backend->bgFilename(), index+i, w, h);
+            emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index+i, w, h);
         }
         if (pagesStatus[index-i] == NOT_REQUESTED && index-i>=0) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(backend->bookFilename(), backend->bgFilename(), index-i, w, h);
+            emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index-i, w, h);
         }
     }
     for (int i=0; i<=maxIndex; i++) {
@@ -101,3 +103,15 @@ void PageController::handleImage(QPixmap* img, int index) {
     pagesStatus[index] = RECIEVED;
 }
 
+void PageController::changeBookFilename() {
+    delete pages;
+    delete pagesStatus;
+    pages = new QPixmap*[backend->maxIndex()+1]; //tocheck
+    pagesStatus = new char[backend->maxIndex()+1];
+    for (int i = 0; i<=backend->maxIndex(); i++) {
+        pages[i] = nullptr;
+        pagesStatus[i] = NOT_REQUESTED;
+    }
+    lastIndex = backend->pageIndex();
+    qWarning("new path: %s", backend->bookFilename().toLocalFile().toStdString().c_str());
+}

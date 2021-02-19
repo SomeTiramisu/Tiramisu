@@ -28,6 +28,7 @@ private:
 
 public slots:
     void handleImage(QPixmap* img, int index);
+    void changeBookFilename();
 signals:
     void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
 

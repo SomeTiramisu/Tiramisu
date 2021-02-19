@@ -2,11 +2,12 @@
 #define BACKEND_H
 
 #include <QObject>
+#include <QUrl>
 
 class Backend : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString bookFilename READ bookFilename WRITE setBookFilename NOTIFY bookFilenameChanged)
+    Q_PROPERTY(QUrl bookFilename READ bookFilename WRITE setBookFilename NOTIFY bookFilenameChanged)
     Q_PROPERTY(QString bgFilename READ bgFilename WRITE setBgFilename NOTIFY bgFilenameChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
@@ -16,12 +17,12 @@ class Backend : public QObject
 public:
     Backend();
     ~Backend();
-    void setBookFilename(QString &f);
+    void setBookFilename(QUrl &f);
     void setBgFilename(QString &f);
     void setWidth(int &w);
     void setHeight(int &h);
     void setPageIndex(int &i);
-    QString bookFilename();
+    QUrl bookFilename();
     QString bgFilename();
     int width();
     int height();
@@ -31,7 +32,7 @@ public:
     bool init();
 
 private:
-    QString m_bookFilename;
+    QUrl m_bookFilename;
     QString m_bgFilename;
     int m_width;
     int m_height;

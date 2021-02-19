@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Dialogs 1.2
 import QtQuick.Controls 2.15
 
 ApplicationWindow {
@@ -17,6 +18,17 @@ ApplicationWindow {
         //backend.width = width
         //backend.height = height
         page.source = "image://pages/first"
+        filedialog.visible = true
+    }
+
+    FileDialog {
+        id: filedialog
+        folder: shortcuts.home
+        nameFilters: [ "(*.cbr *.cbz)" ]
+        onAccepted: {
+            backend.bookFilename = filedialog.fileUrl
+            page.source = "image://pages/new"
+        }
     }
 
     Image {
