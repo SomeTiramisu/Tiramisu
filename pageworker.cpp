@@ -12,19 +12,19 @@ ImageWorker::~ImageWorker() {
 }
 
 void ImageWorker::addImage(QString book_filename, QString bg_filename, int index, int width, int height) {
-    emit imageReady(requestImage(book_filename, bg_filename, index, width, height), index);
+    emit imageReady(requestImage(book_filename, bg_filename, index, width, height));
 }
 
-QPixmap* ImageWorker::requestImage(QString book_filename, QString bg_filename, int index, int width, int height) {
+Page ImageWorker::requestImage(QString book_filename, QString bg_filename, int index, int width, int height) {
     qWarning("requesting %i, %i, %i", index, width, height);
     if (book_filename.toStdString() != book.getFilename()) {
         book = Book(book_filename.toStdString());
     }
-    cv::Mat img = book.getAt(index);
+    Page p = book.getAt(index, width, height);
     cv::Mat bg = cv::imread(bg_filename.toStdString(), cv::IMREAD_COLOR);
     //try {
-        ImageProc::classicProcess(img, bg, img, width, height);
-        return ImageProc::toQPixmap(img);
+        ImageProc::classicProcess(p.img, bg, p.img, width, height);
+        return p;
     //}  catch (...) {
     //    qWarning("Something goes wrong with %i", index);
     //    QPixmap* r = new QPixmap(width, height);

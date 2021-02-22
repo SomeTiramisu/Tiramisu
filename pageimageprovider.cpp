@@ -19,7 +19,7 @@ QPixmap PageImageProvider::requestPixmap(const QString &id, QSize *size, const Q
     QPixmap* img(controller.getPage());
     if (img == nullptr)
         return QPixmap();
-    qWarning("showing page");
+    //qWarning("showing page");
     int rwidth = requestedSize.width();
     int rheight = requestedSize.height();
     if (size)

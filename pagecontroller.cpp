@@ -65,7 +65,8 @@ void PageController::initPage(int index) {
 }*/
 void PageController::initPage(int index) {
     ImageWorker w;
-    pages[index] = w.requestImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, backend->width(), backend->height());
+    Page p = w.requestImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, backend->width(), backend->height());
+    pages[index] = ImageProc::toQPixmap(p.img);
     pagesStatus[index] = RECIEVED;
     qWarning("initializing %i", index);
 }
@@ -94,18 +95,20 @@ void PageController::preloadPages(int index) {
     }
 }
 
-void PageController::handleImage(QPixmap* img, int index) {
-    qWarning("recieved!!! %i", index);
-    if (pagesStatus[index] == RECIEVED) {
-        delete pages[index];
+void PageController::handleImage(Page page) {
+    if (page.book_filename != backend->bookFilename().toLocalFile().toStdString())
+        return;
+    qWarning("recieved!!! %i", page.index);
+    if (pagesStatus[page.index] == RECIEVED) {
+        delete pages[page.index];
     }
-    pages[index] = img;
-    pagesStatus[index] = RECIEVED;
+    pages[page.index] = ImageProc::toQPixmap(page.img);
+    pagesStatus[page.index] = RECIEVED;
 }
 
 void PageController::changeBookFilename() {
-    delete pages;
-    delete pagesStatus;
+    delete[] pages;
+    delete[] pagesStatus;
     pages = new QPixmap*[backend->maxIndex()+1]; //tocheck
     pagesStatus = new char[backend->maxIndex()+1];
     for (int i = 0; i<=backend->maxIndex(); i++) {

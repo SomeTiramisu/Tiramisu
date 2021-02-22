@@ -14,7 +14,7 @@ Backend::Backend() {
     QString bgfn(BACKGROUND_FILENAME);
     setBookFilename(bkfn);
     setBgFilename(bgfn);
-    m_width = 1080; //tofix
+    m_width = 1200; //tofix
     m_height = 1920;
 }
 

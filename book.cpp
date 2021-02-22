@@ -34,12 +34,12 @@ int Book::getBookLib(std::string fn) {
     return UNSUPPORTED;
 }
 
-cv::Mat Book::getAt(int index) {
+Page Book::getAt(int index, int width, int height) {
     if (book_lib == LIBARCHIVE)
         return libarchive_book.getAt(index);
     if (book_lib == UNARR)
         return unarr_book.getAt(index);
-    return cv::Mat();
+    return Page {cv::Mat(), 0, 0, 0, ""};
 
 }
 
@@ -101,7 +101,7 @@ void LibarchiveBook::openArchive(std::string fn) {
     archive_read_open_filename(bookArchive, fn.c_str(), 10240);
 }
 
-cv::Mat LibarchiveBook::getAt(int index) {
+Page LibarchiveBook::getAt(int index) {
     int n = headers[index].index;
     openArchive(filename);
     for (int i=0; i<=n; i++) {
@@ -112,7 +112,10 @@ cv::Mat LibarchiveBook::getAt(int index) {
     char* buf = new char[length]; //TODO: use voud buffer
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
-    return imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR); //tofix : delete buf (use array)
+    cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
+    Page p = {img, img.cols, img.rows, index, filename};
+    delete[] buf;
+    return p;
 }
 
 int LibarchiveBook::getSize() {
@@ -175,7 +178,7 @@ void UnarrBook::openArchive(std::string fn) {
     bookArchive = ar_open_rar_archive(bookStream);
 }
 
-cv::Mat UnarrBook::getAt(int index) {
+Page UnarrBook::getAt(int index) {
     int n = headers[index].index;
     openArchive(filename);
     for (int i=0; i<=n; i++) {
@@ -187,7 +190,10 @@ cv::Mat UnarrBook::getAt(int index) {
     ar_entry_uncompress(bookArchive, buf, length);
     ar_close_archive(bookArchive);
     ar_close(bookStream);
-    return imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR); //tofix : delete buf (use array)
+    cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
+    Page p = {img, img.cols, img.rows, index, filename};
+    delete[] buf;
+    return p;
 }
 
 int UnarrBook::getSize() {

@@ -23,12 +23,20 @@ struct header {
     size_t length;
 };
 
+struct Page {
+    cv::Mat img;
+    int width;
+    int height;
+    int index;
+    std::string book_filename;
+};
+
 class LibarchiveBook {
 
 public:
     LibarchiveBook(std::string fn);
     ~LibarchiveBook();
-    cv::Mat getAt(int index);
+    Page getAt(int index);
     int getSize();
     static bool isSupported(std::string fn);
     std::string getFilename();
@@ -48,7 +56,7 @@ class UnarrBook {
 public:
     UnarrBook(std::string fn);
     ~UnarrBook();
-    cv::Mat getAt(int index);
+    Page getAt(int index);
     int getSize();
     static bool isSupported(std::string fn);
     std::string getFilename();
@@ -68,7 +76,7 @@ class Book {
 public:
     Book(std::string fn);
     ~Book();
-    cv::Mat getAt(int index);
+    Page getAt(int index, int width, int height);
     int getSize();
     std::string getFilename();
 private:
