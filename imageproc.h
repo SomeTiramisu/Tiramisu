@@ -1,5 +1,5 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef IMAGEPROC_H
+#define IMAGEPROC_H
 
 #include <opencv2/core.hpp>
 #include <QPixmap>

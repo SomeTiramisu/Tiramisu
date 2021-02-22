@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include "pageimageprovider.h"
@@ -8,7 +8,7 @@ Q_DECLARE_METATYPE(QPixmap*)
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
     QCoreApplication::setApplicationName("reader");

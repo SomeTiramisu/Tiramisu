@@ -1,6 +1,6 @@
 #include "pagecontroller.h"
 #include "pageworker.h"
-#include "image.h"
+#include "imageproc.h"
 #include "backend.h"
 #define IMAGE_PRELOAD 5
 #define NOT_REQUESTED 0

@@ -33,8 +33,9 @@ DEFINES += \
 SOURCES += \
     backend.cpp \
     book.cpp \
-    image.cpp \
+    imageproc.cpp \
     main.cpp \
+    page.cpp \
     pagecontroller.cpp \
     pageimageprovider.cpp \
     pageworker.cpp \
@@ -43,7 +44,8 @@ SOURCES += \
 HEADERS += \
     backend.h \
     book.h \
-    image.h \
+    imageproc.h \
+    page.h \
     pagecontroller.h \
     pageimageprovider.h \
     pageworker.h \

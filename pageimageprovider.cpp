@@ -1,6 +1,6 @@
 #include "pageimageprovider.h"
 
-#include "image.h"
+#include "imageproc.h"
 #include "pageworker.h"
 #include <QGraphicsPixmapItem>
 
