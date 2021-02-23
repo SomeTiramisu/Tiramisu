@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <opencv2/core.hpp>
+#include <QUrl>
 
 extern "C" {
 #include <archive.h>
@@ -28,61 +29,61 @@ struct Page {
     int width;
     int height;
     int index;
-    std::string book_filename;
+    QUrl book_filename;
 };
 
 class LibarchiveBook {
 
 public:
-    LibarchiveBook(std::string fn);
+    LibarchiveBook(QUrl fn);
     ~LibarchiveBook();
     Page getAt(int index);
     int getSize();
-    static bool isSupported(std::string fn);
-    std::string getFilename();
+    static bool isSupported(QUrl fn);
+    QUrl getFilename();
 
 private:
     archive *bookArchive;
     archive_entry *entry;  //TODO : inutile ici, rempkacer localement
     std::vector<header> headers;
-    void openArchive(std::string fn);
+    void openArchive(QUrl fn);
     int size;
-    std::string filename;
+    QUrl filename;
 
 };
 
 class UnarrBook {
 
 public:
-    UnarrBook(std::string fn);
+    UnarrBook(QUrl fn);
     ~UnarrBook();
     Page getAt(int index);
     int getSize();
-    static bool isSupported(std::string fn);
-    std::string getFilename();
+    static bool isSupported(QUrl fn);
+    QUrl getFilename();
 
 private:
     ar_stream *bookStream;
     ar_archive *bookArchive;
     std::vector<header> headers;
-    void openArchive(std::string fn);
+    void openArchive(QUrl fn);
     int size;
-    std::string filename;
+    QUrl filename;
 
 };
 
 class Book {
 
 public:
-    Book(std::string fn);
+    Book(QUrl fn);
     ~Book();
     Page getAt(int index, int width, int height);
     int getSize();
-    std::string getFilename();
+    QUrl getFilename();
 private:
     int book_lib;
-    std::string filename;
-    int getBookLib(std::string fn);
+    QUrl filename;
+    int getBookLib(QUrl fn);
     LibarchiveBook libarchive_book;
     UnarrBook unarr_book;
 };

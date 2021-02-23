@@ -31,7 +31,7 @@ public slots:
     void handleImage(Page page);
     void changeBookFilename();
 signals:
-    void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
+    void addImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height);
 
 };
 

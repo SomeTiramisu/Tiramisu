@@ -14,7 +14,7 @@ extern "C" {
 #include "strnatcmp/strnatcmp.h"
 };
 
-Book::Book(std::string fn)
+Book::Book(QUrl fn)
     : libarchive_book(fn), unarr_book(fn) {
     filename = fn;
     book_lib = getBookLib(fn);
@@ -24,8 +24,8 @@ Book::Book(std::string fn)
 Book::~Book() {
 }
 
-int Book::getBookLib(std::string fn) {
-    if (fn == "dummy")
+int Book::getBookLib(QUrl fn) {
+    if (fn.isEmpty())
         return DUMMY;
     if (LibarchiveBook::isSupported(fn))
         return LIBARCHIVE;
@@ -39,7 +39,7 @@ Page Book::getAt(int index, int width, int height) {
         return libarchive_book.getAt(index);
     if (book_lib == UNARR)
         return unarr_book.getAt(index);
-    return Page {cv::Mat(), 0, 0, 0, ""};
+    return Page {cv::Mat(), 0, 0, 0, QUrl()};
 
 }
 
@@ -53,11 +53,11 @@ int Book::getSize() {
     return 0;
 }
 
-std::string Book::getFilename() {
+QUrl Book::getFilename() {
     return filename;
 }
 
-LibarchiveBook::LibarchiveBook(std::string fn)
+LibarchiveBook::LibarchiveBook(QUrl fn)
 {
     if (isSupported(fn)) {
         filename = fn;
@@ -93,12 +93,12 @@ LibarchiveBook::~LibarchiveBook()
 {
 }
 
-void LibarchiveBook::openArchive(std::string fn) {
+void LibarchiveBook::openArchive(QUrl fn) {
     bookArchive = archive_read_new();
     archive_read_support_filter_all(bookArchive);
     archive_read_support_format_zip(bookArchive);
     //archive_read_support_format_rar(bookArchive); buggy
-    archive_read_open_filename(bookArchive, fn.c_str(), 10240);
+    archive_read_open_filename(bookArchive, fn.toLocalFile().toStdString().c_str(), 10240); //may be incorrect
 }
 
 Page LibarchiveBook::getAt(int index) {
@@ -122,19 +122,19 @@ int LibarchiveBook::getSize() {
     return size;
 }
 
-std::string LibarchiveBook::getFilename() {
+QUrl LibarchiveBook::getFilename() {
     return filename;
 }
 
-bool LibarchiveBook::isSupported(std::string fn) {
-    if (fn == "dummy")
+bool LibarchiveBook::isSupported(QUrl fn) {
+    if (fn.isEmpty())
         return false;
     struct archive *a;
     int r;
     a = archive_read_new();
     archive_read_support_filter_all(a);
     archive_read_support_format_zip(a);
-    r = archive_read_open_filename(a, fn.c_str(), 10240);
+    r = archive_read_open_filename(a, fn.toLocalFile().toStdString().c_str(), 10240);
     if (r != ARCHIVE_OK)
         return false;
     r = archive_read_free(a);
@@ -142,7 +142,7 @@ bool LibarchiveBook::isSupported(std::string fn) {
 
 }
 
-UnarrBook::UnarrBook(std::string fn)
+UnarrBook::UnarrBook(QUrl fn)
 {
     if (isSupported(fn)) {
         filename = fn;
@@ -173,8 +173,8 @@ UnarrBook::~UnarrBook()
 {
 }
 
-void UnarrBook::openArchive(std::string fn) {
-	bookStream = ar_open_file(fn.c_str());
+void UnarrBook::openArchive(QUrl fn) {
+    bookStream = ar_open_file(fn.toLocalFile().toStdString().c_str());
     bookArchive = ar_open_rar_archive(bookStream);
 }
 
@@ -200,16 +200,16 @@ int UnarrBook::getSize() {
     return size;
 }
 
-std::string UnarrBook::getFilename() {
+QUrl UnarrBook::getFilename() {
     return filename;
 }
 
-bool UnarrBook::isSupported(std::string fn) {
-    if (fn == "dummy")
+bool UnarrBook::isSupported(QUrl fn) {
+    if (fn.isEmpty())
         return false;   
     ar_stream *s  = nullptr;    
     ar_archive *a = nullptr;
-    s = ar_open_file(fn.c_str());
+    s = ar_open_file(fn.toLocalFile().toStdString().c_str());
     if (!s)
         return false;
     a = ar_open_rar_archive(s);

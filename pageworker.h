@@ -11,12 +11,12 @@ class ImageWorker : public QObject
 public:
     ImageWorker();
     ~ImageWorker();
-    Page requestImage(QString book_filename, QString bg_filename, int index, int width, int height);
+    Page requestImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height);
 private:
     Book book;
 
 public slots:
-    void addImage(QString book_filename, QString bg_filename, int index, int width, int height);
+    void addImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height);
 
 signals:
     void imageReady(Page page);

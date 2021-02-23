@@ -11,7 +11,7 @@ Backend::Backend() {
     m_pageIndex = 0;
     m_maxIndex = 0;
     QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
-    QString bgfn(BACKGROUND_FILENAME);
+    QUrl bgfn(QUrl::fromLocalFile(BACKGROUND_FILENAME));
     setBookFilename(bkfn);
     setBgFilename(bgfn);
     m_width = 1200; //tofix
@@ -24,7 +24,7 @@ Backend::~Backend() {
 void Backend::setBookFilename(QUrl &f) {
     if (f != m_bookFilename) {
         m_bookFilename = f;
-        Book b = Book(f.toLocalFile().toStdString());
+        Book b = Book(f);
         m_maxIndex = b.getSize()-1;
         m_pageIndex = 0;
         m_init = true;
@@ -32,7 +32,7 @@ void Backend::setBookFilename(QUrl &f) {
     }
 }
 
-void Backend::setBgFilename(QString &f) {
+void Backend::setBgFilename(QUrl &f) {
     if (f != m_bgFilename) {
         m_bgFilename = f;
         emit bgFilenameChanged();
@@ -65,7 +65,7 @@ QUrl Backend::bookFilename() {
     return m_bookFilename;
 }
 
-QString Backend::bgFilename() {
+QUrl Backend::bgFilename() {
     return m_bgFilename;
 }
 

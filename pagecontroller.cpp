@@ -48,7 +48,7 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
     preloadPages(index);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, w, h);
+        emit addImage(backend->bookFilename(), backend->bgFilename(), index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -59,7 +59,7 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
 
 void PageController::initPage(int index) {
     ImageWorker w;
-    Page p = w.requestImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, backend->width(), backend->height());
+    Page p = w.requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
     pages[index] = ImageProc::toQPixmap(p.img);
     pagesStatus[index] = RECIEVED;
     qWarning("initializing %i", index);
@@ -72,11 +72,11 @@ void PageController::preloadPages(int index) {
     for (int i=1; i<IMAGE_PRELOAD; i++) {
         if (pagesStatus[index+i] == NOT_REQUESTED && index+i<=maxIndex) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index+i, w, h);
+            emit addImage(backend->bookFilename(), backend->bgFilename(), index+i, w, h);
         }
         if (pagesStatus[index-i] == NOT_REQUESTED && index-i>=0) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index-i, w, h);
+            emit addImage(backend->bookFilename(), backend->bgFilename(), index-i, w, h);
         }
     }
     for (int i=0; i<=maxIndex; i++) {
@@ -90,7 +90,7 @@ void PageController::preloadPages(int index) {
 }
 
 void PageController::handleImage(Page page) {
-    if (page.book_filename != backend->bookFilename().toLocalFile().toStdString())
+    if (page.book_filename != backend->bookFilename())
         return;
     qWarning("recieved!!! %i", page.index);
     if (pagesStatus[page.index] == RECIEVED) {
