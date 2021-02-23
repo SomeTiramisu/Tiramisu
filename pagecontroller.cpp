@@ -25,7 +25,6 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
 
     connect(backend, &Backend::bookFilenameChanged, this, &PageController::changeBookFilename);
 
-    //initPage(backend->pageIndex());
     lastIndex = backend->pageIndex();
 }
 
@@ -58,11 +57,6 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
     return nullptr;
 }
 
-/*
-void PageController::initPage(int index) {
-    pages[index] = worker->requestImage(backend->bookFilename(), backend->bgFilename(), index, backend->width(), backend->height());
-    pagesStatus[index] = RECIEVED;
-}*/
 void PageController::initPage(int index) {
     ImageWorker w;
     Page p = w.requestImage(backend->bookFilename().toLocalFile(), backend->bgFilename(), index, backend->width(), backend->height());

@@ -51,6 +51,8 @@ void ImageProc::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
 
 QPixmap* ImageProc::toQPixmap(Mat& src) {
     QPixmap *r = new QPixmap();
+    if (src.empty())
+        return r;
     r->convertFromImage(QImage(src.data, src.cols, src.rows, QImage::Format_BGR888));
     return r;
     

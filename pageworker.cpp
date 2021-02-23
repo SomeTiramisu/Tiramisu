@@ -22,12 +22,7 @@ Page ImageWorker::requestImage(QString book_filename, QString bg_filename, int i
     }
     Page p = book.getAt(index, width, height);
     cv::Mat bg = cv::imread(bg_filename.toStdString(), cv::IMREAD_COLOR);
-    //try {
+    if (!p.img.empty())
         ImageProc::classicProcess(p.img, bg, p.img, width, height);
-        return p;
-    //}  catch (...) {
-    //    qWarning("Something goes wrong with %i", index);
-    //    QPixmap* r = new QPixmap(width, height);
-    //    return r;
-    //}
+    return p;
 }

@@ -19,6 +19,7 @@ public:
 
 private:
     void preloadPages(int index);
+    void cleanPages(int maxIndex);
     Backend* backend;
     ImageWorker *worker;
     QThread workerThread;
