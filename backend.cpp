@@ -14,7 +14,7 @@ Backend::Backend() {
     QUrl bgfn(QUrl::fromLocalFile(BACKGROUND_FILENAME));
     setBookFilename(bkfn);
     setBgFilename(bgfn);
-    m_width = 1200; //tofix
+    m_width = 1080; //tofix
     m_height = 1920;
 }
 
@@ -35,6 +35,7 @@ void Backend::setBookFilename(QUrl &f) {
 void Backend::setBgFilename(QUrl &f) {
     if (f != m_bgFilename) {
         m_bgFilename = f;
+        m_init = true;
         emit bgFilenameChanged();
     }
 }

@@ -39,7 +39,7 @@ Page Book::getAt(int index, int width, int height) {
         return libarchive_book.getAt(index);
     if (book_lib == UNARR)
         return unarr_book.getAt(index);
-    return Page {cv::Mat(), 0, 0, 0, QUrl()};
+    return Page {cv::Mat(), 0, 0, 0, QUrl(), QUrl()};
 
 }
 
@@ -113,7 +113,7 @@ Page LibarchiveBook::getAt(int index) {
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
     cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
-    Page p = {img, img.cols, img.rows, index, filename};
+    Page p = {img, img.cols, img.rows, index, filename, QUrl()};
     delete[] buf;
     return p;
 }
@@ -191,7 +191,7 @@ Page UnarrBook::getAt(int index) {
     ar_close_archive(bookArchive);
     ar_close(bookStream);
     cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
-    Page p = {img, img.cols, img.rows, index, filename};
+    Page p = {img, img.cols, img.rows, index, filename, QUrl()};
     delete[] buf;
     return p;
 }

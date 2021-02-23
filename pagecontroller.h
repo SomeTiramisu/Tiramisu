@@ -30,6 +30,7 @@ private:
 public slots:
     void handleImage(Page page);
     void changeBookFilename();
+    void changeBgFilename();
 signals:
     void addImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height);
 

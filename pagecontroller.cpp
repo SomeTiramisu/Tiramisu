@@ -24,6 +24,7 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     workerThread.start();
 
     connect(backend, &Backend::bookFilenameChanged, this, &PageController::changeBookFilename);
+    connect(backend, &Backend::bgFilenameChanged, this, &PageController::changeBgFilename);
 
     lastIndex = backend->pageIndex();
 }
@@ -90,7 +91,7 @@ void PageController::preloadPages(int index) {
 }
 
 void PageController::handleImage(Page page) {
-    if (page.book_filename != backend->bookFilename())
+    if (page.book_filename != backend->bookFilename() || page.bg_filename != backend->bgFilename())
         return;
     qWarning("recieved!!! %i", page.index);
     if (pagesStatus[page.index] == RECIEVED) {
@@ -111,4 +112,12 @@ void PageController::changeBookFilename() {
     }
     lastIndex = backend->pageIndex();
     qWarning("new path: %s", backend->bookFilename().toLocalFile().toStdString().c_str());
+}
+
+void PageController::changeBgFilename() {
+    for (int i = 0; i<=backend->maxIndex(); i++) {
+        pages[i] = nullptr;
+        pagesStatus[i] = NOT_REQUESTED;
+    }
+    qWarning("new bg: %s", backend->bgFilename().toLocalFile().toStdString().c_str());
 }

@@ -145,6 +145,18 @@ void ImageProc::sharpen(Mat &src, Mat &dst) {
     dst.copyTo(sharpened, lowContrastMask);
 }
 
+void ImageProc::centerFit(Mat& src, Mat& dst, int view_width, int view_height) {
+    double hm = floor(abs(view_width - src.cols)/2);
+    double vm = floor(abs(view_height - src.rows)/2);
+    Rect roi = Rect(hm, vm, src.cols, src.rows);
+    Mat white(view_width, view_height, src.type());
+    //white.setTo(Scalar(0, 0, 0));
+
+    Mat bg_roi = white(roi);
+    src.copyTo(bg_roi);
+    white.copyTo(dst);
+}
+
 void ImageProc::classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height) { //src2 is background
     Mat img;
     Mat bg;
@@ -159,4 +171,18 @@ void ImageProc::classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int hei
     tileFit(src2, bg, width, height);
     createMask(img, mask);
     addBackground(img, bg, dst, mask);
+}
+
+void ImageProc::noBgProcess(Mat& src, Mat& dst, int width, int height) {
+    Mat img;
+    Mat bg;
+    Mat mask;
+    //qWarning("img: %i %i", img.cols, img.rows);
+    createMask(src, mask);
+    //qWarning("mask: %i %i", mask.cols, mask.rows);
+    Rect roi = createROI(mask);
+    //qWarning("ROI: %i %i", roi.width, roi.height);
+    img = src(roi);
+    scale(img, img, width, height);
+    centerFit(img, dst, width, height);
 }

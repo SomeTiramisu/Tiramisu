@@ -21,8 +21,14 @@ Page ImageWorker::requestImage(QUrl book_filename, QUrl bg_filename, int index, 
         book = Book(book_filename);
     }
     Page p = book.getAt(index, width, height);
-    cv::Mat bg = cv::imread(bg_filename.toLocalFile().toStdString(), cv::IMREAD_COLOR);
-    if (!p.img.empty())
+    p.bg_filename = bg_filename;
+    cv::Mat bg;
+    if (!bg_filename.isEmpty())
+        bg = cv::imread(bg_filename.toLocalFile().toStdString(), cv::IMREAD_COLOR);
+    if (!p.img.empty() && bg.empty()) {
+        ImageProc::noBgProcess(p.img, p.img, width, height);
+    } else if (!p.img.empty()) {
         ImageProc::classicProcess(p.img, bg, p.img, width, height);
+    }
     return p;
 }

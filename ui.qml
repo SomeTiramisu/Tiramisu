@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import Qt.labs.folderlistmodel 2.15
+import QtQuick.Window 2.15
 
 ApplicationWindow {
     id: root
@@ -16,8 +17,14 @@ ApplicationWindow {
         return "Windowed"
     }
     Component.onCompleted: {
-        //backend.width = 500
-        //backend.height = 500
+        /*
+        if (root.visibility === "FullScreen") {
+            backend.width = Screen.width
+            backend.height = Screen.height
+        } else {
+            backend.width = root.width
+            backend.height = root.height
+        }*/
         page.source = "image://pages/first"
     }
 
@@ -26,45 +33,53 @@ ApplicationWindow {
         width: 0.66*root.width
         height: root.height
 
-        ListView {
-            id: folderView
+        ColumnLayout {
             anchors.fill: parent
-            //visible: false
-            FolderListModel {
-                id: folderModel
-                nameFilters: ["*.cbz", "*.cbr"]
-                showDirs: false
-                //folder: "/home/guillaume/reader/"
-                folder: "/storage/emulated/0/"
-            }
-            Component {
-                id: fileDelegate
-                Button {
-                    text: fileName
-                    width: folderView.width
-                    height: folderView.height/10
-                    onClicked: {
-                        console.log(fileUrl)
-                        backend.bookFilename = fileUrl
-                        page.source = "image://pages/new" + fileName
-                    }
+            ListView {
+                id: folderView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
+                FolderListModel {
+                    id: folderModel
+                    nameFilters: ["*.cbz", "*.cbr"]
+                    showDirs: false
+                    //folder: "/home/guillaume/reader/"
+                    folder: "/storage/emulated/0/"
                 }
-            }
+                Component {
+                    id: fileDelegate
+                    Button {
+                        text: fileName
+                        width: folderView.width
+                        height: folderView.height/10
+                        onClicked: {
+                            console.log(fileUrl)
+                            backend.bookFilename = fileUrl
+                            page.source = "image://pages/new" + fileName
+                        }
 
-            model: folderModel
-            delegate: fileDelegate
+                    }
+                }
+
+                model: folderModel
+                delegate: fileDelegate
+            }
+            Button {
+                id: settings
+                Layout.fillWidth: true
+                Layout.preferredHeight: folderView.height/10
+                text: "Settings"
+            }
         }
     }
     Image {
         id: page
-        //visible: false
-        sourceSize.width: root.width; sourceSize.height: root.height
-        anchors.fill: parent
         fillMode: Image.Pad
         TapHandler {
+            id: tHandler
             onTapped: {
-                if (eventPoint.position.x > root.width / 2) {
+                if (eventPoint.position.x > page.width / 2) {
                     backend.pageIndex = backend.pageIndex + 1
                 } else if (backend.pageIndex > 0) {
                     backend.pageIndex = backend.pageIndex - 1
@@ -72,6 +87,6 @@ ApplicationWindow {
                 page.source = "image://pages/" + backend.pageIndex
             }
         }
-    }
 
+    }
 }

@@ -20,7 +20,9 @@ public:
     static void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
     static void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
     static void sharpen(Mat& src, Mat& dst);
+    static void centerFit(Mat& src, Mat& dst, int view_width, int view_height);
     static void classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height);
+    static void noBgProcess(Mat& src, Mat& dst, int width, int height);
 };
 
 #endif
