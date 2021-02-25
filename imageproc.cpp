@@ -8,7 +8,7 @@
 using namespace cv;
 
 void ImageProc::createMask(Mat& src, Mat& dst) {
-    cvtColor(src, dst, COLOR_BGR2GRAY);
+    cvtColor(src, dst, COLOR_RGBA2GRAY);
     threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
 }
 
@@ -53,7 +53,7 @@ QPixmap* ImageProc::toQPixmap(Mat& src) {
     QPixmap *r = new QPixmap();
     if (src.empty())
         return r;
-    r->convertFromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_BGR888));
+    r->convertFromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888));
     return r;
     
 };
@@ -157,32 +157,15 @@ void ImageProc::centerFit(Mat& src, Mat& dst, int view_width, int view_height) {
     white.copyTo(dst);
 }
 
-void ImageProc::classicProcess(Mat& src, Mat& src2, Mat& dst, int width, int height) { //src2 is background
+void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) { //src2 is background
     Mat img;
-    Mat bg;
     Mat mask;
-    //qWarning("img: %i %i", img.cols, img.rows);
+    img = src;
+    cvtColor(img, img, COLOR_BGR2RGBA);
     createMask(src, mask);
-    //qWarning("mask: %i %i", mask.cols, mask.rows);
     Rect roi = createROI(mask);
-    //qWarning("ROI: %i %i", roi.width, roi.height);
-    img = src(roi);
+    img = img(roi);
     scale(img, img, width, height);
-    tileFit(src2, bg, width, height);
     createMask(img, mask);
-    addBackground(img, bg, dst, mask);
-}
-
-void ImageProc::noBgProcess(Mat& src, Mat& dst, int width, int height) {
-    Mat img;
-    Mat bg;
-    Mat mask;
-    //qWarning("img: %i %i", img.cols, img.rows);
-    createMask(src, mask);
-    //qWarning("mask: %i %i", mask.cols, mask.rows);
-    Rect roi = createROI(mask);
-    //qWarning("ROI: %i %i", roi.width, roi.height);
-    img = src(roi);
-    scale(img, img, width, height);
-    centerFit(img, dst, width, height);
+    img.copyTo(dst, mask);
 }

@@ -30,7 +30,6 @@ struct Page {
     int height;
     int index;
     QUrl book_filename;
-    QUrl bg_filename;
 };
 
 class LibarchiveBook {

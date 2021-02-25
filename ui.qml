@@ -64,17 +64,24 @@ ApplicationWindow {
 
                 model: folderModel
                 delegate: fileDelegate
-            }
+            }/*
             Button {
                 id: settings
                 Layout.fillWidth: true
                 Layout.preferredHeight: folderView.height/10
                 text: "Settings"
-            }
+            }*/
         }
     }
     Image {
+        id: background
+        source: backend.bgFilename
+        anchors.fill: parent
+        fillMode: Image.Tile
+    }
+    Image {
         id: page
+        anchors.fill: parent
         fillMode: Image.Pad
         TapHandler {
             id: tHandler

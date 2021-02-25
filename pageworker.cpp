@@ -11,24 +11,18 @@ ImageWorker::ImageWorker()
 ImageWorker::~ImageWorker() {
 }
 
-void ImageWorker::addImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height) {
-    emit imageReady(requestImage(book_filename, bg_filename, index, width, height));
+void ImageWorker::addImage(QUrl book_filename, int index, int width, int height) {
+    emit imageReady(requestImage(book_filename, index, width, height));
 }
 
-Page ImageWorker::requestImage(QUrl book_filename, QUrl bg_filename, int index, int width, int height) {
+Page ImageWorker::requestImage(QUrl book_filename, int index, int width, int height) {
     qWarning("requesting %i, %i, %i", index, width, height);
     if (book_filename != book.getFilename()) {
         book = Book(book_filename);
     }
     Page p = book.getAt(index, width, height);
-    p.bg_filename = bg_filename;
-    cv::Mat bg;
-    if (!bg_filename.isEmpty())
-        bg = cv::imread(bg_filename.toLocalFile().toStdString(), cv::IMREAD_COLOR);
-    if (!p.img.empty() && bg.empty()) {
-        ImageProc::noBgProcess(p.img, p.img, width, height);
-    } else if (!p.img.empty()) {
-        ImageProc::classicProcess(p.img, bg, p.img, width, height);
+    if (!p.img.empty()) {
+        ImageProc::classicProcess(p.img, p.img, width, height);
     }
     return p;
 }
