@@ -53,7 +53,7 @@ QPixmap* ImageProc::toQPixmap(Mat& src) {
     QPixmap *r = new QPixmap();
     if (src.empty())
         return r;
-    r->convertFromImage(QImage(src.data, src.cols, src.rows, QImage::Format_BGR888));
+    r->convertFromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_BGR888));
     return r;
     
 };
