@@ -5,7 +5,7 @@
 #include <QGraphicsPixmapItem>
 
 PageImageProvider::PageImageProvider(Backend *b)
-    : QQuickImageProvider(QQuickImageProvider::Pixmap),
+    : QQuickImageProvider(QQuickImageProvider::Image),
       controller(b)
 {
 }
@@ -14,17 +14,17 @@ PageImageProvider::~PageImageProvider()
 {
 }
 
-QPixmap PageImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) {
+QImage PageImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize) {
     Q_UNUSED(id)
-    QPixmap* img(controller.getPage());
-    if (img == nullptr)
-        return QPixmap();
+    QImage img(controller.getPage());
+    if (img.isNull())
+        return QImage();
     //qWarning("showing page");
     int rwidth = requestedSize.width();
     int rheight = requestedSize.height();
     if (size)
-        *size = QSize(img->width(), img->height());
+        *size = QSize(img.width(), img.height());
     if (rwidth > 0 || rheight > 0)
-        return img->copy(0, 0, rwidth, rheight);
-    return *img;
+        return img.copy(0, 0, rwidth, rheight);
+    return img;
 }

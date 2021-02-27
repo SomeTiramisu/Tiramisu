@@ -10,12 +10,8 @@
 PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
 {
     backend = b;
-    pages = new QPixmap*[backend->maxIndex()+1]; //tocheck
-    pagesStatus = new char[backend->maxIndex()+1];
-    for (int i = 0; i<=backend->maxIndex(); i++) {
-        pages[i] = nullptr;
-        pagesStatus[i] = NOT_REQUESTED;
-    }
+    pages = QVector<QImage>(backend->maxIndex()+1, QImage()); //tocheck
+    pagesStatus = QVector<char>(backend->maxIndex()+1, NOT_REQUESTED);
     worker = new ImageWorker();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
@@ -29,13 +25,11 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
 }
 
 PageController::~PageController() {
-    delete pages;
-    delete pagesStatus;
     workerThread.quit();
     workerThread.wait();
 }
 
-QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
+QImage PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = backend->pageIndex();
     if (backend->init()) //aucune page n'a encre ete demandees
         initPage(index);
@@ -54,13 +48,13 @@ QPixmap* PageController::getPage() { //0 -> no requested no revieved ; 1 -> requ
         return pages[index];
     }
     qWarning("not recieved i:%i s:%i", index, pagesStatus[index]);
-    return nullptr;
+    return QImage();
 }
 
 void PageController::initPage(int index) {
     ImageWorker w;
     Page p = w.requestImage(backend->bookFilename(), index, backend->width(), backend->height());
-    pages[index] = ImageProc::toQPixmap(p.img);
+    pages[index] = ImageProc::toQImage(p.img);
     pagesStatus[index] = RECIEVED;
     qWarning("initializing %i", index);
 }
@@ -70,20 +64,18 @@ void PageController::preloadPages(int index) {
     int h = backend->height();
     int maxIndex = backend->maxIndex();
     for (int i=1; i<IMAGE_PRELOAD; i++) {
-        if (pagesStatus[index+i] == NOT_REQUESTED && index+i<=maxIndex) {
+        if (index+i<=maxIndex && pagesStatus[index+i] == NOT_REQUESTED) {
             pagesStatus[index+i] = REQUESTED;
             emit addImage(backend->bookFilename(), index+i, w, h);
         }
-        if (pagesStatus[index-i] == NOT_REQUESTED && index-i>=0) {
+        if (index-i>=0 && pagesStatus[index-i] == NOT_REQUESTED) {
             pagesStatus[index-i] = REQUESTED;
             emit addImage(backend->bookFilename(), index-i, w, h);
         }
     }
     for (int i=0; i<=maxIndex; i++) {
-        if (pagesStatus[i] == RECIEVED && (i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD)) {
-            //qWarning("deleting %i", i);
-            delete pages[i];
-            pages[i] = nullptr;
+        if ((i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD) && pagesStatus[i] == RECIEVED) {
+            pages[i] = QImage();
             pagesStatus[i] = NOT_REQUESTED;
         }
     }
@@ -93,22 +85,13 @@ void PageController::handleImage(Page page) {
     if (page.book_filename != backend->bookFilename())
         return;
     qWarning("recieved!!! %i", page.index);
-    if (pagesStatus[page.index] == RECIEVED) {
-        delete pages[page.index];
-    }
-    pages[page.index] = ImageProc::toQPixmap(page.img);
+    pages[page.index] = ImageProc::toQImage(page.img);
     pagesStatus[page.index] = RECIEVED;
 }
 
 void PageController::changeBookFilename() {
-    delete[] pages;
-    delete[] pagesStatus;
-    pages = new QPixmap*[backend->maxIndex()+1]; //tocheck
-    pagesStatus = new char[backend->maxIndex()+1];
-    for (int i = 0; i<=backend->maxIndex(); i++) {
-        pages[i] = nullptr;
-        pagesStatus[i] = NOT_REQUESTED;
-    }
+    pages = QVector<QImage>(backend->maxIndex()+1); //tocheck
+    pagesStatus = QVector<char>(backend->maxIndex()+1, NOT_REQUESTED);
     lastIndex = backend->pageIndex();
     qWarning("new path: %s", backend->bookFilename().toLocalFile().toStdString().c_str());
 }

@@ -13,7 +13,7 @@ class PageController : public QObject
 public:
     PageController(Backend* b, QObject *parent = nullptr);
     ~PageController();
-    QPixmap* getPage();
+    QImage getPage();
     void initPage(int index);
 
 
@@ -23,8 +23,8 @@ private:
     Backend* backend;
     ImageWorker *worker;
     QThread workerThread;
-    QPixmap* *pages;
-    char *pagesStatus;
+    QVector<QImage> pages;
+    QVector<char> pagesStatus;
     int lastIndex;
 
 public slots:

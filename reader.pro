@@ -31,6 +31,7 @@ DEFINES += \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    asyncpageimageprovider.cpp \
     backend.cpp \
     book.cpp \
     imageproc.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
+    asyncpageimageprovider.h \
     backend.h \
     book.h \
     imageproc.h \

@@ -55,8 +55,13 @@ QPixmap* ImageProc::toQPixmap(Mat& src) {
         return r;
     r->convertFromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888));
     return r;
-    
-};
+}
+
+QImage ImageProc::toQImage(Mat& src) {
+    if (src.empty())
+        return QImage();
+    return QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
+}
 
 void ImageProc::scale(Mat& src, Mat& dst, int view_width, int view_height) {
     int img_width  = src.cols;

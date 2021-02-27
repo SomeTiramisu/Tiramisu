@@ -16,18 +16,6 @@ ApplicationWindow {
         }
         return "Windowed"
     }
-    Component.onCompleted: {
-        /*
-        if (root.visibility === "FullScreen") {
-            backend.width = Screen.width
-            backend.height = Screen.height
-        } else {
-            backend.width = root.width
-            backend.height = root.height
-        }*/
-        page.source = "image://pages/first"
-    }
-
     Drawer {
         id: drawer
         width: 0.66*root.width
@@ -83,17 +71,19 @@ ApplicationWindow {
         id: page
         anchors.fill: parent
         fillMode: Image.Pad
+        source: "image://pages/new"
         TapHandler {
             id: tHandler
             onTapped: {
-                if (eventPoint.position.x > page.width / 2) {
-                    backend.pageIndex = backend.pageIndex + 1
+                if (eventPoint.position.x > parent.width / 2) {
+                    backend.pageIndex++
                 } else if (backend.pageIndex > 0) {
-                    backend.pageIndex = backend.pageIndex - 1
+                    backend.pageIndex--
                 }
-                page.source = "image://pages/" + backend.pageIndex
+
+                parent.source = "image://pages/" + backend.pageIndex
             }
         }
-
     }
 }
+

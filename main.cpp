@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include "pageimageprovider.h"
+#include "asyncpageimageprovider.h"
 #include "backend.h"
 Q_DECLARE_METATYPE(Page)
 
@@ -18,9 +19,10 @@ int main(int argc, char *argv[])
 
     Backend *backend = new Backend();
     PageImageProvider *imp = new PageImageProvider(backend);
+    AsyncPageImageProvider *aimp = new AsyncPageImageProvider(backend);
 
 
-    engine.addImageProvider("pages", imp);
+    engine.addImageProvider("pages", aimp);
     engine.rootContext()->setContextProperty("backend", backend);
 
     engine.load(":/res/ui.qml");

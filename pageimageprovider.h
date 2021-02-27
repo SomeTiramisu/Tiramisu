@@ -13,7 +13,7 @@ class PageImageProvider :  public QQuickImageProvider
 public:
     PageImageProvider(Backend *b);
     ~PageImageProvider();
-    QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize) override;
+    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
     PageController controller;
