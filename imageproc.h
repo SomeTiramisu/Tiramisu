@@ -10,7 +10,7 @@ using namespace cv;
 class ImageProc
 {
 public:
-    static QPixmap* toQPixmap(Mat& src);
+    static QPixmap toQPixmap(Mat& src);
     static QImage toQImage(Mat& src);
     static void createMask(Mat& src, Mat& dst);
     static Rect createROI(Mat& src);

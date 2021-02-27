@@ -54,7 +54,7 @@ QImage PageController::getPage() { //0 -> no requested no revieved ; 1 -> reques
 void PageController::initPage(int index) {
     ImageWorker w;
     Page p = w.requestImage(backend->bookFilename(), index, backend->width(), backend->height());
-    pages[index] = ImageProc::toQImage(p.img);
+    pages[index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[index] = RECIEVED;
     qWarning("initializing %i", index);
 }
@@ -85,7 +85,7 @@ void PageController::handleImage(Page page) {
     if (page.book_filename != backend->bookFilename())
         return;
     qWarning("recieved!!! %i", page.index);
-    pages[page.index] = ImageProc::toQImage(page.img);
+    pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;
 }
 
