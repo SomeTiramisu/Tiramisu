@@ -71,6 +71,7 @@ ApplicationWindow {
         id: page
         anchors.fill: parent
         fillMode: Image.Pad
+        smooth: false
         source: "image://pages/new"
         TapHandler {
             id: tHandler
@@ -80,7 +81,6 @@ ApplicationWindow {
                 } else if (backend.pageIndex > 0) {
                     backend.pageIndex--
                 }
-
                 parent.source = "image://pages/" + backend.pageIndex
             }
         }
