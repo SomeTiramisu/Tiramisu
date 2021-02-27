@@ -27,11 +27,11 @@ private:
 
 class AsyncPageImageResponse : public QQuickImageResponse
 {
-    public:
-        AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QThreadPool *pool, Backend *backend);
-        void handleDone(QImage image);
-        QQuickTextureFactory *textureFactory() const override;
-        QImage m_image;
+public:
+    AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QThreadPool *pool, Backend *backend);
+    QQuickTextureFactory *textureFactory() const override;
+    void handleDone(QImage image);
+    QImage m_image;
 };
 
 class AsyncPageImageProvider : public QQuickAsyncImageProvider
