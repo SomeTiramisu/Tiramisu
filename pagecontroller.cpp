@@ -51,6 +51,14 @@ QImage PageController::getPage() { //0 -> no requested no revieved ; 1 -> reques
     return QImage();
 }
 
+void PageController::getAsyncPage() {
+    int index = backend->pageIndex();
+    if (backend->init() || pagesStatus[index] != RECIEVED)
+        initPage(index);
+    preloadPages(index);
+    emit addPage(pages[index]);
+}
+
 void PageController::initPage(int index) {
     ImageWorker w;
     Page p = w.requestImage(backend->bookFilename(), index, backend->width(), backend->height());

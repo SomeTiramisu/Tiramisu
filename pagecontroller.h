@@ -14,6 +14,7 @@ public:
     PageController(Backend* b, QObject *parent = nullptr);
     ~PageController();
     QImage getPage();
+    void getAsyncPage();
     void initPage(int index);
 
 
@@ -32,6 +33,8 @@ public slots:
     void changeBookFilename();
 signals:
     void addImage(QUrl book_filename, int index, int width, int height);
+    void addPage(QImage image);
+
 
 };
 
