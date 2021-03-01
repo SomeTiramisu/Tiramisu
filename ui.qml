@@ -16,6 +16,9 @@ ApplicationWindow {
         }
         return "Windowed"
     }
+    function genId(bookId: int, index: int, width: int, height: int) {
+        return bookId + "," + index + "," + width + "," + height
+    }
     Drawer {
         id: drawer
         width: 0.66*root.width
@@ -32,8 +35,8 @@ ApplicationWindow {
                     id: folderModel
                     nameFilters: ["*.cbz", "*.cbr"]
                     showDirs: false
-                    //folder: "/home/guillaume/reader/"
-                    folder: "/storage/emulated/0/"
+                    folder: "file:/home/guillaume/reader/"
+                    //folder: "file:/storage/emulated/0/"
                 }
                 Component {
                     id: fileDelegate
@@ -44,7 +47,7 @@ ApplicationWindow {
                         onClicked: {
                             console.log(fileUrl)
                             backend.bookFilename = fileUrl
-                            page.source = "image://pages/new" + fileName
+                            page.source = "image://pages/" + root.genId(0, 0, root.width, root.height)
                         }
 
                     }
@@ -72,7 +75,7 @@ ApplicationWindow {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/new"
+        source: "image://pages/" + root.genId(0, 0, root.width, root.height)
         TapHandler {
             id: tHandler
             onTapped: {
@@ -81,7 +84,7 @@ ApplicationWindow {
                 } else if (backend.pageIndex > 0) {
                     backend.pageIndex--
                 }
-                parent.source = "image://pages/" + backend.pageIndex
+                parent.source = "image://pages/" + genId(0, backend.pageIndex, root.width, root.height)
             }
         }
     }

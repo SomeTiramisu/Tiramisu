@@ -15,8 +15,7 @@ PageImageProvider::~PageImageProvider()
 }
 
 QImage PageImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize) {
-    Q_UNUSED(id)
-    QImage img(controller.getPage());
+    QImage img(controller.getPage(id));
     if (img.isNull())
         return QImage();
     //qWarning("showing page");

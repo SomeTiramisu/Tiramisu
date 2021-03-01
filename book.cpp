@@ -35,6 +35,8 @@ int Book::getBookLib(QUrl fn) {
 }
 
 Page Book::getAt(int index, int width, int height) {
+    Q_UNUSED(width)
+    Q_UNUSED(height)
     if (book_lib == LIBARCHIVE)
         return libarchive_book.getAt(index);
     if (book_lib == UNARR)

@@ -2,6 +2,7 @@
 #include "pageworker.h"
 #include "imageproc.h"
 #include "backend.h"
+#include "book.h"
 #define IMAGE_PRELOAD 5
 #define NOT_REQUESTED 0
 #define REQUESTED 1
@@ -10,8 +11,6 @@
 PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
 {
     backend = b;
-    pages = QVector<QImage>(backend->maxIndex()+1, QImage()); //tocheck
-    pagesStatus = QVector<char>(backend->maxIndex()+1, NOT_REQUESTED);
     worker = new ImageWorker();
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
@@ -19,9 +18,9 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
     workerThread.start();
 
-    connect(backend, &Backend::bookFilenameChanged, this, &PageController::changeBookFilename);
-
-    lastIndex = backend->pageIndex();
+    lastIndex = 0;
+    last_book_filename = QUrl();
+    changeBookFilename(last_book_filename);
 }
 
 PageController::~PageController() {
@@ -29,20 +28,22 @@ PageController::~PageController() {
     workerThread.wait();
 }
 
-QImage PageController::getPage() { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
-    int index = backend->pageIndex();
-    if (backend->init()) //aucune page n'a encre ete demandees
-        initPage(index);
+QImage PageController::getPage(QString id) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
+    PageRequest req = decodeId(id);
+    int index = req.index;
+    if (last_book_filename != req.book_filename) { //aucune page n'a encre ete demandees
+        changeBookFilename(req.book_filename);
+        initPage(req);
+    }
     if (pagesStatus[index] != RECIEVED) {
         index = lastIndex;
-        backend->setPageIndex(lastIndex);
     }
-    int w = backend->width();
-    int h = backend->height();
-    preloadPages(index);
+    int w = req.width;
+    int h = req.height;
+    preloadPages(req);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(backend->bookFilename(), index, w, h);
+        emit addImage(req.book_filename, index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -51,37 +52,44 @@ QImage PageController::getPage() { //0 -> no requested no revieved ; 1 -> reques
     return QImage();
 }
 
-void PageController::getAsyncPage() {
-    int index = backend->pageIndex();
-    if (backend->init() || pagesStatus[index] != RECIEVED)
-        initPage(index);
-    preloadPages(index);
+void PageController::getAsyncPage(QString id) {
+    PageRequest req = decodeId(id);
+    int index = req.index;
+    if (last_book_filename != req.book_filename) { //aucune page n'a encre ete demandees
+        changeBookFilename(req.book_filename);
+    }
+    if (index >= pages.size()) {
+        index = pages.size() - 1;
+    }
+    if (pagesStatus[index] != RECIEVED)
+        initPage(req);
+    preloadPages(req);
     emit addPage(pages[index]);
 }
 
-void PageController::initPage(int index) {
+void PageController::initPage(PageRequest req) {
     ImageWorker w;
-    Page p = w.requestImage(backend->bookFilename(), index, backend->width(), backend->height());
-    pages[index] = ImageProc::toQImage(p.img).copy();
-    pagesStatus[index] = RECIEVED;
-    qWarning("initializing %i", index);
+    Page p = w.requestImage(req.book_filename, req.index, req.width, req.height);
+    pages[req.index] = ImageProc::toQImage(p.img).copy();
+    pagesStatus[req.index] = RECIEVED;
+    qWarning("initializing %i", req.index);
 }
 
-void PageController::preloadPages(int index) {
-    int w = backend->width();
-    int h = backend->height();
-    int maxIndex = backend->maxIndex();
+void PageController::preloadPages(PageRequest req) {
+    int index = req.index;
+    int w = req.width;
+    int h = req.height;
     for (int i=1; i<IMAGE_PRELOAD; i++) {
-        if (index+i<=maxIndex && pagesStatus[index+i] == NOT_REQUESTED) {
+        if (index+i<pages.size() && pagesStatus[index+i] == NOT_REQUESTED) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(backend->bookFilename(), index+i, w, h);
+            emit addImage(req.book_filename, index+i, w, h);
         }
         if (index-i>=0 && pagesStatus[index-i] == NOT_REQUESTED) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(backend->bookFilename(), index-i, w, h);
+            emit addImage(req.book_filename, index-i, w, h);
         }
     }
-    for (int i=0; i<=maxIndex; i++) {
+    for (int i=0; i<pages.size(); i++) {
         if ((i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD) && pagesStatus[i] == RECIEVED) {
             pages[i] = QImage();
             pagesStatus[i] = NOT_REQUESTED;
@@ -89,17 +97,29 @@ void PageController::preloadPages(int index) {
     }
 }
 
+PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,height"
+    return PageRequest {
+        .width = id.section(",", 2, 2).toInt(),
+        .height = id.section(",", 3, 3).toInt(),
+        .index = id.section(",", 1, 1).toInt(),
+        .book_filename = backend->bookFromId(id.section(",", 0, 0).toInt())
+    };
+}
+
 void PageController::handleImage(Page page) {
-    if (page.book_filename != backend->bookFilename())
+    if (page.book_filename != last_book_filename)
         return;
     qWarning("recieved!!! %i", page.index);
     pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;
 }
 
-void PageController::changeBookFilename() {
-    pages = QVector<QImage>(backend->maxIndex()+1); //tocheck
-    pagesStatus = QVector<char>(backend->maxIndex()+1, NOT_REQUESTED);
-    lastIndex = backend->pageIndex();
-    qWarning("new path: %s", backend->bookFilename().toLocalFile().toStdString().c_str());
+void PageController::changeBookFilename(QUrl book_filename) {
+    Book b = Book(book_filename);
+    pages = QVector<QImage>(b.getSize(), QImage()); //tocheck
+    pagesStatus = QVector<char>(b.getSize(), NOT_REQUESTED);
+    lastIndex = 0;
+    last_book_filename = book_filename;
+
+    qWarning("new path: %s", book_filename.toLocalFile().toStdString().c_str());
 }

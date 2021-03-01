@@ -5,10 +5,8 @@
 #include "backend.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController &controller) {
-    Q_UNUSED(id)
-    Q_UNUSED(requestedSize)
     connect(&controller, &PageController::addPage, this, &AsyncPageImageResponse::handleDone);
-    controller.getAsyncPage();
+    controller.getAsyncPage(id);
 }
 void AsyncPageImageResponse::handleDone(QImage image) {
     m_image = image;
