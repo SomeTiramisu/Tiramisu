@@ -35,8 +35,8 @@ ApplicationWindow {
                     id: folderModel
                     nameFilters: ["*.cbz", "*.cbr"]
                     showDirs: false
-                    folder: "file:/home/guillaume/reader/"
-                    //folder: "file:/storage/emulated/0/"
+                    //folder: "file:/home/guillaume/reader/"
+                    folder: "file:/storage/emulated/0/"
                 }
                 Component {
                     id: fileDelegate

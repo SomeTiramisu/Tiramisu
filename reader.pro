@@ -5,12 +5,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 
 android {
-LIBS += -L/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/lib/ -larchive
-LIBS += -L/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/libs/arm64-v8a/ -lopencv_core -lopencv_imgproc -lopencv_imgcodecs
-LIBS += -L/home/guillaume/ReaderProject/unarr-1.0.1/android/prefix/lib/ -lunarr
-INCLUDEPATH +=/home/guillaume/ReaderProject/libarchive-3.4.3/android/prefix/include/
-INCLUDEPATH +=/home/guillaume/ReaderProject/opencv-4.5.0/android/prefix/sdk/native/jni/include/
-INCLUDEPATH +=/home/guillaume/ReaderProject/unarr-1.0.1/android/prefix/include/
+LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
+INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 DEFINES += \
     ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \
     BACKGROUND_FILENAME=\\\"/storage/emulated/0/b.png\\\"
