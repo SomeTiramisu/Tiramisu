@@ -10,14 +10,16 @@ ApplicationWindow {
     //width:1080; height: 1920
     visible: true
     visibility: chooseVisibility()
+    property url book_filename: ""
     function chooseVisibility() {
         if (backend.productName === "android") {
             return "FullScreen"
         }
         return "Windowed"
     }
-    function genId(bookId: int, index: int, width: int, height: int) {
-        return bookId + "," + index + "," + width + "," + height
+    function genId(book_filename: string, index: int, width: int, height: int) {
+        console.log(JSON.stringify({book_filename, index ,width, height}))
+        return JSON.stringify({book_filename, index ,width, height})
     }
     Drawer {
         id: drawer
@@ -35,8 +37,8 @@ ApplicationWindow {
                     id: folderModel
                     nameFilters: ["*.cbz", "*.cbr"]
                     showDirs: false
-                    //folder: "file:/home/guillaume/reader/"
-                    folder: "file:/storage/emulated/0/"
+                    folder: "file:/home/guillaume/reader/"
+                    //folder: "file:/storage/emulated/0/"
                 }
                 Component {
                     id: fileDelegate
@@ -46,8 +48,8 @@ ApplicationWindow {
                         height: folderView.height/10
                         onClicked: {
                             console.log(fileUrl)
-                            backend.bookFilename = fileUrl
-                            page.source = "image://pages/" + root.genId(0, 0, root.width, root.height)
+                            root.book_filename = fileUrl
+                            page.source = "image://pages/" + root.genId(root.book_filename, 0, root.width, root.height)
                         }
 
                     }
@@ -75,7 +77,7 @@ ApplicationWindow {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + root.genId(0, 0, root.width, root.height)
+        source: "image://pages/" + root.genId(root.book_filename, 0, root.width, root.height)
         TapHandler {
             id: tHandler
             onTapped: {
@@ -84,7 +86,7 @@ ApplicationWindow {
                 } else if (backend.pageIndex > 0) {
                     backend.pageIndex--
                 }
-                parent.source = "image://pages/" + genId(0, backend.pageIndex, root.width, root.height)
+                parent.source = "image://pages/" + genId(root.book_filename, backend.pageIndex, root.width, root.height)
             }
         }
     }

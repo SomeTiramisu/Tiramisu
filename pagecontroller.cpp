@@ -1,3 +1,5 @@
+#include <QJsonDocument>
+#include <QJsonObject>
 #include "pagecontroller.h"
 #include "pageworker.h"
 #include "imageproc.h"
@@ -96,7 +98,7 @@ void PageController::preloadPages(PageRequest req) {
         }
     }
 }
-
+/*
 PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,height"
     return PageRequest {
         .width = id.section(",", 2, 2).toInt(),
@@ -104,6 +106,19 @@ PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,h
         .index = id.section(",", 1, 1).toInt(),
         .book_filename = backend->bookFromId(id.section(",", 0, 0).toInt())
     };
+}
+*/
+PageRequest PageController::decodeId(QString id) {
+    qWarning("id: %s", id.toStdString().c_str());
+    QJsonObject jido = QJsonDocument::fromJson(QUrl::fromPercentEncoding(id.toUtf8()).toUtf8()).object(); //boncourage
+    PageRequest ret = PageRequest {
+            .width = jido.value("width").toInt(),
+            .height = jido.value("height").toInt(),
+            .index = jido.value("index").toInt(),
+            .book_filename = jido.value("book_filename").toString()
+    };
+    qWarning("decoded: %i, %i, %i, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str());
+    return ret;
 }
 
 void PageController::handleImage(Page page) {
