@@ -10,8 +10,10 @@ Backend::Backend() {
     m_init = true;
     m_pageIndex = 0;
     QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
-    QUrl bgfn(QUrl::fromLocalFile(BACKGROUND_FILENAME));
+    QUrl bgfn("qrc:/res/background.png");
+    QUrl bkdr(QUrl::fromLocalFile(ARCHIVE_DIR));
     //setBookFilename(bkfn);
+    setBookDir(bkdr);
     setBgFilename(bgfn);
 }
 
@@ -35,6 +37,13 @@ void Backend::setBgFilename(QUrl &f) {
     }
 }
 
+void Backend::setBookDir(QUrl &d) {
+    if (d != m_bookDir) {
+        m_bookDir = d;
+        emit bookDirChanged();
+    }
+}
+
 void Backend::setPageIndex(int &i) {
     m_pageIndex = i;
     emit pageIndexChanged();
@@ -46,6 +55,10 @@ QUrl Backend::bookFilename() {
 
 QUrl Backend::bgFilename() {
     return m_bgFilename;
+}
+
+QUrl Backend::bookDir() {
+    return m_bookDir;
 }
 
 int Backend::pageIndex() {

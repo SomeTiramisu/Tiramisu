@@ -9,6 +9,7 @@ LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -l
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 DEFINES += \
     ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \
+    ARCHIVE_DIR=\\\"/storage/emulated/0\\\" \
     BACKGROUND_FILENAME=\\\"/storage/emulated/0/b.png\\\"
 }
 
@@ -17,6 +18,7 @@ LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /usr/include/opencv4/
 DEFINES += \
     ARCHIVE_FILENAME=\\\"/home/guillaume/reader/b.cbr\\\" \
+    ARCHIVE_DIR=\\\"/home/guillaume/reader\\\" \
     BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
 }
 

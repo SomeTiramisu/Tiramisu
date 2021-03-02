@@ -37,8 +37,7 @@ ApplicationWindow {
                     id: folderModel
                     nameFilters: ["*.cbz", "*.cbr"]
                     showDirs: false
-                    folder: "file:/home/guillaume/reader/"
-                    //folder: "file:/storage/emulated/0/"
+                    folder: backend.bookDir
                 }
                 Component {
                     id: fileDelegate
@@ -71,6 +70,8 @@ ApplicationWindow {
         source: backend.bgFilename
         anchors.fill: parent
         fillMode: Image.Tile
+        horizontalAlignment: Image.AlignLeft
+        verticalAlignment: Image.AlignRight
     }
     Image {
         id: page
