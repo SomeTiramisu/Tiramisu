@@ -5,6 +5,7 @@
 #include <string>
 #include <opencv2/core.hpp>
 #include <QUrl>
+#include <poppler/cpp/poppler-document.h>
 
 extern "C" {
 #include <archive.h>
@@ -72,6 +73,24 @@ private:
 
 };
 
+class PopplerBook {
+
+public:
+    PopplerBook(QUrl fn);
+    ~PopplerBook();
+    Page getAt(int index, int width, int height);
+    int getSize();
+    static bool isSupported(QUrl fn);
+    QUrl getFilename();
+
+private:
+    poppler::document *bookDoc;
+    void openArchive(QUrl fn);
+    int size;
+    QUrl filename;
+
+};
+
 class Book {
 
 public:
@@ -86,6 +105,7 @@ private:
     int getBookLib(QUrl fn);
     LibarchiveBook libarchive_book;
     UnarrBook unarr_book;
+    PopplerBook poppler_book;
 };
 
 bool naturalCompare(const header &a, const header &b);

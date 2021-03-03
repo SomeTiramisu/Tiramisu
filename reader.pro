@@ -14,7 +14,7 @@ DEFINES += \
 }
 
 !android {
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
 INCLUDEPATH += /usr/include/opencv4/
 DEFINES += \
     ARCHIVE_FILENAME=\\\"/home/guillaume/reader/b.cbr\\\" \

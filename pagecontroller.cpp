@@ -109,7 +109,7 @@ PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,h
 }
 */
 PageRequest PageController::decodeId(QString id) {
-    qWarning("id: %s", id.toStdString().c_str());
+    //qWarning("id: %s", id.toStdString().c_str());
     QJsonObject jido = QJsonDocument::fromJson(QUrl::fromPercentEncoding(id.toUtf8()).toUtf8()).object(); //boncourage
     PageRequest ret = PageRequest {
             .width = jido.value("width").toInt(),

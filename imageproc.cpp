@@ -165,6 +165,7 @@ void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) { //sr
     Mat mask;
     img = src;
     cvtColor(img, img, COLOR_BGR2RGBA);
+                qWarning("pass");
     createMask(src, mask);
     Rect roi = createROI(mask);
     img = img(roi);

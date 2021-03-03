@@ -18,7 +18,7 @@ ApplicationWindow {
         return "Windowed"
     }
     function genId(book_filename: string, index: int, width: int, height: int) {
-        console.log(JSON.stringify({book_filename, index ,width, height}))
+        //console.log(JSON.stringify({book_filename, index ,width, height}))
         return JSON.stringify({book_filename, index ,width, height})
     }
     Drawer {
@@ -35,7 +35,7 @@ ApplicationWindow {
 
                 FolderListModel {
                     id: folderModel
-                    nameFilters: ["*.cbz", "*.cbr"]
+                    nameFilters: ["*.cbz", "*.cbr", "*.pdf"]
                     showDirs: false
                     folder: backend.bookDir
                 }

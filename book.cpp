@@ -6,6 +6,10 @@
 #include <QtCore>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <poppler/cpp/poppler-document.h>
+#include <poppler/cpp/poppler-page.h>
+#include <poppler/cpp/poppler-image.h>
+#include <poppler/cpp/poppler-page-renderer.h>
 
 extern "C" {
 #include <archive.h>
@@ -15,10 +19,10 @@ extern "C" {
 };
 
 Book::Book(QUrl fn)
-    : libarchive_book(fn), unarr_book(fn) {
+    : libarchive_book(fn), unarr_book(fn), poppler_book(fn) {
     filename = fn;
     book_lib = getBookLib(fn);
-    qWarning("booklib: %i", book_lib);
+    //qWarning("booklib: %i", book_lib);
 }
 
 Book::~Book() {
@@ -31,16 +35,18 @@ int Book::getBookLib(QUrl fn) {
         return LIBARCHIVE;
     if (UnarrBook::isSupported(fn))
         return UNARR;
+    if(PopplerBook::isSupported(fn))
+        return POPPLER;
     return UNSUPPORTED;
 }
 
 Page Book::getAt(int index, int width, int height) {
-    Q_UNUSED(width)
-    Q_UNUSED(height)
     if (book_lib == LIBARCHIVE)
         return libarchive_book.getAt(index);
     if (book_lib == UNARR)
         return unarr_book.getAt(index);
+    if (book_lib == POPPLER)
+        return poppler_book.getAt(index, width, height);
     return Page {cv::Mat(), 0, 0, 0, QUrl()};
 
 }
@@ -52,6 +58,8 @@ int Book::getSize() {
         return libarchive_book.getSize();
     if (book_lib == UNARR)
         return unarr_book.getSize();
+    if (book_lib == POPPLER)
+        return poppler_book.getSize();
     return 0;
 }
 
@@ -221,6 +229,59 @@ bool UnarrBook::isSupported(QUrl fn) {
         }
     ar_close_archive(a);
     ar_close(s);
+    return true;
+
+}
+
+PopplerBook::PopplerBook(QUrl fn)
+{
+    if (isSupported(fn)) {
+        filename = fn;
+        openArchive(fn);
+        size = bookDoc->pages();
+    //qWarning("book size: %i", size);
+    }
+}
+
+PopplerBook::~PopplerBook()
+{
+}
+
+void PopplerBook::openArchive(QUrl fn) {
+    bookDoc = poppler::document::load_from_file(fn.toLocalFile().toStdString());
+}
+
+Page PopplerBook::getAt(int index, int width, int height) {
+    openArchive(filename);
+    poppler::page *p = bookDoc->create_page(index);
+    if (!p)
+        return Page {cv::Mat(), 0, 0, 0, filename};
+    poppler::page_renderer pr;
+    pr.set_image_format(poppler::image::format_bgr24);
+    poppler::image i = pr.render_page(p, 72.0, 72.0, -1, -1, width, height, poppler::rotate_0);
+    //poppler::image i = pr.render_page(p);
+    cv::Mat timg = cv::Mat(i.height(), i.width(), CV_8UC3, i.data(), i.bytes_per_row());
+    cv::Mat fimg;
+    timg.copyTo(fimg);
+    Page r = {fimg, fimg.cols, fimg.rows, index, filename};
+    return r;
+}
+
+int PopplerBook::getSize() {
+    return size;
+}
+
+QUrl PopplerBook::getFilename() {
+    return filename;
+}
+
+bool PopplerBook::isSupported(QUrl fn) {
+    if (fn.isEmpty())
+        return false;
+    poppler::document *d  = nullptr;
+    d = poppler::document::load_from_file(fn.toLocalFile().toStdString());
+    if (!d)
+        return false;
     return true;
 
 }
