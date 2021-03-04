@@ -7,9 +7,13 @@
 
 using namespace cv;
 
-void ImageProc::createMask(Mat& src, Mat& dst) {
+void ImageProc::createMask(Mat& src, Mat& dst, bool inv) {
     cvtColor(src, dst, COLOR_RGBA2GRAY);
-    threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
+    if (!inv) {
+        threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
+    } else {
+        threshold(dst, dst, 235, 255, THRESH_BINARY); //un peux trop violent
+    }
 }
 
 Rect ImageProc::createROI(Mat& src) {
@@ -165,8 +169,9 @@ void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) { //sr
     Mat mask;
     img = src;
     cvtColor(img, img, COLOR_BGR2RGBA);
-                qWarning("pass");
     createMask(src, mask);
+    if (mask.size == img.size)
+       createMask(src, mask, true);
     Rect roi = createROI(mask);
     img = img(roi);
     scale(img, img, width, height);
