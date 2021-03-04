@@ -258,8 +258,8 @@ Page PopplerBook::getAt(int index, int width, int height) {
         return Page {cv::Mat(), 0, 0, 0, filename};
     poppler::page_renderer pr;
     pr.set_image_format(poppler::image::format_bgr24);
-    poppler::image i = pr.render_page(p, 72.0, 72.0, -1, -1, width, height, poppler::rotate_0);
-    //poppler::image i = pr.render_page(p);
+    //poppler::image i = pr.render_page(p, 224.0, 224.0, -1, -1, width, height, poppler::rotate_0);
+    poppler::image i = pr.render_page(p, 400.0, 400.0);
     cv::Mat timg = cv::Mat(i.height(), i.width(), CV_8UC3, i.data(), i.bytes_per_row());
     cv::Mat fimg;
     timg.copyTo(fimg);

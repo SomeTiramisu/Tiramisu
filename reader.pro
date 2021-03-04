@@ -5,7 +5,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG += c++11
 
 android {
-LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
+LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 DEFINES += \
     ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \

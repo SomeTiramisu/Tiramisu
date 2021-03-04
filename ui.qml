@@ -6,7 +6,7 @@ import QtQuick.Window 2.15
 
 ApplicationWindow {
     id: root
-    width:500; height: 500
+    width:900; height: 900
     //width:1080; height: 1920
     visible: true
     visibility: chooseVisibility()
