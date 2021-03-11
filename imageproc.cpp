@@ -164,14 +164,14 @@ void ImageProc::centerFit(Mat& src, Mat& dst, int view_width, int view_height) {
     white.copyTo(dst);
 }
 
-void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) { //src2 is background
+void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) {
     Mat img;
     Mat mask;
     img = src;
     cvtColor(img, img, COLOR_BGR2RGBA);
     createMask(src, mask);
-    if (mask.size == img.size)
-       createMask(src, mask, true);
+    //if (mask.size() == img.size()) //TODO black and white margin support
+    //   createMask(src, mask, true);
     Rect roi = createROI(mask);
     img = img(roi);
     scale(img, img, width, height);
