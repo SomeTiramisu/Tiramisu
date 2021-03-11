@@ -1,12 +1,12 @@
 #include "pageimageprovider.h"
 
-#include "imageproc.h"
-#include "pageworker.h"
-#include <QGraphicsPixmapItem>
+//#include "imageproc.h"
+//#include "pageworker.h"
+//#include <QGraphicsPixmapItem>
 
 PageImageProvider::PageImageProvider(Backend *b)
     : QQuickImageProvider(QQuickImageProvider::Image),
-      controller(b)
+      controller(b, QUrl()) //TOFIX
 {
 }
 
@@ -15,7 +15,7 @@ PageImageProvider::~PageImageProvider()
 }
 
 QImage PageImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize) {
-    QImage img(controller.getPage(id));
+    QImage img(controller.getPage(decodeId(id)));
     if (img.isNull())
         return QImage();
     //qWarning("showing page");

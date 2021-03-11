@@ -1,16 +1,16 @@
 #include <asyncpageimageprovider.h>
 #include <QImage>
-#include "pageworker.h"
-#include "imageproc.h"
-#include "backend.h"
+//#include "pageworker.h"
+//#include "imageproc.h"
+//#include "backend.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController &controller) {
     connect(&controller, &PageController::addPage, this, &AsyncPageImageResponse::handleDone);
-    controller.getAsyncPage(id);
+    controller.getAsyncPage(decodeId(id));
 }
 void AsyncPageImageResponse::handleDone(QImage image) {
     m_image = image;
-    qWarning("finished");
+    //qWarning("finished");
     emit finished();
 }
 
@@ -20,7 +20,7 @@ QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
 }
 
 AsyncPageImageProvider::AsyncPageImageProvider(Backend *b)
-    : QQuickAsyncImageProvider(), controller(b) {
+    : QQuickAsyncImageProvider(), controller(b, QUrl()) {
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {

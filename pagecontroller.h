@@ -6,30 +6,22 @@
 #include <QPixmap>
 #include "backend.h"
 #include "pageworker.h"
-
-struct PageRequest {
-    int width;
-    int height;
-    int index;
-    QUrl book_filename;
-};
+#include "helper.h"
 
 class PageController : public QObject
 {
     Q_OBJECT
 public:
-    PageController(Backend* b, QObject *parent = nullptr);
+    PageController(Backend* b, QUrl book_filename, QObject *parent = nullptr);
     ~PageController();
-    QImage getPage(QString id);
-    void getAsyncPage(QString id);
+    QImage getPage(PageRequest req);
+    void getAsyncPage(PageRequest req);
     void initPage(PageRequest req);
 
 
 private:
     void preloadPages(PageRequest req);
     void cleanPages(int maxIndex);
-    void changeBookFilename(QUrl book_filename);
-    PageRequest decodeId(QString id);
     Backend* backend;
     ImageWorker *worker;
     QThread workerThread;
@@ -37,13 +29,13 @@ private:
     QVector<char> pagesStatus;
 
     int lastIndex;
-    QUrl last_book_filename;
+    QUrl book_filename;
 
 
 public slots:
     void handleImage(Page page);
 signals:
-    void addImage(QUrl book_filename, int index, int width, int height);
+    void addImage(int index, int width, int height);
     void addPage(QImage image);
 
 

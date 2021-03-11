@@ -1,8 +1,8 @@
 #ifndef BOOK_H
 #define BOOK_H
 
-#include <vector>
-#include <string>
+//#include <vector>
+//#include <string>
 #include <opencv2/core.hpp>
 #include <QUrl>
 #include <poppler/cpp/poppler-document.h>

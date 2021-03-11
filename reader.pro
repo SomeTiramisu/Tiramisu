@@ -47,6 +47,7 @@ HEADERS += \
     pagecontroller.h \
     pageimageprovider.h \
     pageworker.h \
+    helper.h \
     strnatcmp/strnatcmp.h
 
 # Default rules for deployment.

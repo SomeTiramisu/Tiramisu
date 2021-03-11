@@ -4,7 +4,7 @@
 #include <qquickimageprovider.h>
 #include <QImage>
 #include "pagecontroller.h"
-#include "backend.h"
+//#include "backend.h"
 
 class AsyncPageImageResponse : public QQuickImageResponse
 {

@@ -1,5 +1,3 @@
-#include <QJsonDocument>
-#include <QJsonObject>
 #include "pagecontroller.h"
 #include "pageworker.h"
 #include "imageproc.h"
@@ -10,10 +8,10 @@
 #define REQUESTED 1
 #define RECIEVED 2
 
-PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
+PageController::PageController(Backend* b, QUrl book_filename, QObject *parent) : QObject(parent)
 {
     backend = b;
-    worker = new ImageWorker();
+    worker = new ImageWorker(book_filename);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
@@ -21,8 +19,7 @@ PageController::PageController(Backend* b, QObject *parent) : QObject(parent)
     workerThread.start();
 
     lastIndex = 0;
-    last_book_filename = QUrl();
-    changeBookFilename(last_book_filename);
+    this->book_filename = book_filename;
 }
 
 PageController::~PageController() {
@@ -30,13 +27,8 @@ PageController::~PageController() {
     workerThread.wait();
 }
 
-QImage PageController::getPage(QString id) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
-    PageRequest req = decodeId(id);
+QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = req.index;
-    if (last_book_filename != req.book_filename) { //aucune page n'a encre ete demandees
-        changeBookFilename(req.book_filename);
-        initPage(req);
-    }
     if (pagesStatus[index] != RECIEVED) {
         index = lastIndex;
     }
@@ -45,7 +37,7 @@ QImage PageController::getPage(QString id) { //0 -> no requested no revieved ; 1
     preloadPages(req);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(req.book_filename, index, w, h);
+        emit addImage(index, w, h);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -54,12 +46,8 @@ QImage PageController::getPage(QString id) { //0 -> no requested no revieved ; 1
     return QImage();
 }
 
-void PageController::getAsyncPage(QString id) {
-    PageRequest req = decodeId(id);
+void PageController::getAsyncPage(PageRequest req) {
     int index = req.index;
-    if (last_book_filename != req.book_filename) { //aucune page n'a encre ete demandees
-        changeBookFilename(req.book_filename);
-    }
     if (index >= pages.size()) {
         index = pages.size() - 1;
     }
@@ -70,8 +58,8 @@ void PageController::getAsyncPage(QString id) {
 }
 
 void PageController::initPage(PageRequest req) {
-    ImageWorker w;
-    Page p = w.requestImage(req.book_filename, req.index, req.width, req.height);
+    ImageWorker w(book_filename); //shold be the same as bf in request
+    Page p = w.requestImage(req.index, req.width, req.height);
     pages[req.index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[req.index] = RECIEVED;
     qWarning("initializing %i", req.index);
@@ -84,11 +72,11 @@ void PageController::preloadPages(PageRequest req) {
     for (int i=1; i<IMAGE_PRELOAD; i++) {
         if (index+i<pages.size() && pagesStatus[index+i] == NOT_REQUESTED) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(req.book_filename, index+i, w, h);
+            emit addImage(index+i, w, h);
         }
         if (index-i>=0 && pagesStatus[index-i] == NOT_REQUESTED) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(req.book_filename, index-i, w, h);
+            emit addImage(index-i, w, h);
         }
     }
     for (int i=0; i<pages.size(); i++) {
@@ -108,33 +96,9 @@ PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,h
     };
 }
 */
-PageRequest PageController::decodeId(QString id) {
-    //qWarning("id: %s", id.toStdString().c_str());
-    QJsonObject jido = QJsonDocument::fromJson(QUrl::fromPercentEncoding(id.toUtf8()).toUtf8()).object(); //boncourage
-    PageRequest ret = PageRequest {
-            .width = jido.value("width").toInt(),
-            .height = jido.value("height").toInt(),
-            .index = jido.value("index").toInt(),
-            .book_filename = jido.value("book_filename").toString()
-    };
-    qWarning("decoded: %i, %i, %i, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str());
-    return ret;
-}
 
 void PageController::handleImage(Page page) {
-    if (page.book_filename != last_book_filename)
-        return;
     qWarning("recieved!!! %i", page.index);
     pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;
-}
-
-void PageController::changeBookFilename(QUrl book_filename) {
-    Book b = Book(book_filename);
-    pages = QVector<QImage>(b.getSize(), QImage()); //tocheck
-    pagesStatus = QVector<char>(b.getSize(), NOT_REQUESTED);
-    lastIndex = 0;
-    last_book_filename = book_filename;
-
-    qWarning("new path: %s", book_filename.toLocalFile().toStdString().c_str());
 }

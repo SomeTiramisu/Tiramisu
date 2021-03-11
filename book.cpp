@@ -1,20 +1,20 @@
 #include "book.h"
 
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <QtCore>
-#include <opencv2/core.hpp>
+//#include <algorithm>
+//#include <vector>
+//#include <string>
+//#include <QtCore>
+//#include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
-#include <poppler/cpp/poppler-document.h>
-#include <poppler/cpp/poppler-page.h>
-#include <poppler/cpp/poppler-image.h>
+//#include <poppler/cpp/poppler-document.h>
+//#include <poppler/cpp/poppler-page.h>
+//#include <poppler/cpp/poppler-image.h>
 #include <poppler/cpp/poppler-page-renderer.h>
 
 extern "C" {
-#include <archive.h>
-#include <archive_entry.h>
-#include <unarr.h>
+//#include <archive.h>
+//#include <archive_entry.h>
+//#include <unarr.h>
 #include "strnatcmp/strnatcmp.h"
 };
 

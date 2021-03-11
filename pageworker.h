@@ -3,20 +3,20 @@
 
 #include <QObject>
 #include <book.h>
-#include <memory>
+//#include <memory>
 
 class ImageWorker : public QObject
 {
     Q_OBJECT
 public:
-    ImageWorker();
+    ImageWorker(QUrl book_filename);
     ~ImageWorker();
-    Page requestImage(QUrl book_filename, int index, int width, int height);
+    Page requestImage(int index, int width, int height);
 private:
     Book book;
 
 public slots:
-    void addImage(QUrl book_filename, int index, int width, int height);
+    void addImage(int index, int width, int height);
 
 signals:
     void imageReady(Page page);

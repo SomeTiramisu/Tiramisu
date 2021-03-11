@@ -1,5 +1,5 @@
 #include "backend.h"
-#include "book.h"
+//#include "book.h"
 
 //#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
 //#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
