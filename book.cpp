@@ -19,13 +19,26 @@ extern "C" {
 };
 
 Book::Book(QUrl fn)
-    : libarchive_book(fn), unarr_book(fn), poppler_book(fn) {
-    filename = fn;
-    book_lib = getBookLib(fn);
+    : libarchive_book(nullptr),
+      unarr_book(nullptr),
+      poppler_book(nullptr),
+      filename(fn),
+      book_lib(getBookLib(fn))
+{
     //qWarning("booklib: %i", book_lib);
+    if (book_lib == LIBARCHIVE)
+        libarchive_book = new LibarchiveBook(fn);
+    if (book_lib == UNARR)
+        unarr_book = new UnarrBook(fn);
+    if (book_lib == POPPLER)
+        poppler_book = new PopplerBook(fn);
+
 }
 
 Book::~Book() {
+    delete libarchive_book;
+    delete unarr_book;
+    delete poppler_book;
 }
 
 int Book::getBookLib(QUrl fn) {
@@ -42,11 +55,11 @@ int Book::getBookLib(QUrl fn) {
 
 Page Book::getAt(int index, int width, int height) {
     if (book_lib == LIBARCHIVE)
-        return libarchive_book.getAt(index);
+        return libarchive_book->getAt(index);
     if (book_lib == UNARR)
-        return unarr_book.getAt(index);
+        return unarr_book->getAt(index);
     if (book_lib == POPPLER)
-        return poppler_book.getAt(index, width, height);
+        return poppler_book->getAt(index, width, height);
     return Page {cv::Mat(), 0, 0, 0, QUrl()};
 
 }
@@ -55,11 +68,11 @@ int Book::getSize() {
     if (book_lib == DUMMY)
         return 1;
     if (book_lib == LIBARCHIVE)
-        return libarchive_book.getSize();
+        return libarchive_book->getSize();
     if (book_lib == UNARR)
-        return unarr_book.getSize();
+        return unarr_book->getSize();
     if (book_lib == POPPLER)
-        return poppler_book.getSize();
+        return poppler_book->getSize();
     return 0;
 }
 

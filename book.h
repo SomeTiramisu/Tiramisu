@@ -103,9 +103,9 @@ private:
     int book_lib;
     QUrl filename;
     int getBookLib(QUrl fn);
-    LibarchiveBook libarchive_book;
-    UnarrBook unarr_book;
-    PopplerBook poppler_book;
+    LibarchiveBook *libarchive_book;
+    UnarrBook *unarr_book;
+    PopplerBook *poppler_book;
 };
 
 bool naturalCompare(const header &a, const header &b);
