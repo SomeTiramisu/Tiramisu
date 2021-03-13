@@ -1,5 +1,5 @@
 #include "backend.h"
-//#include "book.h"
+#include "book.h"
 
 //#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
 //#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
@@ -65,8 +65,13 @@ int Backend::pageIndex() {
     return m_pageIndex;
 }
 
-QString Backend::productName() {
+QString Backend::getProductName() {
     return QSysInfo::productType();
+}
+
+int Backend::getMaxIndex(QUrl bookFilename) {
+    Book b = Book(bookFilename);
+    return b.getSize()-1;
 }
 
 QUrl Backend::bookFromId(int id) {// TODO

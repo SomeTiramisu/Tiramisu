@@ -11,7 +11,7 @@ class Backend : public QObject
     Q_PROPERTY(QUrl bookDir READ bookDir WRITE setBookDir NOTIFY bookDirChanged)
     Q_PROPERTY(QUrl bgFilename READ bgFilename WRITE setBgFilename NOTIFY bgFilenameChanged)
     Q_PROPERTY(int pageIndex READ pageIndex WRITE setPageIndex NOTIFY pageIndexChanged)
-    Q_PROPERTY(QString productName READ productName CONSTANT)
+    //Q_PROPERTY(QString productName READ productName CONSTANT)
 
 public:
     Backend();
@@ -24,8 +24,9 @@ public:
     QUrl bgFilename();
     QUrl bookDir();
     int pageIndex();
-    QString productName();
+    Q_INVOKABLE QString getProductName();
     QUrl bookFromId(int id);
+    Q_INVOKABLE int getMaxIndex(QUrl bookFilename);
 
 private:
     QUrl m_bookFilename;
