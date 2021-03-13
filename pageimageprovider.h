@@ -4,7 +4,7 @@
 #include <QQuickImageProvider>
 #include <QThread>
 //#include "book.h"
-//#include "backend.h"
+#include "backend.h"
 #include "pagecontroller.h"
 
 class PageImageProvider :  public QQuickImageProvider

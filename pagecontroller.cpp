@@ -1,16 +1,14 @@
 #include "pagecontroller.h"
 #include "pageworker.h"
 #include "imageproc.h"
-#include "backend.h"
 #include "book.h"
 #define IMAGE_PRELOAD 5
 #define NOT_REQUESTED 0
 #define REQUESTED 1
 #define RECIEVED 2
 
-PageController::PageController(Backend* b, QUrl book_filename, QObject *parent) : QObject(parent)
+PageController::PageController(QUrl book_filename, QObject *parent) : QObject(parent)
 {
-    backend = b;
     worker = new ImageWorker(book_filename);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
@@ -20,11 +18,17 @@ PageController::PageController(Backend* b, QUrl book_filename, QObject *parent) 
 
     lastIndex = 0;
     this->book_filename = book_filename;
+
+    Book bk = Book(book_filename);
+    pages = QVector<QImage>(bk.getSize(), QImage()); //tocheck
+    pagesStatus = QVector<char>(bk.getSize(), NOT_REQUESTED);
+
 }
 
 PageController::~PageController() {
     workerThread.quit();
     workerThread.wait();
+    qWarning("controller deleted");
 }
 
 QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
@@ -42,7 +46,7 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
         lastIndex = index;
         return pages[index];
     }
-    qWarning("not recieved i:%i s:%i", index, pagesStatus[index]);
+    //qWarning("not recieved i:%i s:%i", index, pagesStatus[index]);
     return QImage();
 }
 
@@ -62,7 +66,7 @@ void PageController::initPage(PageRequest req) {
     Page p = w.requestImage(req.index, req.width, req.height);
     pages[req.index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[req.index] = RECIEVED;
-    qWarning("initializing %i", req.index);
+    //qWarning("initializing %i", req.index);
 }
 
 void PageController::preloadPages(PageRequest req) {
@@ -97,8 +101,12 @@ PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,h
 }
 */
 
+QUrl PageController::getBookFilename() {
+    return book_filename;
+}
+
 void PageController::handleImage(Page page) {
-    qWarning("recieved!!! %i", page.index);
+    //qWarning("recieved!!! %i", page.index);
     pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;
 }

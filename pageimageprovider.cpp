@@ -6,7 +6,7 @@
 
 PageImageProvider::PageImageProvider(Backend *b)
     : QQuickImageProvider(QQuickImageProvider::Image),
-      controller(b, QUrl()) //TOFIX
+      controller(QUrl()) //TOFIX
 {
 }
 

@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QThread>
 #include <QPixmap>
-#include "backend.h"
 #include "pageworker.h"
 #include "helper.h"
 
@@ -12,17 +11,17 @@ class PageController : public QObject
 {
     Q_OBJECT
 public:
-    PageController(Backend* b, QUrl book_filename, QObject *parent = nullptr);
+    PageController(QUrl book_filename, QObject *parent = nullptr);
     ~PageController();
     QImage getPage(PageRequest req);
     void getAsyncPage(PageRequest req);
     void initPage(PageRequest req);
+    QUrl getBookFilename();
 
 
 private:
     void preloadPages(PageRequest req);
     void cleanPages(int maxIndex);
-    Backend* backend;
     ImageWorker *worker;
     QThread workerThread;
     QVector<QImage> pages;

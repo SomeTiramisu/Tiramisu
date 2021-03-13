@@ -12,7 +12,7 @@ ApplicationWindow {
     visibility: chooseVisibility()
     property url book_filename: ""
     function chooseVisibility() {
-        if (backend.productName === "android") {
+        if (backend.getProductName() === "android") {
             return "FullScreen"
         }
         return "Windowed"

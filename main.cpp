@@ -18,9 +18,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     Backend *backend = new Backend();
-    PageImageProvider *imp = new PageImageProvider(backend);
-    AsyncPageImageProvider *aimp = new AsyncPageImageProvider(backend);
-
+    //PageImageProvider *imp = new PageImageProvider(backend);
+    AsyncPageImageProvider *aimp = new AsyncPageImageProvider();
 
     engine.addImageProvider("pages", aimp);
     engine.rootContext()->setContextProperty("backend", backend);

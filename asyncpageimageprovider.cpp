@@ -4,9 +4,19 @@
 //#include "imageproc.h"
 //#include "backend.h"
 
-AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController &controller) {
-    connect(&controller, &PageController::addPage, this, &AsyncPageImageResponse::handleDone);
-    controller.getAsyncPage(decodeId(id));
+AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) {
+    PageRequest req(decodeId(id));
+    if (controller == nullptr) {
+        qWarning("bkfn new bkfn: %s", req.book_filename.toString().toStdString().c_str());
+        controller = new PageController(req.book_filename);
+    }
+    if (controller->getBookFilename() != req.book_filename) {
+        qWarning("bkfn changed old: %s, new: %s", controller->getBookFilename().toString().toStdString().c_str(), req.book_filename.toString().toStdString().c_str());
+        delete controller;
+        controller = new PageController(req.book_filename);
+    }
+    connect(controller, &PageController::addPage, this, &AsyncPageImageResponse::handleDone);
+    controller->getAsyncPage(req);
 }
 void AsyncPageImageResponse::handleDone(QImage image) {
     m_image = image;
@@ -19,8 +29,9 @@ QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
     return QQuickTextureFactory::textureFactoryForImage(m_image);
 }
 
-AsyncPageImageProvider::AsyncPageImageProvider(Backend *b)
-    : QQuickAsyncImageProvider(), controller(b, QUrl()) {
+AsyncPageImageProvider::AsyncPageImageProvider()
+    : QQuickAsyncImageProvider() {
+    controller = nullptr;
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {

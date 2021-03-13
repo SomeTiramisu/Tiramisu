@@ -9,7 +9,7 @@
 class AsyncPageImageResponse : public QQuickImageResponse
 {
 public:
-    AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController &controller);
+    AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller);
     QQuickTextureFactory *textureFactory() const override;
     void handleDone(QImage image);
     QImage m_image;
@@ -18,14 +18,11 @@ public:
 class AsyncPageImageProvider : public QQuickAsyncImageProvider
 {
 public:
-    AsyncPageImageProvider(Backend *b);
+    AsyncPageImageProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
 
 private:
-    PageController controller;
+    PageController *controller;
 };
-
-
-
 
 #endif // ASYNCPAGEIMAGEPROVIDER_H
