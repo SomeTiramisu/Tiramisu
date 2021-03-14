@@ -20,8 +20,9 @@ PageController::PageController(QUrl book_filename, QObject *parent) : QObject(pa
     this->book_filename = book_filename;
 
     Book bk = Book(book_filename);
-    pages = QVector<QImage>(bk.getSize(), QImage()); //tocheck
-    pagesStatus = QVector<char>(bk.getSize(), NOT_REQUESTED);
+    book_size = bk.getSize();
+    pages = QVector<QImage>(book_size, QImage()); //tocheck
+    pagesStatus = QVector<char>(book_size, NOT_REQUESTED);
 
 }
 
@@ -52,8 +53,8 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
 
 void PageController::getAsyncPage(PageRequest req) {
     int index = req.index;
-    if (index >= pages.size()) {
-        index = pages.size() - 1;
+    if (index >= book_size) {
+        index = book_size - 1;
     }
     if (pagesStatus[index] != RECIEVED)
         initPage(req);
@@ -62,8 +63,8 @@ void PageController::getAsyncPage(PageRequest req) {
 }
 
 void PageController::initPage(PageRequest req) {
-    ImageWorker w(book_filename); //shold be the same as bf in request
-    Page p = w.requestImage(req.index, req.width, req.height);
+    //ImageWorker w(book_filename); //shold be the same as bf in request
+    Page p = worker->requestImage(req.index, req.width, req.height);
     pages[req.index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[req.index] = RECIEVED;
     //qWarning("initializing %i", req.index);
@@ -74,7 +75,7 @@ void PageController::preloadPages(PageRequest req) {
     int w = req.width;
     int h = req.height;
     for (int i=1; i<IMAGE_PRELOAD; i++) {
-        if (index+i<pages.size() && pagesStatus[index+i] == NOT_REQUESTED) {
+        if (index+i<book_size && pagesStatus[index+i] == NOT_REQUESTED) {
             pagesStatus[index+i] = REQUESTED;
             emit addImage(index+i, w, h);
         }
@@ -83,7 +84,7 @@ void PageController::preloadPages(PageRequest req) {
             emit addImage(index-i, w, h);
         }
     }
-    for (int i=0; i<pages.size(); i++) {
+    for (int i=0; i<book_size; i++) {
         if ((i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD) && pagesStatus[i] == RECIEVED) {
             pages[i] = QImage();
             pagesStatus[i] = NOT_REQUESTED;

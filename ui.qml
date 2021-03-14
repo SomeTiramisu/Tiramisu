@@ -10,7 +10,6 @@ ApplicationWindow {
     //width:1080; height: 1920
     visible: true
     visibility: chooseVisibility()
-    property url book_filename: ""
     function chooseVisibility() {
         if (backend.getProductName() === "android") {
             return "FullScreen"
@@ -47,8 +46,9 @@ ApplicationWindow {
                         height: folderView.height/10
                         onClicked: {
                             console.log(fileUrl)
-                            root.book_filename = fileUrl
-                            page.source = "image://pages/" + root.genId(root.book_filename, 0, root.width, root.height)
+                            page.book_filename = fileUrl
+                            page.book_size = backend.getBookSize(page.book_filename)
+                            page.source = "image://pages/" + root.genId(page.book_filename, 0, root.width, root.height)
                         }
 
                     }
@@ -78,16 +78,20 @@ ApplicationWindow {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + root.genId(root.book_filename, 0, root.width, root.height)
+        property url book_filename: ""
+        property int book_size: 0
+        source: "image://pages/" + root.genId(page.book_filename, 0, root.width, root.height)
         TapHandler {
             id: tHandler
             onTapped: {
                 if (eventPoint.position.x > parent.width / 2) {
-                    backend.pageIndex++
+                    if (backend.pageIndex < page.book_size-1) {
+                        backend.pageIndex++
+                    }
                 } else if (backend.pageIndex > 0) {
                     backend.pageIndex--
                 }
-                parent.source = "image://pages/" + genId(root.book_filename, backend.pageIndex, root.width, root.height)
+                parent.source = "image://pages/" + genId(page.book_filename, backend.pageIndex, root.width, root.height)
             }
         }
     }

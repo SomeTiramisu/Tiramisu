@@ -69,11 +69,7 @@ QString Backend::getProductName() {
     return QSysInfo::productType();
 }
 
-int Backend::getMaxIndex(QUrl bookFilename) {
+int Backend::getBookSize(QUrl bookFilename) {
     Book b = Book(bookFilename);
-    return b.getSize()-1;
-}
-
-QUrl Backend::bookFromId(int id) {// TODO
-    return bookFilename();
+    return b.getSize();
 }

@@ -25,8 +25,7 @@ public:
     QUrl bookDir();
     int pageIndex();
     Q_INVOKABLE QString getProductName();
-    QUrl bookFromId(int id);
-    Q_INVOKABLE int getMaxIndex(QUrl bookFilename);
+    Q_INVOKABLE int getBookSize(QUrl bookFilename);
 
 private:
     QUrl m_bookFilename;

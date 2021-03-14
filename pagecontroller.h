@@ -29,6 +29,7 @@ private:
 
     int lastIndex;
     QUrl book_filename;
+    int book_size;
 
 
 public slots:
