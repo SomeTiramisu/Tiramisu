@@ -47,10 +47,11 @@ private:
     archive *bookArchive;
     archive_entry *entry;  //TODO : inutile ici, rempkacer localement
     std::vector<header> headers;
-    void openArchive(QUrl fn);
+    void openArchive();
+    void initArchive(QUrl fn);
     int size;
     QUrl filename;
-
+    QByteArray ram_archive;
 };
 
 class UnarrBook {
@@ -67,10 +68,11 @@ private:
     ar_stream *bookStream;
     ar_archive *bookArchive;
     std::vector<header> headers;
-    void openArchive(QUrl fn);
+    void openArchive();
+    void initArchive(QUrl fn);
     int size;
     QUrl filename;
-
+    QByteArray ram_archive;
 };
 
 class PopplerBook {
@@ -85,10 +87,11 @@ public:
 
 private:
     poppler::document *bookDoc;
-    void openArchive(QUrl fn);
+    void openArchive();
+    void initArchive(QUrl fn);
     int size;
     QUrl filename;
-
+    QByteArray ram_archive;
 };
 
 class Book {

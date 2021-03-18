@@ -3,7 +3,7 @@
 //#include <algorithm>
 //#include <vector>
 //#include <string>
-//#include <QtCore>
+#include <QtCore>
 //#include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 //#include <poppler/cpp/poppler-document.h>
@@ -19,11 +19,11 @@ extern "C" {
 };
 
 Book::Book(QUrl fn)
-    : libarchive_book(nullptr),
-      unarr_book(nullptr),
-      poppler_book(nullptr),
+    : book_lib(getBookLib(fn)),
       filename(fn),
-      book_lib(getBookLib(fn))
+      libarchive_book(nullptr),
+      unarr_book(nullptr),
+      poppler_book(nullptr)
 {
     //qWarning("booklib: %i", book_lib);
     if (book_lib == LIBARCHIVE)
@@ -32,7 +32,6 @@ Book::Book(QUrl fn)
         unarr_book = new UnarrBook(fn);
     if (book_lib == POPPLER)
         poppler_book = new PopplerBook(fn);
-
 }
 
 Book::~Book() {
@@ -84,7 +83,8 @@ LibarchiveBook::LibarchiveBook(QUrl fn)
 {
     if (isSupported(fn)) {
         filename = fn;
-        openArchive(filename);
+        initArchive(filename);
+        openArchive();
 
         int i = 0;
         size = 0;
@@ -116,17 +116,24 @@ LibarchiveBook::~LibarchiveBook()
 {
 }
 
-void LibarchiveBook::openArchive(QUrl fn) {
+void LibarchiveBook::openArchive() {
     bookArchive = archive_read_new();
     archive_read_support_filter_all(bookArchive);
     archive_read_support_format_zip(bookArchive);
     //archive_read_support_format_rar(bookArchive); buggy
-    archive_read_open_filename(bookArchive, fn.toLocalFile().toStdString().c_str(), 10240); //may be incorrect
+    archive_read_open_memory(bookArchive, ram_archive.data(), ram_archive.length()); //may be incorrect
+}
+
+void LibarchiveBook::initArchive(QUrl fn) {
+    QFile file(fn.toLocalFile());
+    file.open(QIODevice::ReadOnly);
+    ram_archive = file.readAll();
+    file.close();
 }
 
 Page LibarchiveBook::getAt(int index) {
     int n = headers[index].index;
-    openArchive(filename);
+    openArchive();
     for (int i=0; i<=n; i++) {
         archive_read_next_header(bookArchive, &entry);
     }
@@ -169,7 +176,9 @@ UnarrBook::UnarrBook(QUrl fn)
 {
     if (isSupported(fn)) {
         filename = fn;
-        openArchive(filename);
+        initArchive(filename);
+        openArchive();
+
         int i = 0;
         size = 0;
         while (ar_parse_entry(bookArchive)) {
@@ -196,14 +205,21 @@ UnarrBook::~UnarrBook()
 {
 }
 
-void UnarrBook::openArchive(QUrl fn) {
-    bookStream = ar_open_file(fn.toLocalFile().toStdString().c_str());
+void UnarrBook::openArchive() {
+    bookStream = ar_open_memory(ram_archive.data(), ram_archive.length());
     bookArchive = ar_open_rar_archive(bookStream);
+}
+
+void UnarrBook::initArchive(QUrl fn) {
+    QFile file(fn.toLocalFile());
+    file.open(QIODevice::ReadOnly);
+    ram_archive = file.readAll();
+    file.close();
 }
 
 Page UnarrBook::getAt(int index) {
     int n = headers[index].index;
-    openArchive(filename);
+    openArchive();
     for (int i=0; i<=n; i++) {
         ar_parse_entry(bookArchive);
     }
@@ -250,7 +266,8 @@ PopplerBook::PopplerBook(QUrl fn)
 {
     if (isSupported(fn)) {
         filename = fn;
-        openArchive(fn);
+        initArchive(fn);
+        openArchive();
         size = bookDoc->pages();
     //qWarning("book size: %i", size);
     }
@@ -260,12 +277,19 @@ PopplerBook::~PopplerBook()
 {
 }
 
-void PopplerBook::openArchive(QUrl fn) {
-    bookDoc = poppler::document::load_from_file(fn.toLocalFile().toStdString());
+void PopplerBook::openArchive() {
+    bookDoc = poppler::document::load_from_raw_data(ram_archive.data(), ram_archive.length());
+}
+
+void PopplerBook::initArchive(QUrl fn) {
+    QFile file(fn.toLocalFile());
+    file.open(QIODevice::ReadOnly);
+    ram_archive = file.readAll();
+    file.close();
 }
 
 Page PopplerBook::getAt(int index, int width, int height) {
-    openArchive(filename);
+    openArchive();
     poppler::page *p = bookDoc->create_page(index);
     if (!p)
         return Page {cv::Mat(), 0, 0, 0, filename};
