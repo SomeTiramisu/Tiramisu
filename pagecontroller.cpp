@@ -7,7 +7,9 @@
 #define REQUESTED 1
 #define RECIEVED 2
 
-PageController::PageController(QUrl book_filename, QObject *parent) : QObject(parent)
+PageController::PageController(QUrl book_filename, QObject *parent) :
+    QObject(parent),
+    localWorker(book_filename)
 {
     worker = new ImageWorker(book_filename);
     worker->moveToThread(&workerThread);
@@ -62,9 +64,9 @@ void PageController::getAsyncPage(PageRequest req) {
     emit addPage(pages[index]);
 }
 
-void PageController::initPage(PageRequest req) {
+void PageController::initPage(PageRequest req) { //utiliser un worker local ?
     //ImageWorker w(book_filename); //shold be the same as bf in request
-    Page p = worker->requestImage(req.index, req.width, req.height);
+    Page p = localWorker.requestImage(req.index, req.width, req.height);
     pages[req.index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[req.index] = RECIEVED;
     //qWarning("initializing %i", req.index);

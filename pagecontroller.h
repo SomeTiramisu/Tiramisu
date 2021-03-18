@@ -23,6 +23,7 @@ private:
     void preloadPages(PageRequest req);
     void cleanPages(int maxIndex);
     ImageWorker *worker;
+    ImageWorker localWorker; //may be useless
     QThread workerThread;
     QVector<QImage> pages;
     QVector<char> pagesStatus;
