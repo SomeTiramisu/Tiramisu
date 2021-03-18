@@ -2,7 +2,7 @@
 #include "pageworker.h"
 #include "imageproc.h"
 #include "book.h"
-#define IMAGE_PRELOAD 5
+#define IMAGE_PRELOAD 10
 #define NOT_REQUESTED 0
 #define REQUESTED 1
 #define RECIEVED 2
@@ -58,10 +58,11 @@ void PageController::getAsyncPage(PageRequest req) {
     if (index >= book_size) {
         index = book_size - 1;
     }
+    //preloadPages(req);
     if (pagesStatus[index] != RECIEVED)
         initPage(req);
-    preloadPages(req);
     emit addPage(pages[index]);
+    preloadPages(req);
 }
 
 void PageController::initPage(PageRequest req) { //utiliser un worker local ?
@@ -109,7 +110,7 @@ QUrl PageController::getBookFilename() {
 }
 
 void PageController::handleImage(Page page) {
-    //qWarning("recieved!!! %i", page.index);
+    qWarning("recieved!!! %i", page.index);
     pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;
 }
