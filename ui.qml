@@ -48,6 +48,7 @@ ApplicationWindow {
                             console.log(fileUrl)
                             page.book_filename = fileUrl
                             page.book_size = backend.getBookSize(page.book_filename)
+                            backend.pageIndex = 0
                             page.source = "image://pages/" + root.genId(page.book_filename, 0, root.width, root.height)
                         }
 
