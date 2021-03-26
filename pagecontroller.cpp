@@ -8,17 +8,8 @@
 #define RECIEVED 2
 
 PageController::PageController(QUrl book_filename, QObject *parent) :
-    QObject(parent),
-    localWorker(book_filename)
+    QObject(parent)
 {
-    worker = new ImageWorker(book_filename);
-    worker->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
-    connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
-    workerThread.start();
-
-    lastIndex = 0;
     this->book_filename = book_filename;
 
     Book bk = Book(book_filename);
@@ -26,11 +17,24 @@ PageController::PageController(QUrl book_filename, QObject *parent) :
     pages = QVector<QImage>(book_size, QImage()); //tocheck
     pagesStatus = QVector<char>(book_size, NOT_REQUESTED);
 
+    localWorker = new ImageWorker(book_filename, pagesStatus);
+    worker = new ImageWorker(book_filename, pagesStatus);
+    worker->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
+    connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
+    workerThread.start();
+
+    lastIndex = 0;
+
+
 }
 
 PageController::~PageController() {
     workerThread.quit();
     workerThread.wait();
+    //localWorker->deleteLater();
+    //worker->deleteLater();
     qWarning("controller deleted");
 }
 
@@ -67,7 +71,7 @@ void PageController::getAsyncPage(PageRequest req) {
 
 void PageController::initPage(PageRequest req) { //utiliser un worker local ?
     //ImageWorker w(book_filename); //shold be the same as bf in request
-    Page p = localWorker.requestImage(req.index, req.width, req.height);
+    Page p = localWorker->requestImage(req.index, req.width, req.height);
     pages[req.index] = ImageProc::toQImage(p.img).copy();
     pagesStatus[req.index] = RECIEVED;
     //qWarning("initializing %i", req.index);

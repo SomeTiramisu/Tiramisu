@@ -4,8 +4,9 @@
 //#include <opencv2/imgcodecs.hpp>
 //#include <opencv2/imgproc.hpp>
 
-ImageWorker::ImageWorker(QUrl book_filename)
-    : book(book_filename)
+ImageWorker::ImageWorker(QUrl book_filename, const QVector<char> &page_status)
+    : book(book_filename),
+      status(page_status)
 {
 }
 
@@ -13,6 +14,8 @@ ImageWorker::~ImageWorker() {
 }
 
 void ImageWorker::addImage(int index, int width, int height) {
+    if (status[index] != 1)
+        return;
     emit imageReady(requestImage(index, width, height));
 }
 

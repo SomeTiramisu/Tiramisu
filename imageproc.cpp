@@ -10,7 +10,7 @@ using namespace cv;
 void ImageProc::createMask(Mat& src, Mat& dst, bool inv) {
     cvtColor(src, dst, COLOR_RGBA2GRAY);
     if (!inv) {
-        threshold(dst, dst, 235, 255, THRESH_BINARY_INV);
+        threshold(dst, dst, 240, 255, THRESH_BINARY_INV); //235 origin
     } else {
         threshold(dst, dst, 235, 255, THRESH_BINARY); //un peux trop violent
     }
