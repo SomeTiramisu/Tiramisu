@@ -34,7 +34,7 @@ ApplicationWindow {
 
                 FolderListModel {
                     id: folderModel
-                    nameFilters: ["*.cbz", "*.cbr", "*.pdf"]
+                    nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
                     showDirs: false
                     folder: backend.bookDir
                 }

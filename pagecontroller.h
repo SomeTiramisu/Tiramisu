@@ -2,7 +2,7 @@
 #define PAGECONTROLLER_H
 
 #include <QObject>
-#include <QThread>
+#include <QThreadPool>
 #include <QPixmap>
 #include "pageworker.h"
 #include "helper.h"
@@ -22,21 +22,19 @@ public:
 private:
     void preloadPages(PageRequest req);
     void cleanPages(int maxIndex);
-    ImageWorker *worker;
-    ImageWorker *localWorker; //may be useless
-    QThread workerThread;
+    void runPage(PageRequest req);
+    QThreadPool pool;
     QVector<QImage> pages;
     QVector<char> pagesStatus;
+    Book book;
 
     int lastIndex;
     QUrl book_filename;
     int book_size;
 
-
 public slots:
     void handleImage(Page page);
 signals:
-    void addImage(int index, int width, int height);
     void addPage(QImage image);
 
 

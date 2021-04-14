@@ -25,7 +25,7 @@ Book::Book(QUrl fn)
       unarr_book(nullptr),
       poppler_book(nullptr)
 {
-    //qWarning("booklib: %i", book_lib);
+    qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
     if (book_lib == LIBARCHIVE)
         libarchive_book = new LibarchiveBook(fn);
     if (book_lib == UNARR)
@@ -47,19 +47,22 @@ int Book::getBookLib(QUrl fn) {
         return LIBARCHIVE;
     if (UnarrBook::isSupported(fn))
         return UNARR;
-    if(PopplerBook::isSupported(fn))
-        return POPPLER;
+    //if(PopplerBook::isSupported(fn)) Disable pdf support for the moment
+    //    return POPPLER;
     return UNSUPPORTED;
 }
 
 Page Book::getAt(int index, int width, int height) {
+    lock.lock();
+    Page ret = {cv::Mat(), 0, 0, 0, QUrl()};
     if (book_lib == LIBARCHIVE)
-        return libarchive_book->getAt(index);
+        ret = libarchive_book->getAt(index);
     if (book_lib == UNARR)
-        return unarr_book->getAt(index);
+        ret = unarr_book->getAt(index);
     if (book_lib == POPPLER)
-        return poppler_book->getAt(index, width, height);
-    return Page {cv::Mat(), 0, 0, 0, QUrl()};
+        ret = poppler_book->getAt(index, width, height);
+    lock.unlock();
+    return ret;
 
 }
 

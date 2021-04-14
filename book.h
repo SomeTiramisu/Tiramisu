@@ -5,6 +5,7 @@
 //#include <string>
 #include <opencv2/core.hpp>
 #include <QUrl>
+#include <QMutex>
 #include <poppler/cpp/poppler-document.h>
 
 extern "C" {
@@ -105,6 +106,7 @@ public:
 private:
     int book_lib;
     QUrl filename;
+    QMutex lock;
     int getBookLib(QUrl fn);
     LibarchiveBook *libarchive_book;
     UnarrBook *unarr_book;

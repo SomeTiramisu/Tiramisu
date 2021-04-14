@@ -1,5 +1,6 @@
 #include "pagecontroller.h"
 #include "pageworker.h"
+#include "imagerunnable.h"
 #include "imageproc.h"
 #include "book.h"
 #define IMAGE_PRELOAD 10
@@ -8,22 +9,13 @@
 #define RECIEVED 2
 
 PageController::PageController(QUrl book_filename, QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    book(book_filename),
+    book_filename(book_filename)
 {
-    this->book_filename = book_filename;
-
-    Book bk = Book(book_filename);
-    book_size = bk.getSize();
+    book_size = book.getSize();
     pages = QVector<QImage>(book_size, QImage()); //tocheck
     pagesStatus = QVector<char>(book_size, NOT_REQUESTED);
-
-    localWorker = new ImageWorker(book_filename, pagesStatus);
-    worker = new ImageWorker(book_filename, pagesStatus);
-    worker->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    connect(worker, &ImageWorker::imageReady, this, &PageController::handleImage);
-    connect(this, &PageController::addImage, worker, &ImageWorker::addImage);
-    workerThread.start();
 
     lastIndex = 0;
 
@@ -31,10 +23,7 @@ PageController::PageController(QUrl book_filename, QObject *parent) :
 }
 
 PageController::~PageController() {
-    workerThread.quit();
-    workerThread.wait();
-    //localWorker->deleteLater();
-    //worker->deleteLater();
+
     qWarning("controller deleted");
 }
 
@@ -43,12 +32,10 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
     if (pagesStatus[index] != RECIEVED) {
         index = lastIndex;
     }
-    int w = req.width;
-    int h = req.height;
     preloadPages(req);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        emit addImage(index, w, h);
+        runPage(req);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -69,26 +56,27 @@ void PageController::getAsyncPage(PageRequest req) {
     preloadPages(req);
 }
 
-void PageController::initPage(PageRequest req) { //utiliser un worker local ?
-    //ImageWorker w(book_filename); //shold be the same as bf in request
-    Page p = localWorker->requestImage(req.index, req.width, req.height);
-    pages[req.index] = ImageProc::toQImage(p.img).copy();
-    pagesStatus[req.index] = RECIEVED;
+void PageController::initPage(PageRequest req) {
+    ImageRunnable *runnable = new ImageRunnable(book, req);
+    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
+    runnable->run();
     //qWarning("initializing %i", req.index);
 }
 
 void PageController::preloadPages(PageRequest req) {
     int index = req.index;
-    int w = req.width;
-    int h = req.height;
     for (int i=1; i<IMAGE_PRELOAD; i++) {
         if (index+i<book_size && pagesStatus[index+i] == NOT_REQUESTED) {
             pagesStatus[index+i] = REQUESTED;
-            emit addImage(index+i, w, h);
+            PageRequest new_req(req);
+            new_req.index += i;
+            runPage(new_req);
         }
         if (index-i>=0 && pagesStatus[index-i] == NOT_REQUESTED) {
             pagesStatus[index-i] = REQUESTED;
-            emit addImage(index-i, w, h);
+            PageRequest new_req(req);
+            new_req.index -= i;
+            runPage(new_req);
         }
     }
     for (int i=0; i<book_size; i++) {
@@ -98,16 +86,12 @@ void PageController::preloadPages(PageRequest req) {
         }
     }
 }
-/*
-PageRequest PageController::decodeId(QString id) { //id -> "bookid,index,width,height"
-    return PageRequest {
-        .width = id.section(",", 2, 2).toInt(),
-        .height = id.section(",", 3, 3).toInt(),
-        .index = id.section(",", 1, 1).toInt(),
-        .book_filename = backend->bookFromId(id.section(",", 0, 0).toInt())
-    };
+
+void PageController::runPage(PageRequest req) {
+    ImageRunnable *runnable = new ImageRunnable(book, req);
+    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
+    pool.start(runnable);
 }
-*/
 
 QUrl PageController::getBookFilename() {
     return book_filename;

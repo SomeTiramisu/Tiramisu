@@ -33,6 +33,7 @@ SOURCES += \
     backend.cpp \
     book.cpp \
     imageproc.cpp \
+    imagerunnable.cpp \
     main.cpp \
     pagecontroller.cpp \
     pageimageprovider.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     backend.h \
     book.h \
     imageproc.h \
+    imagerunnable.h \
     pagecontroller.h \
     pageimageprovider.h \
     pageworker.h \
