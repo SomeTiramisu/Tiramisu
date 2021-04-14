@@ -35,7 +35,7 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
     preloadPages(req);
     if (pagesStatus[index]==NOT_REQUESTED) {
         pagesStatus[index] = REQUESTED;
-        runPage(req);
+        runLocalPage(req);
     } else if (pagesStatus[index]==RECIEVED) {
         lastIndex = index;
         return pages[index];
@@ -51,16 +51,9 @@ void PageController::getAsyncPage(PageRequest req) {
     }
     //preloadPages(req);
     if (pagesStatus[index] != RECIEVED)
-        initPage(req);
+        runLocalPage(req);
     emit addPage(pages[index]);
     preloadPages(req);
-}
-
-void PageController::initPage(PageRequest req) {
-    ImageRunnable *runnable = new ImageRunnable(book, req);
-    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
-    runnable->run();
-    //qWarning("initializing %i", req.index);
 }
 
 void PageController::preloadPages(PageRequest req) {
@@ -91,6 +84,13 @@ void PageController::runPage(PageRequest req) {
     ImageRunnable *runnable = new ImageRunnable(book, req);
     connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
     pool.start(runnable);
+}
+
+void PageController::runLocalPage(PageRequest req) {
+    ImageRunnable *runnable = new ImageRunnable(book, req);
+    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
+    runnable->run();
+    delete runnable;
 }
 
 QUrl PageController::getBookFilename() {

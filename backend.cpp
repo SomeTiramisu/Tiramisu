@@ -70,6 +70,6 @@ QString Backend::getProductName() {
 }
 
 int Backend::getBookSize(QUrl bookFilename) {
-    Book b = Book(bookFilename);
+    Book b(bookFilename);
     return b.getSize();
 }
