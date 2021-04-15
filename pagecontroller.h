@@ -35,7 +35,7 @@ private:
 public slots:
     void handleImage(Page page);
 signals:
-    void addPage(QImage image);
+    void pageReady(QImage image);
 
 
 };

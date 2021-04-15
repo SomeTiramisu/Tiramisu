@@ -51,7 +51,7 @@ void PageController::getAsyncPage(PageRequest req) {
     //preloadPages(req);
     if (pagesStatus[index] != RECIEVED)
         runLocalPage(req);
-    emit addPage(pages[index]);
+    emit pageReady(pages[index]);
     preloadPages(req);
 }
 
@@ -89,7 +89,7 @@ void PageController::runLocalPage(PageRequest req) {
     ImageRunnable *runnable = new ImageRunnable(book, req);
     connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
     runnable->run();
-    delete runnable;
+    runnable->deleteLater();
 }
 
 QUrl PageController::getBookFilename() {
