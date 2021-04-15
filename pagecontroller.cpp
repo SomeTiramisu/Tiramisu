@@ -1,5 +1,4 @@
 #include "pagecontroller.h"
-#include "pageworker.h"
 #include "imagerunnable.h"
 #include "imageproc.h"
 #include "book.h"

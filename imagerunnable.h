@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QRunnable>
 #include "book.h"
-#include "helper.h"
+#include "utils.h"
 
 class ImageRunnable : public QObject, public QRunnable
 {

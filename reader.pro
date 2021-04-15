@@ -36,8 +36,6 @@ SOURCES += \
     imagerunnable.cpp \
     main.cpp \
     pagecontroller.cpp \
-    pageimageprovider.cpp \
-    pageworker.cpp \
     strnatcmp/strnatcmp.c
 
 HEADERS += \
@@ -47,10 +45,8 @@ HEADERS += \
     imageproc.h \
     imagerunnable.h \
     pagecontroller.h \
-    pageimageprovider.h \
-    pageworker.h \
-    helper.h \
-    strnatcmp/strnatcmp.h
+    strnatcmp/strnatcmp.h \
+    utils.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

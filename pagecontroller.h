@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QThreadPool>
 #include <QPixmap>
-#include "pageworker.h"
-#include "helper.h"
+#include "book.h"
+#include "utils.h"
 
 class PageController : public QObject
 {

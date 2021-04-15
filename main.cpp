@@ -1,7 +1,6 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
-#include "pageimageprovider.h"
 #include "asyncpageimageprovider.h"
 #include "backend.h"
 Q_DECLARE_METATYPE(Page)

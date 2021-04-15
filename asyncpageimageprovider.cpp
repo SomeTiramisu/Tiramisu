@@ -1,11 +1,9 @@
 #include <asyncpageimageprovider.h>
 #include <QImage>
-//#include "pageworker.h"
-//#include "imageproc.h"
-//#include "backend.h"
+#include "utils.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) {
-    PageRequest req(decodeId(id));
+    PageRequest req(Utils::decodeId(id));
     if (controller == nullptr) {
         qWarning("bkfn new bkfn: %s", req.book_filename.toString().toStdString().c_str());
         controller = new PageController(req.book_filename);
