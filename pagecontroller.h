@@ -21,7 +21,7 @@ public:
 private:
     void preloadPages(PageRequest req);
     void cleanPages(int maxIndex);
-    void runPage(PageRequest req);
+    void runPage(PageRequest req, int priority);
     void runLocalPage(PageRequest req);
     QThreadPool pool;
     QVector<QImage> pages;
@@ -29,6 +29,7 @@ private:
     Book book;
 
     int lastIndex;
+    int pendingIndex;
     QUrl book_filename;
     int book_size;
 
