@@ -45,6 +45,7 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
 
 void PageController::getAsyncPage(PageRequest req) {
     int index = req.index;
+    lastIndex = index;
     if (index >= book_size) {
         index = book_size - 1;
     }

@@ -2,7 +2,7 @@
 #include <QImage>
 #include "utils.h"
 
-AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) {
+AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) { //pour acceder au pointeur du provider
     PageRequest req(Utils::decodeId(id));
     if (controller == nullptr) {
         qWarning("bkfn new bkfn: %s", req.book_filename.toString().toStdString().c_str());
