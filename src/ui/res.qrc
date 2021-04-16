@@ -3,5 +3,4 @@
         <file>ui.qml</file>
         <file>background.png</file>
     </qresource>
-    <qresource prefix="/"/>
 </RCC>

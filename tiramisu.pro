@@ -1,4 +1,6 @@
-QT       += core gui qml quick
+QT       += core gui qml quick quickcontrols2
+
+TARGET = Tiramisu
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

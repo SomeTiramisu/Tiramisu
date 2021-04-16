@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
+#include <QQuickStyle>
 #include "asyncpageimageprovider.h"
 #include "backend.h"
 Q_DECLARE_METATYPE(Page)
@@ -11,7 +12,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QCoreApplication::setOrganizationName("custro");
     QCoreApplication::setOrganizationDomain("org.custro");
-    QCoreApplication::setApplicationName("reader");
+    QCoreApplication::setApplicationName("Tiramisu");
+    QQuickStyle::setStyle("Material");
 
     qRegisterMetaType<Page>();
     QQmlApplicationEngine engine;
