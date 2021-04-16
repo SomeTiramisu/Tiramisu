@@ -1,8 +1,8 @@
 #include "imagerunnable.h"
 
-#include "imageproc.h"
+#include "utils/imageproc.h"
 
-ImageRunnable::ImageRunnable(Book &book, PageRequest req)
+ImageRunnable::ImageRunnable(Parser &book, PageRequest req)
     : book(book),
       req(req)
 {
@@ -12,7 +12,7 @@ ImageRunnable::~ImageRunnable() {
 }
 
 void ImageRunnable::run() {
-    Page p = book.getAt(req.index, req.width, req.height);
+    Page p = book.getAt(req.index);
     if (!p.img.empty()) {
         ImageProc::classicProcess(p.img, p.img, req.width, req.height);
     }

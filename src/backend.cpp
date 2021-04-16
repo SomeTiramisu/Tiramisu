@@ -1,5 +1,5 @@
 #include "backend.h"
-#include "book.h"
+#include "parsers/parser.h"
 
 //#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
 //#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
@@ -70,6 +70,6 @@ QString Backend::getProductName() {
 }
 
 int Backend::getBookSize(QUrl bookFilename) {
-    Book b(bookFilename);
+    Parser b(bookFilename, false);
     return b.getSize();
 }

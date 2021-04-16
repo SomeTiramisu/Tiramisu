@@ -3,7 +3,6 @@
 
 #include <opencv2/core.hpp>
 #include <QPixmap>
-//#include "book.h"
 
 using namespace cv;
 

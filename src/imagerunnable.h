@@ -3,18 +3,18 @@
 
 #include <QObject>
 #include <QRunnable>
-#include "book.h"
-#include "utils.h"
+#include "parsers/parser.h"
+#include "utils/utils.h"
 
 class ImageRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    ImageRunnable(Book &book, PageRequest req);
+    ImageRunnable(Parser &book, PageRequest req);
     ~ImageRunnable();
     void run() override;
 private:
-    Book &book;
+    Parser &book;
     PageRequest req;
 
 signals:

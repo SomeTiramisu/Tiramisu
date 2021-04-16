@@ -1,8 +1,9 @@
-#include <asyncpageimageprovider.h>
+#include "asyncpageimageprovider.h"
 #include <QImage>
-#include "utils.h"
+#include "utils/utils.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) { //reference sur pointeur
+    Q_UNUSED(requestedSize)
     PageRequest req(Utils::decodeId(id));
     if (controller == nullptr) {
         qWarning("bkfn new bkfn: %s", req.book_filename.toString().toStdString().c_str());

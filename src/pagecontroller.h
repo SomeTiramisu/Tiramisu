@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QThreadPool>
 #include <QPixmap>
-#include "book.h"
-#include "utils.h"
+#include "parsers/parser.h"
+#include "utils/utils.h"
 
 class PageController : public QObject
 {
@@ -26,7 +26,7 @@ private:
     QThreadPool pool;
     QVector<QImage> pages;
     QVector<char> pagesStatus;
-    Book book;
+    Parser book;
 
     int lastIndex;
     int pendingIndex;

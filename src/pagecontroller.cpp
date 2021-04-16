@@ -1,7 +1,7 @@
 #include "pagecontroller.h"
 #include "imagerunnable.h"
-#include "imageproc.h"
-#include "book.h"
+#include "utils/imageproc.h"
+#include "parsers/parser.h"
 #define IMAGE_PRELOAD 10
 #define NOT_REQUESTED 0
 #define REQUESTED 1
@@ -11,7 +11,7 @@
 
 PageController::PageController(QUrl book_filename, QObject *parent) :
     QObject(parent),
-    book(book_filename),
+    book(book_filename, true),
     book_filename(book_filename)
 {
     book_size = book.getSize();

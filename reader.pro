@@ -29,24 +29,31 @@ DEFINES += \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    asyncpageimageprovider.cpp \
-    backend.cpp \
-    book.cpp \
-    imageproc.cpp \
-    imagerunnable.cpp \
-    main.cpp \
-    pagecontroller.cpp \
-    strnatcmp/strnatcmp.c
+    src/asyncpageimageprovider.cpp \
+    src/backend.cpp \
+    src/parsers/libarchiveparser.cpp \
+    src/parsers/popplerparser.cpp \
+    src/parsers/unarrparser.cpp \
+    src/utils/imageproc.cpp \
+    src/imagerunnable.cpp \
+    src/main.cpp \
+    src/pagecontroller.cpp \
+    src/parsers/parser.cpp \
+    src/strnatcmp/strnatcmp.c
 
 HEADERS += \
-    asyncpageimageprovider.h \
-    backend.h \
-    book.h \
-    imageproc.h \
-    imagerunnable.h \
-    pagecontroller.h \
-    strnatcmp/strnatcmp.h \
-    utils.h
+    src/asyncpageimageprovider.h \
+    src/backend.h \
+    src/parsers/libarchiveparser.h \
+    src/parsers/parseutils.h \
+    src/parsers/popplerparser.h \
+    src/parsers/unarrparser.h \
+    src/utils/imageproc.h \
+    src/imagerunnable.h \
+    src/pagecontroller.h \
+    src/parsers/parser.h \
+    src/strnatcmp/strnatcmp.h \
+    src/utils/utils.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -63,10 +70,10 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
-    ui.qml
+    src/ui/ui.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 RESOURCES += \
-    res.qrc
+    src/ui/res.qrc
 
