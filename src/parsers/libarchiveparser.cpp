@@ -102,7 +102,7 @@ bool LibarchiveParser::isSupported(QUrl fn) {
     r = archive_read_open_filename(a, fn.toLocalFile().toStdString().c_str(), 10240);
     if (r != ARCHIVE_OK)
         return false;
-    r = archive_read_free(a);
+    archive_read_free(a);
     return  true;
 
 }

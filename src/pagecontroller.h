@@ -13,7 +13,7 @@ class PageController : public QObject
 public:
     PageController(QUrl book_filename, QObject *parent = nullptr);
     ~PageController();
-    QImage getPage(PageRequest req);
+    //QImage getPage(PageRequest req);
     void getAsyncPage(PageRequest req);
     QUrl getBookFilename();
 
@@ -24,7 +24,7 @@ private:
     void runPage(PageRequest req, int priority);
     void runLocalPage(PageRequest req);
     QThreadPool pool;
-    QVector<QImage> pages;
+    QVector<PageResponseQ> pages;
     QVector<char> pagesStatus;
     Parser book;
 
@@ -36,7 +36,7 @@ private:
 public slots:
     void handleImage(PageResponseCV page);
 signals:
-    void pageReady(QImage image);
+    void pageReady(PageResponseQ image);
 
 
 };

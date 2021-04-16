@@ -17,8 +17,8 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
     connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);
     controller->getAsyncPage(req);
 }
-void AsyncPageImageResponse::handleDone(QImage image) {
-    m_image = image;
+void AsyncPageImageResponse::handleDone(PageResponseQ image) {
+    m_image = image.img;
     //qWarning("finished");
     emit finished();
 }

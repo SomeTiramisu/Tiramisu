@@ -15,7 +15,7 @@ PageController::PageController(QUrl book_filename, QObject *parent) :
     book_filename(book_filename)
 {
     book_size = book.getSize();
-    pages = QVector<QImage>(book_size, QImage()); //tocheck
+    pages = QVector<PageResponseQ>(book_size, PageResponseQ()); //tocheck
     pagesStatus = QVector<char>(book_size, NOT_REQUESTED);
 
     lastIndex = 0;
@@ -31,6 +31,7 @@ PageController::~PageController() {
     qWarning("controller deleted");
 }
 
+/*
 QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieved ; 1 -> requested no recieved ; 2 -> recieved
     int index = req.index;
     if (pagesStatus[index] != RECIEVED) {
@@ -48,6 +49,7 @@ QImage PageController::getPage(PageRequest req) { //0 -> no requested no revieve
     //qWarning("not recieved i:%i s:%i", index, pagesStatus[index]);
     return QImage();
 }
+*/
 
 void PageController::getAsyncPage(PageRequest req) {
     int index = req.index;
@@ -86,7 +88,7 @@ void PageController::preloadPages(PageRequest req) {
     }
     for (int i=0; i<book_size; i++) {
         if ((i < index - IMAGE_PRELOAD || i > index + IMAGE_PRELOAD) && pagesStatus[i] == RECIEVED) {
-            pages[i] = QImage();
+            pages[i] = PageResponseQ();
             pagesStatus[i] = NOT_REQUESTED;
         }
     }
@@ -111,7 +113,7 @@ QUrl PageController::getBookFilename() {
 
 void PageController::handleImage(PageResponseCV page) {
     qWarning("recieved!!! %i", page.index);
-    pages[page.index] = ImageProc::toQImage(page.img).copy();
+    pages[page.index] = {{page.width, page.height, page.index, page.book_filename}, ImageProc::toQImage(page.img).copy()};
     pagesStatus[page.index] = RECIEVED;
     if (page.index == pendingIndex) {
         emit pageReady(pages[pendingIndex]);
