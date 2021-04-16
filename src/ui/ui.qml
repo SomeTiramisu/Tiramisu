@@ -40,11 +40,11 @@ ApplicationWindow {
                 }
                 Component {
                     id: fileDelegate
-                    Button {
+                    MenuItem {
                         text: fileName
                         width: folderView.width
                         height: folderView.height/10
-                        onClicked: {
+                        onTriggered: {
                             console.log(fileUrl)
                             page.book_filename = fileUrl
                             page.book_size = backend.getBookSize(page.book_filename)
