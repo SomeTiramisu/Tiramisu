@@ -12,7 +12,7 @@ class UnarrParser {
 public:
     UnarrParser(QUrl fn, bool toram);
     ~UnarrParser() {};
-    Page getAt(int index);
+    PageResponseCV getAt(int index);
     int getSize();
     static bool isSupported(QUrl fn);
     QUrl getFilename();

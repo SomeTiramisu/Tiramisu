@@ -26,11 +26,11 @@ void PopplerBook::initArchive(QUrl fn) {
     file.close();
 }
 
-Page PopplerBook::getAt(int index) {
+PageResponseCV PopplerBook::getAt(int index) {
     openArchive();
     poppler::page *p = bookDoc->create_page(index);
     if (!p)
-        return Page {cv::Mat(), 0, 0, 0, filename};
+        return PageResponseCV {{0, 0, 0, filename}, cv::Mat()};
     poppler::page_renderer pr;
     pr.set_image_format(poppler::image::format_bgr24);
     //poppler::image i = pr.render_page(p, 224.0, 224.0, -1, -1, width, height, poppler::rotate_0);
@@ -38,7 +38,7 @@ Page PopplerBook::getAt(int index) {
     cv::Mat timg = cv::Mat(i.height(), i.width(), CV_8UC3, i.data(), i.bytes_per_row());
     cv::Mat fimg;
     timg.copyTo(fimg);
-    Page r = {fimg, fimg.cols, fimg.rows, index, filename};
+    PageResponseCV r = {{fimg.cols, fimg.rows, index, filename}, fimg};
     return r;
 }
 

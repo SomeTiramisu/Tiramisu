@@ -34,9 +34,9 @@ int Parser::getBookLib(QUrl fn) {
     return UNSUPPORTED;
 }
 
-Page Parser::getAt(int index) {
+PageResponseCV Parser::getAt(int index) {
     lock.lock();
-    Page ret = {cv::Mat(), 0, 0, 0, QUrl()};
+    PageResponseCV ret{{0, 0, 0, QUrl()}, cv::Mat()};
     if (book_lib == LIBARCHIVE)
         ret = libarchive_parser->getAt(index);
     if (book_lib == UNARR)

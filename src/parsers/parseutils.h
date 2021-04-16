@@ -3,6 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include <QUrl>
+#include "../utils/utils.h"
 
 extern "C" {
     #include "../strnatcmp/strnatcmp.h"
@@ -18,14 +19,6 @@ struct header {
     std::string filename;
     int index;
     size_t length;
-};
-
-struct Page {
-    cv::Mat img;
-    int width;
-    int height;
-    int index;
-    QUrl book_filename;
 };
 
 class ParserUtils {

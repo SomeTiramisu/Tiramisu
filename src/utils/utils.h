@@ -2,14 +2,24 @@
 #define UTILS_H
 
 #include <QUrl>
+#include <QImage>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <opencv2/core.hpp>
 
 struct PageRequest {
     int width;
     int height;
     int index;
     QUrl book_filename;
+};
+
+struct PageResponseQ: public PageRequest {
+    QImage img;
+};
+
+struct PageResponseCV: public PageRequest {
+    cv::Mat img;
 };
 
 class Utils {

@@ -18,7 +18,7 @@ private:
     PageRequest req;
 
 signals:
-    void done(Page page);
+    void done(PageResponseCV page);
 };
 
 #endif // IMAGERUNNABLE_H

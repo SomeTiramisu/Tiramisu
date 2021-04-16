@@ -53,7 +53,7 @@ void UnarrParser::initRamArchive() {
     file.close();
 }
 
-Page UnarrParser::getAt(int index) {
+PageResponseCV UnarrParser::getAt(int index) {
     int n = headers[index].index;
     if (isRam) {
         openRamArchive();
@@ -70,7 +70,7 @@ Page UnarrParser::getAt(int index) {
     ar_close_archive(bookArchive);
     ar_close(bookStream);
     cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
-    Page p = {img, img.cols, img.rows, index, filename};
+    PageResponseCV p = {{img.cols, img.rows, index, filename}, img};
     delete[] buf;
     return p;
 }

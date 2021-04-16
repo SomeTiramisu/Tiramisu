@@ -34,7 +34,7 @@ private:
     int book_size;
 
 public slots:
-    void handleImage(Page page);
+    void handleImage(PageResponseCV page);
 signals:
     void pageReady(QImage image);
 

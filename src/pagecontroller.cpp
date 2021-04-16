@@ -109,7 +109,7 @@ QUrl PageController::getBookFilename() {
     return book_filename;
 }
 
-void PageController::handleImage(Page page) {
+void PageController::handleImage(PageResponseCV page) {
     qWarning("recieved!!! %i", page.index);
     pages[page.index] = ImageProc::toQImage(page.img).copy();
     pagesStatus[page.index] = RECIEVED;

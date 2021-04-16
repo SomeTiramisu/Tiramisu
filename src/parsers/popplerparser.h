@@ -9,7 +9,7 @@ class PopplerBook {
 public:
     PopplerBook(QUrl fn);
     ~PopplerBook() {};
-    Page getAt(int index);
+    PageResponseCV getAt(int index);
     int getSize();
     static bool isSupported(QUrl fn);
     QUrl getFilename();

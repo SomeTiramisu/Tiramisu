@@ -12,7 +12,7 @@ ImageRunnable::~ImageRunnable() {
 }
 
 void ImageRunnable::run() {
-    Page p = book.getAt(req.index);
+    PageResponseCV p = book.getAt(req.index);
     if (!p.img.empty()) {
         ImageProc::classicProcess(p.img, p.img, req.width, req.height);
     }
