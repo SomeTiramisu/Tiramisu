@@ -13,30 +13,23 @@ class PageController : public QObject
 public:
     PageController(QUrl book_filename, QObject *parent = nullptr);
     ~PageController();
-    //QImage getPage(PageRequest req);
-    void getAsyncPage(PageRequest req);
+    void getAsyncPage(const PageRequest& req);
     QUrl getBookFilename();
 
-
 private:
-    void preloadPages(PageRequest req);
-    void cleanPages(int maxIndex);
-    void runPage(PageRequest req, int priority);
-    void runLocalPage(PageRequest req);
+    void preloadPages(const PageRequest& req);
+    void runPage(const PageRequest& req, int priority);
+    void runLocalPage(const PageRequest& req);
     QThreadPool pool;
     QVector<PageResponseQ> pages;
     QVector<char> pagesStatus;
     Parser book;
-
-    int lastIndex;
-    int pendingIndex;
-    QUrl book_filename;
-    int book_size;
+    PageRequest pendingReq;
 
 public slots:
-    void handleImage(PageResponseCV page);
+    void handleImage(const PageResponseCV& resp);
 signals:
-    void pageReady(PageResponseQ image);
+    void pageReady(PageResponseQ resp);
 
 
 };

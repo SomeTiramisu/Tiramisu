@@ -8,10 +8,22 @@
 #include <opencv2/core.hpp>
 
 struct PageRequest {
-    int width;
-    int height;
-    int index;
+    int width{-1};
+    int height{-1};
+    int index{-1};
     QUrl book_filename;
+
+    PageRequest addIndex(int i) const {
+        return PageRequest{width, height, index+i, book_filename};
+    }
+
+    bool operator==(const PageRequest& a) const {
+        return (width==a.width && height==a.height && index==a.index && book_filename==a.book_filename);
+    }
+
+    bool operator!=(const PageRequest& a) const {
+        return not operator==(a);
+    }
 };
 
 struct PageResponseQ: public PageRequest {

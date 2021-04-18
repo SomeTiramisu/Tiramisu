@@ -3,7 +3,7 @@
 
 using namespace cv;
 
-void ImageProc::createMask(Mat& src, Mat& dst, bool inv) {
+void ImageProc::createMask(const Mat& src, Mat& dst, const bool inv) {
     cvtColor(src, dst, COLOR_RGBA2GRAY);
     if (!inv) {
         threshold(dst, dst, 240, 255, THRESH_BINARY_INV); //235 origin
@@ -12,7 +12,7 @@ void ImageProc::createMask(Mat& src, Mat& dst, bool inv) {
     }
 }
 
-Rect ImageProc::createROI(Mat& src) {
+Rect ImageProc::createROI(const Mat& src) {
     Rect roi = boundingRect(src); //may be inverted
     if (roi == Rect(0, 0, 0, 0)) { //fix for while images
             roi = Rect(0,0, src.cols, src.rows);
@@ -37,7 +37,7 @@ void ImageProc::createAlpha(Mat* src, Mat* dst) {
 }
 
 
-void ImageProc::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
+void ImageProc::addBackground(const Mat& src, const Mat& bg, Mat& dst, const Mat& mask) {
     double hm = floor(abs(bg.cols - src.cols)/2);
     double vm = floor(abs(bg.rows - src.rows)/2);
     Rect roi = Rect(hm, vm, src.cols, src.rows);
@@ -49,19 +49,19 @@ void ImageProc::addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask) {
 }
 
 
-QPixmap ImageProc::toQPixmap(Mat& src) {
+QPixmap ImageProc::toQPixmap(const Mat& src) {
     if (src.empty())
         return QPixmap();
     return QPixmap::fromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888));
 }
 
-QImage ImageProc::toQImage(Mat& src) {
+QImage ImageProc::toQImage(const Mat& src) {
     if (src.empty())
         return QImage();
     return QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
 }
 
-void ImageProc::scale(Mat& src, Mat& dst, int view_width, int view_height) {
+void ImageProc::scale(const Mat& src, Mat& dst, const int view_width, const int view_height) {
     int img_width  = src.cols;
     int img_height  = src.rows;
     double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
@@ -102,7 +102,7 @@ void ImageProc::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
     *dst = dst->operator()(roi);
 }
 
-void ImageProc::tileFit(Mat& src, Mat& dst, int view_width, int view_height) {
+void ImageProc::tileFit(const Mat& src, Mat& dst, const int view_width, const int view_height) {
     int h = 1;
     int v = 1; 
     if (src.cols < view_width) {
@@ -137,7 +137,7 @@ void ImageProc::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //s
     
 }
 
-void ImageProc::sharpen(Mat &src, Mat &dst) {
+void ImageProc::sharpen(const Mat &src, Mat &dst) {
     Mat blurred;
     double sigma = 1;
     double threshold = 5;
@@ -148,7 +148,7 @@ void ImageProc::sharpen(Mat &src, Mat &dst) {
     dst.copyTo(sharpened, lowContrastMask);
 }
 
-void ImageProc::centerFit(Mat& src, Mat& dst, int view_width, int view_height) {
+void ImageProc::centerFit(const Mat& src, Mat& dst, int view_width, int view_height) {
     double hm = floor(abs(view_width - src.cols)/2);
     double vm = floor(abs(view_height - src.rows)/2);
     Rect roi = Rect(hm, vm, src.cols, src.rows);
@@ -160,7 +160,7 @@ void ImageProc::centerFit(Mat& src, Mat& dst, int view_width, int view_height) {
     white.copyTo(dst);
 }
 
-void ImageProc::classicProcess(Mat& src, Mat& dst, int width, int height) {
+void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) {
     Mat img;
     Mat mask;
     img = src;

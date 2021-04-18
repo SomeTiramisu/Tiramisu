@@ -9,19 +9,19 @@ using namespace cv;
 class ImageProc
 {
 public:
-    static QPixmap toQPixmap(Mat& src);
-    static QImage toQImage(Mat& src);
-    static void createMask(Mat& src, Mat& dst, bool inv=false);
-    static Rect createROI(Mat& src);
+    static QPixmap toQPixmap(const Mat& src);
+    static QImage toQImage(const Mat& src);
+    static void createMask(const Mat& src, Mat& dst, bool inv=false);
+    static Rect createROI(const Mat& src);
     static void createAlpha(Mat* src, Mat* dst);
     static void addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst );
-    static void addBackground(Mat& src, Mat& bg, Mat& dst, Mat& mask);
-    static void scale(Mat& src, Mat& dst, int view_width, int view_height);
+    static void addBackground(const Mat& src, const Mat& bg, Mat& dst, const Mat& mask);
+    static void scale(const Mat& src, Mat& dst, int view_width, int view_height);
     static void scaleFit(Mat* src, Mat* dst, int view_width, int view_height);
-    static void tileFit(Mat& src, Mat& dst, int view_width, int view_height);
-    static void sharpen(Mat& src, Mat& dst);
-    static void centerFit(Mat& src, Mat& dst, int view_width, int view_height);
-    static void classicProcess(Mat& src, Mat& dst, int width, int height);
+    static void tileFit(const Mat& src, Mat& dst, int view_width, int view_height);
+    static void sharpen(const Mat& src, Mat& dst);
+    static void centerFit(const Mat& src, Mat& dst, int view_width, int view_height);
+    static void classicProcess(const Mat& src, Mat& dst, int width, int height);
 };
 
 #endif
