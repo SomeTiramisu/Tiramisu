@@ -12,7 +12,7 @@ public:
     QQuickTextureFactory *textureFactory() const override;
     QImage m_image;
 public slots:
-    void handleDone(PageResponseQ image);
+    void handleDone(QImage img);
 
 };
 
@@ -20,7 +20,7 @@ class AsyncPageImageProvider : public QQuickAsyncImageProvider
 {
 public:
     AsyncPageImageProvider();
-    ~AsyncPageImageProvider();
+    ~AsyncPageImageProvider() {};
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
 
 private:

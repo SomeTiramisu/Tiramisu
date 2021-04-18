@@ -18,7 +18,7 @@ private:
     PageRequest req;
 
 signals:
-    void done(PageResponseCV page);
+    void done(PageRequest req, QImage img);
 };
 
 #endif // IMAGERUNNABLE_H

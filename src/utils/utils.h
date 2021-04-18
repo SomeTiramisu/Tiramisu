@@ -26,14 +26,6 @@ struct PageRequest {
     }
 };
 
-struct PageResponseQ: public PageRequest {
-    QImage img;
-};
-
-struct PageResponseCV: public PageRequest {
-    cv::Mat img;
-};
-
 class Utils {
 public:
     static PageRequest decodeId(QString id) {

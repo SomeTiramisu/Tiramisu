@@ -13,7 +13,7 @@ class Parser {
 public:
     Parser(QUrl fn, bool toram);
     ~Parser();
-    PageResponseCV getAt(int index);
+    cv::Mat getAt(int index);
     int getSize();
     QUrl getFilename();
 private:

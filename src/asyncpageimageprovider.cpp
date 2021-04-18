@@ -11,32 +11,25 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
     }
     if (controller->getBookFilename() != req.book_filename) {
         qWarning("bkfn changed old: %s, new: %s", controller->getBookFilename().toString().toStdString().c_str(), req.book_filename.toString().toStdString().c_str());
-        controller->deleteLater(); //fix crash ?
         controller = new PageController(req.book_filename);
     }
     connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);
     controller->getAsyncPage(req);
 }
-void AsyncPageImageResponse::handleDone(PageResponseQ image) {
-    m_image = image.img;
+void AsyncPageImageResponse::handleDone(QImage img) {
+    m_image = img;
     //qWarning("finished");
     emit finished();
 }
 
 QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
-    qWarning("sending %i %i", m_image.width(), m_image.height());
+    qWarning("Provider: sending %i %i", m_image.width(), m_image.height());
     return QQuickTextureFactory::textureFactoryForImage(m_image);
 }
 
 AsyncPageImageProvider::AsyncPageImageProvider()
-    : QQuickAsyncImageProvider() {
-    controller = nullptr;
-}
-
-AsyncPageImageProvider::~AsyncPageImageProvider() {
-    if (controller) {
-        controller->deleteLater();
-    }
+    : QQuickAsyncImageProvider(),
+      controller(nullptr) {
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {

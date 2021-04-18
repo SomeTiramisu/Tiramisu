@@ -7,6 +7,34 @@
 #include "parsers/parser.h"
 #include "utils/utils.h"
 
+enum RequestStatus {
+    NotRequested,
+    Requested,
+    Recieved
+};
+
+struct Pair {
+    PageRequest req;
+    RequestStatus status{RequestStatus::NotRequested};
+    QImage img;
+
+    bool matchRequest(const PageRequest& r) {
+        return req == r;
+    }
+
+    bool matchStatus(const RequestStatus& s) {
+        return status == s;
+    }
+
+    bool operator==(const Pair& a) const {
+        return (req==a.req && status==a.status && img==a.img);
+    }
+
+    bool operator!=(const Pair& a) const {
+        return not operator==(a);
+    }
+};
+
 class PageController : public QObject
 {
     Q_OBJECT
@@ -21,15 +49,14 @@ private:
     void runPage(PageRequest req, int priority);
     void runLocalPage(PageRequest req);
     QThreadPool pool;
-    QVector<PageResponseQ> pages;
-    QVector<char> pagesStatus;
+    QVector<Pair> pages;
     Parser book;
     PageRequest pendingReq;
 
 public slots:
-    void handleImage(PageResponseCV resp);
+    void handleImage(PageRequest req, QImage img);
 signals:
-    void pageReady(PageResponseQ resp);
+    void pageReady(QImage img);
 
 
 };

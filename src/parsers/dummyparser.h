@@ -8,8 +8,8 @@ class DummyParser {
 public:
     DummyParser() {};
     ~DummyParser() {};
-    PageResponseCV getAt() {
-        return PageResponseCV{{0, 0, 0, QUrl()}, cv::Mat()};
+    cv::Mat getAt() {
+        return cv::Mat();
     };
     int getSize() {
         return 1;

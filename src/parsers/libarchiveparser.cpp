@@ -62,7 +62,7 @@ void LibarchiveParser::initRamArchive() {
     file.close();
 }
 
-PageResponseCV LibarchiveParser::getAt(int index) {
+cv::Mat LibarchiveParser::getAt(int index) {
     int n = headers[index].index;
     if (isRam) {
         openRamArchive();
@@ -78,9 +78,8 @@ PageResponseCV LibarchiveParser::getAt(int index) {
     archive_read_data(bookArchive, buf, length);
     archive_read_free(bookArchive);
     cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
-    PageResponseCV p{{img.cols, img.rows, index, filename}, img};
     delete[] buf;
-    return p;
+    return img;
 }
 
 int LibarchiveParser::getSize() {

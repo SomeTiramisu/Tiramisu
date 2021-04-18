@@ -13,7 +13,7 @@ class LibarchiveParser {
 public:
     LibarchiveParser(QUrl fn, bool toram);
     ~LibarchiveParser() {};
-    PageResponseCV getAt(int index);
+    cv::Mat getAt(int index);
     int getSize();
     static bool isSupported(QUrl fn);
     QUrl getFilename();

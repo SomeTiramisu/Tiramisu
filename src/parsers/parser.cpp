@@ -40,11 +40,11 @@ ParserLib Parser::getBookLib(QUrl fn) {
     return ParserLib::Unsupported;
 }
 
-PageResponseCV Parser::getAt(int index) {
+cv::Mat Parser::getAt(int index) {
     lock.lock();
-    PageResponseCV ret;
+    cv::Mat ret;
     if (book_lib == ParserLib::Dummy) {
-        return dummy_parser.getAt();
+        ret = dummy_parser.getAt();
     }
     if (book_lib == ParserLib::Libarchive) {
         ret = libarchive_parser->getAt(index);

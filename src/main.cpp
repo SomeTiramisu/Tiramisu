@@ -4,7 +4,7 @@
 #include <QQuickStyle>
 #include "asyncpageimageprovider.h"
 #include "backend.h"
-Q_DECLARE_METATYPE(PageResponseCV)
+Q_DECLARE_METATYPE(PageRequest)
 
 
 int main(int argc, char *argv[])
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Tiramisu");
     QQuickStyle::setStyle("Material");
 
-    qRegisterMetaType<PageResponseCV>();
+    qRegisterMetaType<PageRequest>();
     QQmlApplicationEngine engine;
 
     Backend backend = Backend();
