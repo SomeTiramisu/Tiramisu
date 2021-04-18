@@ -8,13 +8,13 @@ Parser::Parser(QUrl fn, bool toram)
       poppler_parser(nullptr)
 {
     //qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
-    if (book_lib == LIBARCHIVE) {
+    if (book_lib == ParserLib::Libarchive) {
         libarchive_parser = new LibarchiveParser(fn, toram);
     }
-    if (book_lib == UNARR) {
+    if (book_lib == ParserLib::Unarr) {
         unarr_parser = new UnarrParser(fn, toram);
     }
-    if (book_lib == POPPLER) {
+    if (book_lib == ParserLib::Poppler) {
         poppler_parser = new PopplerBook(fn);
     }
 }
@@ -25,34 +25,34 @@ Parser::~Parser() {
     delete poppler_parser;
 }
 
-int Parser::getBookLib(QUrl fn) {
+ParserLib Parser::getBookLib(QUrl fn) {
     if (DummyParser::isSupported(fn)) {
-        return DUMMY;
+        return ParserLib::Dummy;
     }
     if (LibarchiveParser::isSupported(fn)) {
-        return LIBARCHIVE;
+        return ParserLib::Libarchive;
     }
     if (UnarrParser::isSupported(fn)) {
-        return UNARR;
+        return ParserLib::Unarr;
     }
     //if(PopplerBook::isSupported(fn)) Disable pdf support for the moment
-    //    return POPPLER;
-    return UNSUPPORTED;
+    //    return ParserLib::Poppler;
+    return ParserLib::Unsupported;
 }
 
 PageResponseCV Parser::getAt(int index) {
     lock.lock();
     PageResponseCV ret;
-    if (book_lib == DUMMY) {
+    if (book_lib == ParserLib::Dummy) {
         return dummy_parser.getAt();
     }
-    if (book_lib == LIBARCHIVE) {
+    if (book_lib == ParserLib::Libarchive) {
         ret = libarchive_parser->getAt(index);
     }
-    if (book_lib == UNARR) {
+    if (book_lib == ParserLib::Unarr) {
         ret = unarr_parser->getAt(index);
     }
-    if (book_lib == POPPLER) {
+    if (book_lib == ParserLib::Poppler) {
         ret = poppler_parser->getAt(index);
     }
     lock.unlock();
@@ -61,16 +61,16 @@ PageResponseCV Parser::getAt(int index) {
 }
 
 int Parser::getSize() {
-    if (book_lib == DUMMY) {
+    if (book_lib == ParserLib::Dummy) {
         return dummy_parser.getSize();
     }
-    if (book_lib == LIBARCHIVE) {
+    if (book_lib == ParserLib::Libarchive) {
         return libarchive_parser->getSize();
     }
-    if (book_lib == UNARR) {
+    if (book_lib == ParserLib::Unarr) {
         return unarr_parser->getSize();
     }
-    if (book_lib == POPPLER) {
+    if (book_lib == ParserLib::Poppler) {
         return poppler_parser->getSize();
     }
     return -1;

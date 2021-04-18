@@ -17,10 +17,10 @@ public:
     int getSize();
     QUrl getFilename();
 private:
-    int book_lib;
+    ParserLib book_lib;
     QUrl filename;
     QMutex lock;
-    int getBookLib(QUrl fn);
+    ParserLib getBookLib(QUrl fn);
     DummyParser dummy_parser;
     LibarchiveParser *libarchive_parser;
     UnarrParser *unarr_parser;

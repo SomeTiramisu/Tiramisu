@@ -9,11 +9,13 @@ extern "C" {
     #include "../strnatcmp/strnatcmp.h"
 }
 
-#define UNSUPPORTED 0
-#define DUMMY 1
-#define LIBARCHIVE 2
-#define UNARR 3
-#define POPPLER 4
+enum ParserLib {
+    Unsupported,
+    Dummy,
+    Libarchive,
+    Unarr,
+    Poppler
+};
 
 struct header {
     std::string filename;

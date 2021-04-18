@@ -18,6 +18,6 @@ void ImageRunnable::run() {
     }
     p.width = req.width;
     p.height = req.height;
-            qWarning("running: %i", req.index);
+    qWarning("running: %i", req.index);
     emit done(p);
 }

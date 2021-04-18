@@ -18,11 +18,10 @@ int main(int argc, char *argv[])
     qRegisterMetaType<PageResponseCV>();
     QQmlApplicationEngine engine;
 
-    Backend *backend = new Backend();
-    AsyncPageImageProvider *aimp = new AsyncPageImageProvider();
+    Backend backend = Backend();
 
-    engine.addImageProvider("pages", aimp);
-    engine.rootContext()->setContextProperty("backend", backend);
+    engine.addImageProvider("pages", new AsyncPageImageProvider());
+    engine.rootContext()->setContextProperty("backend", &backend); //do not take ownership
 
     engine.load(":/res/ui.qml");
     return app.exec();

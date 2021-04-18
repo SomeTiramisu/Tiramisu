@@ -33,6 +33,12 @@ AsyncPageImageProvider::AsyncPageImageProvider()
     controller = nullptr;
 }
 
+AsyncPageImageProvider::~AsyncPageImageProvider() {
+    if (controller) {
+        controller->deleteLater();
+    }
+}
+
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
     AsyncPageImageResponse *response = new AsyncPageImageResponse(id, requestedSize, controller);
     return response;
