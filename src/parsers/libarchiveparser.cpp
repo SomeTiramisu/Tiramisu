@@ -29,7 +29,7 @@ LibarchiveParser::LibarchiveParser(QUrl fn, bool toram)
             archive_read_data_skip(bookArchive);
             i++;
         }
-    qWarning("book size: %i", size);
+    //qWarning("book size: %i", size);
     archive_read_free(bookArchive);
     /*
     for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {

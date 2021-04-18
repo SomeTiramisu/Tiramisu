@@ -46,6 +46,7 @@ SOURCES += \
 HEADERS += \
     src/asyncpageimageprovider.h \
     src/backend.h \
+    src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \
     src/parsers/parseutils.h \
     src/parsers/popplerparser.h \

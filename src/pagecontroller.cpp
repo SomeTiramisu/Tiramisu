@@ -25,12 +25,13 @@ PageController::~PageController() {
     qWarning("controller deleted");
 }
 
-void PageController::getAsyncPage(const PageRequest& req) {
+void PageController::getAsyncPage(PageRequest req) {
     int index = req.index;
     int book_size = book.getSize();
     pendingReq = PageRequest();
-    if (index >= book_size) {
-        index = book_size - 1;
+    if (index<0 || index >= book_size) {
+        emit pageReady(PageResponseQ());;
+        return;
     }
     if (pagesStatus[index] == RECIEVED && pages[index] == req) {
         emit pageReady(pages[index]);
@@ -43,7 +44,7 @@ void PageController::getAsyncPage(const PageRequest& req) {
     preloadPages(req);
 }
 
-void PageController::preloadPages(const PageRequest& req) {
+void PageController::preloadPages(PageRequest req) {
     int index = req.index;
     int book_size = book.getSize();
     for (int i=1; i<IMAGE_PRELOAD; i++) {
@@ -66,7 +67,7 @@ void PageController::preloadPages(const PageRequest& req) {
     }
 }
 
-void PageController::runPage(const PageRequest& req, int priority) {
+void PageController::runPage(PageRequest req, int priority) {
     pagesStatus[req.index] = REQUESTED;
     pages[req.index] = {req, QImage()};
     ImageRunnable *runnable = new ImageRunnable(book, req);
@@ -74,7 +75,7 @@ void PageController::runPage(const PageRequest& req, int priority) {
     pool.start(runnable, priority);
 }
 
-void PageController::runLocalPage(const PageRequest& req) {
+void PageController::runLocalPage(PageRequest req) {
     ImageRunnable *runnable = new ImageRunnable(book, req);
     connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
     runnable->run();
@@ -85,7 +86,7 @@ QUrl PageController::getBookFilename() {
     return book.getFilename();
 }
 
-void PageController::handleImage(const PageResponseCV& resp) {
+void PageController::handleImage(PageResponseCV resp) {
     qWarning("recieved!!! %i %i %i pending: %i %i %i", resp.index, resp.width, resp.height, pendingReq.index, pendingReq.width, pendingReq.height);
     if (pagesStatus[resp.index]==REQUESTED && pages[resp.index]==resp) {
         pages[resp.index] = {resp, ImageProc::toQImage(resp.img).copy()};

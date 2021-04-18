@@ -13,13 +13,13 @@ class PageController : public QObject
 public:
     PageController(QUrl book_filename, QObject *parent = nullptr);
     ~PageController();
-    void getAsyncPage(const PageRequest& req);
+    void getAsyncPage(PageRequest req);
     QUrl getBookFilename();
 
 private:
-    void preloadPages(const PageRequest& req);
-    void runPage(const PageRequest& req, int priority);
-    void runLocalPage(const PageRequest& req);
+    void preloadPages(PageRequest req);
+    void runPage(PageRequest req, int priority);
+    void runLocalPage(PageRequest req);
     QThreadPool pool;
     QVector<PageResponseQ> pages;
     QVector<char> pagesStatus;
@@ -27,7 +27,7 @@ private:
     PageRequest pendingReq;
 
 public slots:
-    void handleImage(const PageResponseCV& resp);
+    void handleImage(PageResponseCV resp);
 signals:
     void pageReady(PageResponseQ resp);
 

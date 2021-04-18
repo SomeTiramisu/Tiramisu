@@ -7,7 +7,7 @@ Parser::Parser(QUrl fn, bool toram)
       unarr_parser(nullptr),
       poppler_parser(nullptr)
 {
-    qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
+    //qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
     if (book_lib == LIBARCHIVE) {
         libarchive_parser = new LibarchiveParser(fn, toram);
     }
@@ -26,7 +26,7 @@ Parser::~Parser() {
 }
 
 int Parser::getBookLib(QUrl fn) {
-    if (fn.isEmpty()) {
+    if (DummyParser::isSupported(fn)) {
         return DUMMY;
     }
     if (LibarchiveParser::isSupported(fn)) {
@@ -42,7 +42,10 @@ int Parser::getBookLib(QUrl fn) {
 
 PageResponseCV Parser::getAt(int index) {
     lock.lock();
-    PageResponseCV ret{{0, 0, 0, QUrl()}, cv::Mat()};
+    PageResponseCV ret;
+    if (book_lib == DUMMY) {
+        return dummy_parser.getAt();
+    }
     if (book_lib == LIBARCHIVE) {
         ret = libarchive_parser->getAt(index);
     }
@@ -59,7 +62,7 @@ PageResponseCV Parser::getAt(int index) {
 
 int Parser::getSize() {
     if (book_lib == DUMMY) {
-        return 1;
+        return dummy_parser.getSize();
     }
     if (book_lib == LIBARCHIVE) {
         return libarchive_parser->getSize();
@@ -70,7 +73,7 @@ int Parser::getSize() {
     if (book_lib == POPPLER) {
         return poppler_parser->getSize();
     }
-    return 0;
+    return -1;
 }
 
 QUrl Parser::getFilename() {

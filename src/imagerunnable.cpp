@@ -15,8 +15,9 @@ void ImageRunnable::run() {
     PageResponseCV p = book.getAt(req.index);
     if (!p.img.empty()) {
         ImageProc::classicProcess(p.img, p.img, req.width, req.height);
-        p.width = req.width;
-        p.height = req.height;
     }
+    p.width = req.width;
+    p.height = req.height;
+            qWarning("running: %i", req.index);
     emit done(p);
 }

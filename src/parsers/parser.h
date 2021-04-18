@@ -2,6 +2,7 @@
 #define PARSER_H
 
 #include "parseutils.h"
+#include "dummyparser.h"
 #include "libarchiveparser.h"
 #include "unarrparser.h"
 #include "popplerparser.h"
@@ -20,6 +21,7 @@ private:
     QUrl filename;
     QMutex lock;
     int getBookLib(QUrl fn);
+    DummyParser dummy_parser;
     LibarchiveParser *libarchive_parser;
     UnarrParser *unarr_parser;
     PopplerBook *poppler_parser;

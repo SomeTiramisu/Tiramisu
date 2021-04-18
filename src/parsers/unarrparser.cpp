@@ -28,7 +28,7 @@ UnarrParser::UnarrParser(QUrl fn, bool toram)
             }
             i++;
         }
-    qWarning("book size: %i", size);
+    //qWarning("book size: %i", size);
     ar_close_archive(bookArchive);
     ar_close(bookStream);
 
