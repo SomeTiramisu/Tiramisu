@@ -50,14 +50,16 @@ void ImageProc::addBackground(const Mat& src, const Mat& bg, Mat& dst, const Mat
 
 
 QPixmap ImageProc::toQPixmap(const Mat& src) {
-    if (src.empty())
+    if (src.empty()) {
         return QPixmap();
+    }
     return QPixmap::fromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888));
 }
 
 QImage ImageProc::toQImage(const Mat& src) {
-    if (src.empty())
+    if (src.empty()) {
         return QImage();
+    }
     return QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
 }
 

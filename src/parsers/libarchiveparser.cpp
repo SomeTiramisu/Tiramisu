@@ -92,16 +92,18 @@ QUrl LibarchiveParser::getFilename() {
 }
 
 bool LibarchiveParser::isSupported(QUrl fn) {
-    if (fn.isEmpty())
+    if (fn.isEmpty()) {
         return false;
+    }
     struct archive *a;
     int r;
     a = archive_read_new();
     archive_read_support_filter_all(a);
     archive_read_support_format_zip(a);
     r = archive_read_open_filename(a, fn.toLocalFile().toStdString().c_str(), 10240);
-    if (r != ARCHIVE_OK)
+    if (r != ARCHIVE_OK) {
         return false;
+    }
     archive_read_free(a);
     return  true;
 

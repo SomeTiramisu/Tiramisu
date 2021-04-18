@@ -43,7 +43,8 @@ ApplicationWindow {
                     MenuItem {
                         text: fileName
                         width: folderView.width
-                        height: folderView.height/10
+                        //height: folderView.height/10
+                        height: implicitHeight
                         onTriggered: {
                             console.log(fileUrl)
                             page.book_filename = fileUrl
@@ -96,5 +97,6 @@ ApplicationWindow {
             }
         }
     }
+
 }
 

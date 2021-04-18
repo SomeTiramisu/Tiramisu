@@ -84,18 +84,20 @@ QUrl UnarrParser::getFilename() {
 }
 
 bool UnarrParser::isSupported(QUrl fn) {
-    if (fn.isEmpty())
+    if (fn.isEmpty()) {
         return false;
+    }
     ar_stream *s  = nullptr;
     ar_archive *a = nullptr;
     s = ar_open_file(fn.toLocalFile().toStdString().c_str());
-    if (!s)
+    if (!s) {
         return false;
+    }
     a = ar_open_rar_archive(s);
     if (!a) {
         ar_close(s);
         return false;
-        }
+    }
     ar_close_archive(a);
     ar_close(s);
     return true;

@@ -47,12 +47,12 @@ void PageController::preloadPages(const PageRequest& req) {
     int index = req.index;
     int book_size = book.getSize();
     for (int i=1; i<IMAGE_PRELOAD; i++) {
-        if (index+i<book_size && (pagesStatus[index+i] == NOT_REQUESTED/* || pages[index+i] != req.addIndex(i)*/)) {
+        if (index+i<book_size && (pagesStatus[index+i] == NOT_REQUESTED || pages[index+i] != req.addIndex(i))) {
             PageRequest new_req(req);
             new_req.index += i;
             runPage(new_req, PRIORITY_REQ);
         }
-        if (index-i>=0 && (pagesStatus[index-i] == NOT_REQUESTED/* || pages[index-i] != req.addIndex(-i)*/)) {
+        if (index-i>=0 && (pagesStatus[index-i] == NOT_REQUESTED || pages[index-i] != req.addIndex(-i))) {
             PageRequest new_req(req);
             new_req.index -= i;
             runPage(new_req, PRIORITY_REQ);
@@ -87,8 +87,10 @@ QUrl PageController::getBookFilename() {
 
 void PageController::handleImage(const PageResponseCV& resp) {
     qWarning("recieved!!! %i %i %i pending: %i %i %i", resp.index, resp.width, resp.height, pendingReq.index, pendingReq.width, pendingReq.height);
-    pages[resp.index] = {resp, ImageProc::toQImage(resp.img).copy()};
-    pagesStatus[resp.index] = RECIEVED;
+    if (pagesStatus[resp.index]==REQUESTED && pages[resp.index]==resp) {
+        pages[resp.index] = {resp, ImageProc::toQImage(resp.img).copy()};
+        pagesStatus[resp.index] = RECIEVED;
+    }
     if (resp==pendingReq) {
         emit pageReady(pages[resp.index]);
         pendingReq = PageRequest();

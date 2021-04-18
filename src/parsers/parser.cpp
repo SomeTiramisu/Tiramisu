@@ -8,12 +8,15 @@ Parser::Parser(QUrl fn, bool toram)
       poppler_parser(nullptr)
 {
     qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
-    if (book_lib == LIBARCHIVE)
+    if (book_lib == LIBARCHIVE) {
         libarchive_parser = new LibarchiveParser(fn, toram);
-    if (book_lib == UNARR)
+    }
+    if (book_lib == UNARR) {
         unarr_parser = new UnarrParser(fn, toram);
-    if (book_lib == POPPLER)
+    }
+    if (book_lib == POPPLER) {
         poppler_parser = new PopplerBook(fn);
+    }
 }
 
 Parser::~Parser() {
@@ -23,12 +26,15 @@ Parser::~Parser() {
 }
 
 int Parser::getBookLib(QUrl fn) {
-    if (fn.isEmpty())
+    if (fn.isEmpty()) {
         return DUMMY;
-    if (LibarchiveParser::isSupported(fn))
+    }
+    if (LibarchiveParser::isSupported(fn)) {
         return LIBARCHIVE;
-    if (UnarrParser::isSupported(fn))
+    }
+    if (UnarrParser::isSupported(fn)) {
         return UNARR;
+    }
     //if(PopplerBook::isSupported(fn)) Disable pdf support for the moment
     //    return POPPLER;
     return UNSUPPORTED;
@@ -37,26 +43,33 @@ int Parser::getBookLib(QUrl fn) {
 PageResponseCV Parser::getAt(int index) {
     lock.lock();
     PageResponseCV ret{{0, 0, 0, QUrl()}, cv::Mat()};
-    if (book_lib == LIBARCHIVE)
+    if (book_lib == LIBARCHIVE) {
         ret = libarchive_parser->getAt(index);
-    if (book_lib == UNARR)
+    }
+    if (book_lib == UNARR) {
         ret = unarr_parser->getAt(index);
-    if (book_lib == POPPLER)
+    }
+    if (book_lib == POPPLER) {
         ret = poppler_parser->getAt(index);
+    }
     lock.unlock();
     return ret;
 
 }
 
 int Parser::getSize() {
-    if (book_lib == DUMMY)
+    if (book_lib == DUMMY) {
         return 1;
-    if (book_lib == LIBARCHIVE)
+    }
+    if (book_lib == LIBARCHIVE) {
         return libarchive_parser->getSize();
-    if (book_lib == UNARR)
+    }
+    if (book_lib == UNARR) {
         return unarr_parser->getSize();
-    if (book_lib == POPPLER)
+    }
+    if (book_lib == POPPLER) {
         return poppler_parser->getSize();
+    }
     return 0;
 }
 
