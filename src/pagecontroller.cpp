@@ -25,7 +25,7 @@ PageController::~PageController() {
     qWarning("controller deleted");
 }
 
-void PageController::getAsyncPage(PageRequest req) {
+void PageController::getAsyncPage(const PageRequest& req) {
     int index = req.index;
     int book_size = book.getSize();
     pendingReq = PageRequest();
@@ -43,7 +43,7 @@ void PageController::getAsyncPage(PageRequest req) {
     preloadPages(req);
 }
 
-void PageController::preloadPages(PageRequest req) {
+void PageController::preloadPages(const PageRequest& req) {
     int index = req.index;
     int book_size = book.getSize();
     for (int i=1; i<IMAGE_PRELOAD; i++) {
@@ -66,7 +66,7 @@ void PageController::preloadPages(PageRequest req) {
     }
 }
 
-void PageController::runPage(PageRequest req, int priority) {
+void PageController::runPage(const PageRequest& req, int priority) {
     pagesStatus[req.index] = REQUESTED;
     pages[req.index] = {req, QImage()};
     ImageRunnable *runnable = new ImageRunnable(book, req);
@@ -74,7 +74,7 @@ void PageController::runPage(PageRequest req, int priority) {
     pool.start(runnable, priority);
 }
 
-void PageController::runLocalPage(PageRequest req) {
+void PageController::runLocalPage(const PageRequest& req) {
     ImageRunnable *runnable = new ImageRunnable(book, req);
     connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
     runnable->run();
@@ -85,7 +85,7 @@ QUrl PageController::getBookFilename() {
     return book.getFilename();
 }
 
-void PageController::handleImage(PageResponseCV resp) {
+void PageController::handleImage(const PageResponseCV& resp) {
     qWarning("recieved!!! %i %i %i pending: %i %i %i", resp.index, resp.width, resp.height, pendingReq.index, pendingReq.width, pendingReq.height);
     pages[resp.index] = {resp, ImageProc::toQImage(resp.img).copy()};
     pagesStatus[resp.index] = RECIEVED;
