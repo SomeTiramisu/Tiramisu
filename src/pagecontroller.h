@@ -3,31 +3,28 @@
 
 #include <QObject>
 #include <QThreadPool>
-#include <QPixmap>
+#include <QHash>
+#include <QImage>
 #include "parsers/parser.h"
 #include "utils/utils.h"
 
 enum RequestStatus {
     NotRequested,
     Requested,
-    Recieved
+    Recieved,
+    Undefined
 };
 
 struct Pair {
-    PageRequest req;
-    RequestStatus status{RequestStatus::NotRequested};
+    RequestStatus status{RequestStatus::Undefined};
     QImage img;
 
-    bool matchRequest(const PageRequest& r) {
-        return req == r;
-    }
-
-    bool matchStatus(const RequestStatus& s) {
+    bool matchStatus(const RequestStatus& s) const {
         return status == s;
     }
 
     bool operator==(const Pair& a) const {
-        return (req==a.req && status==a.status && img==a.img);
+        return (status==a.status && img==a.img);
     }
 
     bool operator!=(const Pair& a) const {
@@ -49,7 +46,7 @@ private:
     void runPage(PageRequest req, int priority);
     void runLocalPage(PageRequest req);
     QThreadPool pool;
-    QVector<Pair> pages;
+    QHash<PageRequest, Pair> pages;
     Parser book;
     PageRequest pendingReq;
 
@@ -60,5 +57,9 @@ signals:
 
 
 };
+
+static inline uint qHash(const PageRequest& req, uint seed) {
+    return qHash(req.width << 20 | req.height<<10 | req.index, seed) ^ qHash(req.book_filename, seed);
+}
 
 #endif // PAGECONTROLLER_H

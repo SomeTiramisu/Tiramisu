@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QRunnable>
+#include <QImage>
 #include "parsers/parser.h"
 #include "utils/utils.h"
 

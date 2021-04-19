@@ -31,11 +31,6 @@ LibarchiveParser::LibarchiveParser(QUrl fn, bool toram)
         }
     //qWarning("book size: %i", size);
     archive_read_free(bookArchive);
-    /*
-    for (std::vector<header>::iterator it=headers.begin(); it !=headers.end(); ++it) {
-        qWarning("%s", it->filename.c_str());
-    }
-    */
     std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
     }
 }

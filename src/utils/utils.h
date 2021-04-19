@@ -2,10 +2,8 @@
 #define UTILS_H
 
 #include <QUrl>
-#include <QImage>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <opencv2/core.hpp>
 
 struct PageRequest {
     int width{-1};
@@ -15,6 +13,10 @@ struct PageRequest {
 
     PageRequest addIndex(int i) const {
         return PageRequest{width, height, index+i, book_filename};
+    }
+
+    bool isLike(const PageRequest& a) const {
+        return (width==a.width && height==a.height && book_filename==a.book_filename);
     }
 
     bool operator==(const PageRequest& a) const {

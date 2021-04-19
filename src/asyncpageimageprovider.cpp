@@ -1,5 +1,5 @@
 #include "asyncpageimageprovider.h"
-#include <QImage>
+
 #include "utils/utils.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) { //reference sur pointeur

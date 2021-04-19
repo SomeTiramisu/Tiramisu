@@ -1,7 +1,7 @@
 #ifndef ASYNCPAGEIMAGEPROVIDER_H
 #define ASYNCPAGEIMAGEPROVIDER_H
 
-#include <qquickimageprovider.h>
+#include "qquickimageprovider.h"
 #include <QImage>
 #include "pagecontroller.h"
 

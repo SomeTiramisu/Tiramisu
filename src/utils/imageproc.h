@@ -3,6 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include <QPixmap>
+#include <QImage>
 
 using namespace cv;
 
