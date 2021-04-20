@@ -18,15 +18,15 @@ public:
     QUrl getFilename();
 
 private:
-    ar_stream *bookStream;
-    ar_archive *bookArchive;
+    ar_stream *bookStream{nullptr};
+    ar_archive *bookArchive{nullptr};
     std::vector<header> headers;
     void openRamArchive();
     void openArchive();
     void initRamArchive();
-    int size;
+    int size{0};
     QUrl filename;
-    bool isRam;
+    bool isRam{false};
     QByteArray ram_archive;
 };
 

@@ -16,7 +16,7 @@ PopplerBook::PopplerBook(QUrl fn)
 }
 
 void PopplerBook::openArchive() {
-    bookDoc = poppler::document::load_from_raw_data(ram_archive.data(), ram_archive.length());
+    bookDoc = poppler::document::load_from_raw_data(ram_archive.constData(), ram_archive.length());
 }
 
 void PopplerBook::initArchive(QUrl fn) {

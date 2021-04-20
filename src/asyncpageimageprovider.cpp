@@ -11,6 +11,7 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
     }
     if (controller->getBookFilename() != req.book_filename) {
         qWarning("bkfn changed old: %s, new: %s", controller->getBookFilename().toString().toStdString().c_str(), req.book_filename.toString().toStdString().c_str());
+        controller->deleteLater();
         controller = new PageController(req.book_filename);
     }
     connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);

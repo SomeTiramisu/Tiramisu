@@ -46,6 +46,11 @@ public:
         qWarning("decoded: %i, %i, %i, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str());
         return ret;
     }
+    static void cleanupPageImage(void* info) { //info is pointing to image data
+        uchar* data = static_cast<uchar*>(info);
+        delete[] data;
+        qWarning("data deleted");
+    }
 };
 
 #endif // UTILS_H

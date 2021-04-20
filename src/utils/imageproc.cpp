@@ -1,5 +1,6 @@
 #include "imageproc.h"
 #include <opencv2/imgproc.hpp>
+#include "utils.h"
 
 using namespace cv;
 
@@ -53,14 +54,17 @@ QPixmap ImageProc::toQPixmap(const Mat& src) {
     if (src.empty()) {
         return QPixmap();
     }
-    return QPixmap::fromImage(QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888));
+    return QPixmap::fromImage(toQImage(src));
 }
 
 QImage ImageProc::toQImage(const Mat& src) {
     if (src.empty()) {
         return QImage();
     }
-    return QImage(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
+    size_t length = src.total()*src.elemSize();
+    uchar* new_data = new uchar[length];
+    std::memcpy(new_data, src.data, length);
+    return QImage(new_data, src.cols, src.rows, src.step, QImage::Format_RGBA8888, &Utils::cleanupPageImage, new_data); //src.step is byte per line
 }
 
 void ImageProc::scale(const Mat& src, Mat& dst, const int view_width, const int view_height) {

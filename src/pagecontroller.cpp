@@ -80,7 +80,7 @@ QUrl PageController::getBookFilename() {
 void PageController::handleImage(PageRequest req, QImage img) {
     qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index, req.width, req.height, pendingReq.index, pendingReq.width, pendingReq.height);
     if (pages.value(req).matchStatus(RequestStatus::Requested)) {
-        pages.insert(req, Pair{RequestStatus::Recieved, img.copy()});
+        pages.insert(req, Pair{RequestStatus::Recieved, img});
     }
     if (req==pendingReq) {
         emit pageReady(pages.value(req).img);

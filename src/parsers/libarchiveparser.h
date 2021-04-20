@@ -19,15 +19,15 @@ public:
     QUrl getFilename();
 
 private:
-    archive *bookArchive;
-    archive_entry *entry;  //TODO : inutile ici, rempkacer localement
+    archive *bookArchive{nullptr};
+    archive_entry *entry{nullptr};  //TODO : inutile ici, rempkacer localement
     std::vector<header> headers;
     void openRamArchive();
     void openArchive();
     void initRamArchive();
-    int size;
+    int size{0};
     QUrl filename;
-    bool isRam;
+    bool isRam{false};
     QByteArray ram_archive;
 };
 

@@ -47,7 +47,7 @@ void LibarchiveParser::openRamArchive() {
     archive_read_support_filter_all(bookArchive);
     archive_read_support_format_zip(bookArchive);
     //archive_read_support_format_rar(bookArchive); buggy
-    archive_read_open_memory(bookArchive, ram_archive.data(), ram_archive.length()); //may be incorrect
+    archive_read_open_memory(bookArchive, ram_archive.constData(), ram_archive.length()); //may be incorrect
 }
 
 void LibarchiveParser::initRamArchive() {

@@ -42,7 +42,7 @@ void UnarrParser::openArchive() {
 }
 
 void UnarrParser::openRamArchive() {
-    bookStream = ar_open_memory(ram_archive.data(), ram_archive.length());
+    bookStream = ar_open_memory(ram_archive.constData(), ram_archive.length());
     bookArchive = ar_open_rar_archive(bookStream);
 }
 
