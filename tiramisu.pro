@@ -73,7 +73,9 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
-    src/ui/ui.qml
+    src/ui/ui.qml \
+    src/ui/components/ReaderComponent.qml \
+    src/ui/components/NavigationDrawerComponent.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

@@ -1,4 +1,4 @@
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QQuickStyle>
@@ -9,10 +9,10 @@ Q_DECLARE_METATYPE(PageRequest)
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QCoreApplication::setOrganizationName("custro");
-    QCoreApplication::setOrganizationDomain("org.custro");
-    QCoreApplication::setApplicationName("Tiramisu");
+    QGuiApplication app(argc, argv);
+    QGuiApplication::setOrganizationName("custro");
+    QGuiApplication::setOrganizationDomain("org.custro");
+    QGuiApplication::setApplicationName("Tiramisu");
     QQuickStyle::setStyle("Material");
 
     qRegisterMetaType<PageRequest>();
@@ -20,10 +20,10 @@ int main(int argc, char *argv[])
 
     Backend* backend = new Backend();
 
+    engine.addImportPath("qrc:///ui/");
     engine.addImageProvider("pages", new AsyncPageImageProvider());
     engine.rootContext()->setContextProperty("backend", backend); //do not take ownership
-
-    engine.load(":/res/ui.qml");
+    engine.load("qrc:///ui/ui.qml");
 
     int r = app.exec();
     backend->deleteLater();

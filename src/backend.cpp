@@ -6,7 +6,7 @@ Backend::Backend() {
     m_init = true;
     m_pageIndex = 0;
     //QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
-    QUrl bgfn("qrc:/res/background.png");
+    QUrl bgfn("qrc:///res/background.png");
     QUrl bkdr(QUrl::fromLocalFile(ARCHIVE_DIR));
     //setBookFilename(bkfn);
     setBookDir(bkdr);
