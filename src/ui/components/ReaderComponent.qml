@@ -28,7 +28,7 @@ Item {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + genId(container.bookFilename, 0, container.width, container.height)
+        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height)
     }
     TapHandler {
         id: tHandler
@@ -44,6 +44,8 @@ Item {
         }
     }
     onBookFilenameChanged: {
+        container.pageIndex = 0
+        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height)
         p.bookSize = backend.getBookSize(bookFilename)
     }
 }
