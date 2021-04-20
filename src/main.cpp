@@ -18,13 +18,16 @@ int main(int argc, char *argv[])
     qRegisterMetaType<PageRequest>();
     QQmlApplicationEngine engine;
 
-    Backend backend = Backend();
+    Backend* backend = new Backend();
 
     engine.addImageProvider("pages", new AsyncPageImageProvider());
-    engine.rootContext()->setContextProperty("backend", &backend); //do not take ownership
+    engine.rootContext()->setContextProperty("backend", backend); //do not take ownership
 
     engine.load(":/res/ui.qml");
-    return app.exec();
+
+    int r = app.exec();
+    backend->deleteLater();
+    return r;
 };
 
 

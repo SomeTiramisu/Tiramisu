@@ -9,7 +9,6 @@
 PageController::PageController(QUrl book_filename, QObject *parent)
     : QObject(parent),
       book(book_filename, true)
-
 {}
 
 PageController::~PageController() {
@@ -54,12 +53,10 @@ void PageController::preloadPages(PageRequest req) {
 
     QList<PageRequest> k = pages.keys();
     for (QList<PageRequest>::iterator it=k.begin(); it !=k.end(); ++it) {
-        if(not it->isLike(req)) {
+        if(not it->isLike(req) || not it->isInRange(req, IMAGE_PRELOAD)) {
             pages.remove(*it);
         }
     }
-
-
 }
 
 void PageController::runPage(PageRequest req, int priority) {

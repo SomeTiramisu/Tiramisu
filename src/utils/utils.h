@@ -19,6 +19,10 @@ struct PageRequest {
         return (width==a.width && height==a.height && book_filename==a.book_filename);
     }
 
+    bool isInRange(const PageRequest& a, int d) const {
+        return (a.index - d <= index) && (index <= a.index + d); //a voir
+    }
+
     bool operator==(const PageRequest& a) const {
         return (width==a.width && height==a.height && index==a.index && book_filename==a.book_filename);
     }

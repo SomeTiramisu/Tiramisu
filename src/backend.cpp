@@ -1,15 +1,11 @@
 #include "backend.h"
 #include "parsers/parser.h"
 
-//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
-//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-//#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
-//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
 
 Backend::Backend() {
     m_init = true;
     m_pageIndex = 0;
-    QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
+    //QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
     QUrl bgfn("qrc:/res/background.png");
     QUrl bkdr(QUrl::fromLocalFile(ARCHIVE_DIR));
     //setBookFilename(bkfn);
