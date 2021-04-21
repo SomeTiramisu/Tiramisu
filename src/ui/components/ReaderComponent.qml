@@ -1,4 +1,5 @@
 import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Item {
     id: container
@@ -47,5 +48,20 @@ Item {
         container.pageIndex = 0
         page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height)
         p.bookSize = backend.getBookSize(bookFilename)
+    }
+
+    Slider {
+        anchors.bottom: container.bottom
+        height: implicitHeight
+        width: container.width
+        from: 1
+        to: p.bookSize
+        snapMode: Slider.SnapAlways
+        stepSize: 1
+        value: container.pageIndex
+        onMoved: {
+            container.pageIndex = value
+            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height)
+        }
     }
 }
