@@ -26,11 +26,12 @@ void PageController::getAsyncPage(PageRequest req) {
         return;
     }
     if (pages.value(req).matchStatus(RequestStatus::Recieved)) {
-        emit pageReady(pages[req].img);
+        emit pageReady(pages.value(req).img);
     } else if (pages.value(req).matchStatus(RequestStatus::Requested)) {
         pendingReq = req;
     } else {
         pendingReq = req;
+        pool.clear();
         runPage(req, PRIORITY_MAX);
     }
     preloadPages(req);
@@ -43,10 +44,10 @@ void PageController::preloadPages(PageRequest req) {
         PageRequest new_req(req);
         PageRequest preq = new_req.addIndex(i);
         PageRequest mreq = new_req.addIndex(-i);
-        if (index+i<book_size && pages[preq].matchStatus(RequestStatus::Undefined)) {
+        if (index+i<book_size && pages.value(preq).matchStatus(RequestStatus::Undefined)) {
             runPage(preq, PRIORITY_REQ);
         }
-        if (index-i>=0 && pages[mreq].matchStatus(RequestStatus::Undefined)) {
+        if (index-i>=0 && pages.value(mreq).matchStatus(RequestStatus::Undefined)) {
             runPage(mreq, PRIORITY_REQ);
         }
     }

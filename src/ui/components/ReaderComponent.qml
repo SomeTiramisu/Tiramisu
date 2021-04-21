@@ -54,8 +54,8 @@ Item {
         anchors.bottom: container.bottom
         height: implicitHeight
         width: container.width
-        from: 1
-        to: p.bookSize
+        from: 0
+        to: p.bookSize-1
         snapMode: Slider.SnapAlways
         stepSize: 1
         value: container.pageIndex
