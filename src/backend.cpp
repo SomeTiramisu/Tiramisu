@@ -1,14 +1,25 @@
 #include "backend.h"
 #include "parsers/parser.h"
 
+#include <QStandardPaths>
 
 Backend::Backend() {
     m_init = true;
     m_pageIndex = 0;
-    //QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
     QUrl bgfn("qrc:///res/background.png");
-    QUrl bkdr(QUrl::fromLocalFile(ARCHIVE_DIR));
-    //setBookFilename(bkfn);
+    QUrl bkdr;
+    if (QSysInfo::productType() == "android") {
+        QStringList locations(QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation));
+        if (not locations.empty()) {
+            bkdr = QUrl::fromLocalFile(locations[0]);
+        } else {
+            locations = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+            bkdr = QUrl::fromLocalFile(locations[0]);
+        }
+    } else {
+        QStringList locations = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+        bkdr = QUrl::fromLocalFile(locations[0]);
+    }
     setBookDir(bkdr);
     setBgFilename(bgfn);
 }
