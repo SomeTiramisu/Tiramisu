@@ -2,17 +2,17 @@
 
 #include "utils/utils.h"
 
-AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller) { //reference sur pointeur
+AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers) { //reference sur pointeur
     Q_UNUSED(requestedSize)
     PageRequest req(Utils::decodeId(id));
+    PageController* controller = controllers.value(req.controller_id);
     if (controller == nullptr) {
-        qWarning("bkfn new bkfn: %s", req.book_filename.toString().toStdString().c_str());
         controller = new PageController(req.book_filename);
-    }
-    if (controller->getBookFilename() != req.book_filename) {
-        qWarning("bkfn changed old: %s, new: %s", controller->getBookFilename().toString().toStdString().c_str(), req.book_filename.toString().toStdString().c_str());
+        controllers.insert(req.controller_id, controller);
+    } else if (controller->getBookFilename() != req.book_filename) {
         controller->deleteLater();
         controller = new PageController(req.book_filename);
+        controllers.insert(req.controller_id, controller);
     }
     connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);
     controller->getAsyncPage(req);
@@ -28,17 +28,13 @@ QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
 }
 
 AsyncPageImageProvider::AsyncPageImageProvider()
-    : QQuickAsyncImageProvider(),
-      controller(nullptr) {
-}
+    : QQuickAsyncImageProvider()
+{}
 
 AsyncPageImageProvider::~AsyncPageImageProvider() {
-    if (controller) {
-        controller->deleteLater();
-    }
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
-    AsyncPageImageResponse *response = new AsyncPageImageResponse(id, requestedSize, controller);
+    AsyncPageImageResponse *response = new AsyncPageImageResponse(id, requestedSize, controllers);
     return response;
 }

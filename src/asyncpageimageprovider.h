@@ -8,7 +8,7 @@
 class AsyncPageImageResponse : public QQuickImageResponse
 {
 public:
-    AsyncPageImageResponse(const QString &id, const QSize &requestedSize, PageController *&controller);
+    AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers);
     QQuickTextureFactory *textureFactory() const override;
     QImage m_image;
 public slots:
@@ -24,7 +24,7 @@ public:
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
 
 private:
-    PageController *controller;
+    QHash<QString, PageController*> controllers;
 };
 
 #endif // ASYNCPAGEIMAGEPROVIDER_H

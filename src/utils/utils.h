@@ -10,9 +10,10 @@ struct PageRequest {
     int height{-1};
     int index{-1};
     QUrl book_filename;
+    QString controller_id;
 
     PageRequest addIndex(int i) const {
-        return PageRequest{width, height, index+i, book_filename};
+        return PageRequest{width, height, index+i, book_filename, controller_id};
     }
 
     bool isLike(const PageRequest& a) const {
@@ -41,7 +42,8 @@ public:
                 .width = jido.value("width").toInt(),
                 .height = jido.value("height").toInt(),
                 .index = jido.value("index").toInt(),
-                .book_filename = jido.value("book_filename").toString()
+                .book_filename = jido.value("book_filename").toString(),
+                .controller_id = jido.value("controller_id").toString()
     };
         qWarning("decoded: %i, %i, %i, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str());
         return ret;
