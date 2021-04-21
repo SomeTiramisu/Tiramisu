@@ -50,7 +50,7 @@ Item {
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
-    Slider {
+    /*Slider {
         anchors.bottom: container.bottom
         height: implicitHeight
         width: container.width
@@ -63,5 +63,5 @@ Item {
             container.pageIndex = value
             page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height)
         }
-    }
+    }*/
 }
