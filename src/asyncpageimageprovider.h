@@ -20,7 +20,7 @@ class AsyncPageImageProvider : public QQuickAsyncImageProvider
 {
 public:
     AsyncPageImageProvider();
-    ~AsyncPageImageProvider() {};
+    ~AsyncPageImageProvider();
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
 
 private:

@@ -6,7 +6,7 @@
 #include "../utils/utils.h"
 
 extern "C" {
-    #include "../strnatcmp/strnatcmp.h"
+#include "../strnatcmp/strnatcmp.h"
 }
 
 enum ParserLib {

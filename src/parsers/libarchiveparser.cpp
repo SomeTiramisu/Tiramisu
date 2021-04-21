@@ -30,9 +30,8 @@ LibarchiveParser::LibarchiveParser(QUrl fn, bool toram)
             archive_read_data_skip(bookArchive);
             i++;
         }
-    //qWarning("book size: %i", size);
-    archive_read_free(bookArchive);
-    std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
+        archive_read_free(bookArchive);
+        std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
     }
 }
 
@@ -47,7 +46,6 @@ void LibarchiveParser::openRamArchive() {
     bookArchive = archive_read_new();
     archive_read_support_filter_all(bookArchive);
     archive_read_support_format_zip(bookArchive);
-    //archive_read_support_format_rar(bookArchive); buggy
     archive_read_open_memory(bookArchive, ram_archive.constData(), ram_archive.length()); //may be incorrect
 }
 

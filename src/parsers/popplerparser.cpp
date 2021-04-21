@@ -11,7 +11,6 @@ PopplerBook::PopplerBook(QUrl fn)
         initArchive(fn);
         openArchive();
         size = bookDoc->pages();
-    //qWarning("book size: %i", size);
     }
 }
 

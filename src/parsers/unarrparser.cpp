@@ -28,11 +28,11 @@ UnarrParser::UnarrParser(QUrl fn, bool toram)
             }
             i++;
         }
-    //qWarning("book size: %i", size);
-    ar_close_archive(bookArchive);
-    ar_close(bookStream);
+        //qWarning("book size: %i", size);
+        ar_close_archive(bookArchive);
+        ar_close(bookStream);
 
-    std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
+        std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
     }
 }
 

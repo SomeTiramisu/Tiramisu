@@ -16,7 +16,7 @@ void ImageProc::createMask(const Mat& src, Mat& dst, const bool inv) {
 Rect ImageProc::createROI(const Mat& src) {
     Rect roi = boundingRect(src); //may be inverted
     if (roi == Rect(0, 0, 0, 0)) { //fix for while images
-            roi = Rect(0,0, src.cols, src.rows);
+        roi = Rect(0,0, src.cols, src.rows);
     }
     return roi;
 }
@@ -24,17 +24,17 @@ Rect ImageProc::createROI(const Mat& src) {
 void ImageProc::createAlpha(Mat* src, Mat* dst) {
     dst->create(src->cols, src->rows, CV_8UC1);
     int treshold = 235; //245
-    for (int y=0; y<dst->rows; y++)
-    for (int x=0; x<dst->cols; x++) {
-        Vec4b &pixel = dst->at<Vec4b>(y, x);
-        int& a = dst->at<int>(x,y);
-        if (pixel[0]>= treshold && pixel[1]>= treshold && pixel[2]>=treshold) {
-            a = 0;
-        } else {
-            a = 1;
+    for (int y=0; y<dst->rows; y++) {
+        for (int x=0; x<dst->cols; x++) {
+            Vec4b &pixel = dst->at<Vec4b>(y, x);
+            int& a = dst->at<int>(x,y);
+            if (pixel[0]>= treshold && pixel[1]>= treshold && pixel[2]>=treshold) {
+                a = 0;
+            } else {
+                a = 1;
+            }
         }
     }
-
 }
 
 
@@ -81,8 +81,8 @@ void ImageProc::scale(const Mat& src, Mat& dst, const int view_width, const int 
         interpolation = INTER_AREA;
     }
     resize(src, dst, Size(), f, f, interpolation);
-     //qWarning("%i %i", dst.cols, dst.rows);
-/*
+    //qWarning("%i %i", dst.cols, dst.rows);
+    /*
     if (dst.cols > view_width) {
         dst = dst(Rect(0, 0, view_width, dst.rows));
     }
@@ -110,7 +110,7 @@ void ImageProc::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
 
 void ImageProc::tileFit(const Mat& src, Mat& dst, const int view_width, const int view_height) {
     int h = 1;
-    int v = 1; 
+    int v = 1;
     if (src.cols < view_width) {
         h = view_width / src.cols + 1;
     }
@@ -130,17 +130,17 @@ void ImageProc::tileFit(const Mat& src, Mat& dst, const int view_width, const in
 
 void ImageProc::addAlphaAware(Mat* src1, Mat* src2, Mat* alpha, Mat* dst ) { //src2 should be background
     dst->create(src1->cols, src1->rows, CV_8UC3);
-    for (int y=0; y<dst->rows; y++)
-    for (int x=0; x<dst->cols; x++) {
-        Vec4b &pixel_s1 = src1->at<Vec4b>(y, x);
-        Vec4b &pixel_s2 = src2->at<Vec4b>(y, x);
-        double a = alpha->at<double>(x, y)/255;
-        Vec4b &pixel = dst->at<Vec4b>(y, x);
-        pixel[0] = pixel_s1[0]*a + pixel_s2[0]*(1-a);
-        pixel[1] = pixel_s1[1]*a + pixel_s2[1]*(1-a);
-        pixel[2] = pixel_s1[2]*a + pixel_s2[2]*(1-a);
+    for (int y=0; y<dst->rows; y++) {
+        for (int x=0; x<dst->cols; x++) {
+            Vec4b &pixel_s1 = src1->at<Vec4b>(y, x);
+            Vec4b &pixel_s2 = src2->at<Vec4b>(y, x);
+            double a = alpha->at<double>(x, y)/255;
+            Vec4b &pixel = dst->at<Vec4b>(y, x);
+            pixel[0] = pixel_s1[0]*a + pixel_s2[0]*(1-a);
+            pixel[1] = pixel_s1[1]*a + pixel_s2[1]*(1-a);
+            pixel[2] = pixel_s1[2]*a + pixel_s2[2]*(1-a);
+        }
     }
-    
 }
 
 void ImageProc::sharpen(const Mat &src, Mat &dst) {

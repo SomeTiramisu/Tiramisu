@@ -19,7 +19,6 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
 }
 void AsyncPageImageResponse::handleDone(QImage img) {
     m_image = img;
-    //qWarning("finished");
     emit finished();
 }
 
@@ -31,6 +30,12 @@ QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
 AsyncPageImageProvider::AsyncPageImageProvider()
     : QQuickAsyncImageProvider(),
       controller(nullptr) {
+}
+
+AsyncPageImageProvider::~AsyncPageImageProvider() {
+    if (controller) {
+        controller->deleteLater();
+    }
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
