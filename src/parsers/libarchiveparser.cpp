@@ -91,7 +91,7 @@ bool LibarchiveParser::isSupported(QUrl fn) {
     if (fn.isEmpty()) {
         return false;
     }
-    struct archive *a;
+    archive *a;
     int r;
     a = archive_read_new();
     archive_read_support_filter_all(a);
