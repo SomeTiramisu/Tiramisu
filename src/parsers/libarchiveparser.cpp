@@ -16,6 +16,7 @@ LibarchiveParser::LibarchiveParser(QUrl fn, bool toram)
         }
         int i = 0;
         size = 0;
+        archive_entry *entry;
         while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
             header h = {
                 .filename = std::string(archive_entry_pathname(entry)),
@@ -64,6 +65,7 @@ cv::Mat LibarchiveParser::getAt(int index) {
     } else {
         openArchive();
     }
+    archive_entry *entry{nullptr};
     for (int i=0; i<=n; i++) {
         archive_read_next_header(bookArchive, &entry);
     }

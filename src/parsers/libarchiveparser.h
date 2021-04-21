@@ -20,7 +20,6 @@ public:
 
 private:
     archive *bookArchive{nullptr};
-    archive_entry *entry{nullptr};  //TODO : inutile ici, rempkacer localement
     std::vector<header> headers;
     void openRamArchive();
     void openArchive();
