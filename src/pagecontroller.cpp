@@ -2,14 +2,18 @@
 #include "imagerunnable.h"
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
-#define IMAGE_PRELOAD 10
 #define PRIORITY_MAX 0
 #define PRIORITY_REQ 1
 
-PageController::PageController(QUrl book_filename, QObject *parent)
+PageController::PageController(QUrl book_filename, bool toram, int imgprld, QObject *parent)
     : QObject(parent),
-      book(book_filename, true)
-{}
+      book(book_filename, toram),
+      imagePreload(imgprld)
+{
+    if (imagePreload == 0) {
+        imagePreload = book.getSize();
+    }
+}
 
 PageController::~PageController() {
     pool.clear();
@@ -40,7 +44,7 @@ void PageController::getAsyncPage(PageRequest req) {
 void PageController::preloadPages(PageRequest req) {
     int index = req.index;
     int book_size = book.getSize();
-    for (int i=1; i<IMAGE_PRELOAD; i++) {
+    for (int i=1; i<imagePreload; i++) {
         PageRequest new_req(req);
         PageRequest preq = new_req.addIndex(i);
         PageRequest mreq = new_req.addIndex(-i);
@@ -54,7 +58,7 @@ void PageController::preloadPages(PageRequest req) {
 
     QList<PageRequest> k = pages.keys();
     for (QList<PageRequest>::iterator it=k.begin(); it !=k.end(); ++it) {
-        if(not it->isLike(req) || not it->isInRange(req, IMAGE_PRELOAD)) {
+        if(not it->isLike(req) || not it->isInRange(req, imagePreload)) {
             pages.remove(*it);
         }
     }

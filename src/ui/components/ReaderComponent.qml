@@ -29,7 +29,7 @@ Item {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, 0)
+        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0")
     }
     TapHandler {
         id: tHandler
@@ -41,12 +41,12 @@ Item {
             } else if (container.pageIndex > 0) {
                 container.pageIndex--
             }
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, 0)
+            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, "0")
         }
     }
     onBookFilenameChanged: {
         container.pageIndex = 0
-        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, 0)
+        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0")
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
@@ -61,7 +61,7 @@ Item {
         value: container.pageIndex
         onMoved: {
             container.pageIndex = value
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, 0)
+            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, 100, 100, "1")
         }
     }
 }

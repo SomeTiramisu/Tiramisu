@@ -45,13 +45,13 @@ public:
                 .book_filename = jido.value("book_filename").toString(),
                 .controller_id = jido.value("controller_id").toString()
     };
-        qWarning("decoded: %i, %i, %i, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str());
+        qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str(), ret.controller_id.toStdString().c_str());
         return ret;
     }
     static void cleanupPageImage(void* info) { //info is pointing to image data
         uchar* data = static_cast<uchar*>(info);
         delete[] data;
-        qWarning("data deleted");
+        //qWarning("data deleted");
     }
 };
 

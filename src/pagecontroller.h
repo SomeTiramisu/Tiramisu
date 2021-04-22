@@ -36,7 +36,7 @@ class PageController : public QObject
 {
     Q_OBJECT
 public:
-    PageController(QUrl book_filename, QObject *parent = nullptr);
+    PageController(QUrl book_filename, bool toram = false, int imgprld = 0, QObject *parent = nullptr);
     ~PageController();
     void getAsyncPage(PageRequest req);
     QUrl getBookFilename();
@@ -49,6 +49,7 @@ private:
     QHash<PageRequest, Pair> pages;
     Parser book;
     PageRequest pendingReq;
+    int imagePreload;
 
 public slots:
     void handleImage(PageRequest req, QImage img);

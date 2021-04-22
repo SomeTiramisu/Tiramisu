@@ -7,11 +7,12 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
     PageRequest req(Utils::decodeId(id));
     PageController* controller = controllers.value(req.controller_id);
     if (controller == nullptr) {
-        controller = new PageController(req.book_filename);
+        controller = new PageController(req.book_filename, true, 10);
         controllers.insert(req.controller_id, controller);
     } else if (controller->getBookFilename() != req.book_filename) {
         controller->deleteLater();
-        controller = new PageController(req.book_filename);
+        controller = new PageController(req.book_filename, true, 10);
+        controllers.remove(req.controller_id);
         controllers.insert(req.controller_id, controller);
     }
     connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);
