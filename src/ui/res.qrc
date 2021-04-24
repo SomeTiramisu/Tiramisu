@@ -7,5 +7,6 @@
         <file>components/qmldir</file>
         <file>components/ReaderComponent.qml</file>
         <file>components/NavigationDrawerComponent.qml</file>
+        <file>components/MiniViewComponent.qml</file>
     </qresource>
 </RCC>

@@ -10,7 +10,11 @@ class AsyncPageImageResponse : public QQuickImageResponse
 public:
     AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers);
     QQuickTextureFactory *textureFactory() const override;
+private:
+    const PageRequest m_req;
+    PageAnswer m_ans;
     QImage m_image;
+
 public slots:
     void handleDone(QImage img);
 

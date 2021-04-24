@@ -4,33 +4,39 @@
 #include <QUrl>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QImage>
 
-struct PageRequest {
-    int width{-1};
-    int height{-1};
-    int index{-1};
-    QUrl book_filename;
-    QString controller_id;
-
-    PageRequest addIndex(int i) const {
-        return PageRequest{width, height, index+i, book_filename, controller_id};
+class PageAnswer: public QObject {
+    Q_OBJECT
+public:
+    void answer(QImage img) {
+        emit s_answer(img);
     }
+signals:
+    void s_answer(QImage img);
+};
 
-    bool isLike(const PageRequest& a) const {
-        return (width==a.width && height==a.height && book_filename==a.book_filename);
-    }
-
-    bool isInRange(const PageRequest& a, int d) const {
-        return (a.index - d <= index) && (index <= a.index + d); //a voir
-    }
-
-    bool operator==(const PageRequest& a) const {
-        return (width==a.width && height==a.height && index==a.index && book_filename==a.book_filename);
-    }
-
-    bool operator!=(const PageRequest& a) const {
-        return not operator==(a);
-    }
+class PageRequest {
+public:
+    PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id);
+    PageRequest() {};
+    PageRequest addIndex(int i) const;
+    ~PageRequest();
+    int width() const {return m_width;};
+    int height() const {return m_height;};
+    int index() const {return m_index;};
+    QUrl book_filename() const {return m_book_filename;};
+    QString controller_id() const {return m_controller_id;};
+    bool isLike(const PageRequest& a) const;
+    bool isInRange(const PageRequest& a, int d) const;
+    bool operator==(const PageRequest& a) const;
+    bool operator!=(const PageRequest& a) const;
+private:
+    int m_width{-1};
+    int m_height{-1};
+    int m_index{-1};
+    QUrl m_book_filename;
+    QString m_controller_id;
 };
 
 class Utils {
@@ -38,15 +44,15 @@ public:
     static PageRequest decodeId(QString id) {
         //qWarning("id: %s", id.toStdString().c_str());
         QJsonObject jido = QJsonDocument::fromJson(QUrl::fromPercentEncoding(id.toUtf8()).toUtf8()).object(); //boncourage
-        PageRequest ret = PageRequest {
-                .width = jido.value("width").toInt(),
-                .height = jido.value("height").toInt(),
-                .index = jido.value("index").toInt(),
-                .book_filename = jido.value("book_filename").toString(),
-                .controller_id = jido.value("controller_id").toString()
-    };
-        qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width, ret.height, ret.index, ret.book_filename.toString().toStdString().c_str(), ret.controller_id.toStdString().c_str());
-        return ret;
+        return PageRequest(
+                jido.value("width").toInt(),
+                jido.value("height").toInt(),
+                jido.value("index").toInt(),
+                jido.value("book_filename").toString(),
+                jido.value("controller_id").toString()
+    );
+        //qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width(), ret.height(), ret.index(), ret.book_filename().toString().toStdString().c_str(), ret.controller_id().toStdString().c_str());
+        //return ret;
     }
     static void cleanupPageImage(void* info) { //info is pointing to image data
         uchar* data = static_cast<uchar*>(info);

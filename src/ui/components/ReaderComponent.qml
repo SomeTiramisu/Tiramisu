@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import components 1.0
 
 Item {
     id: container
@@ -50,6 +51,14 @@ Item {
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
+    MiniViewComponent {
+        bookFilename: container.bookFilename
+        anchors.bottom: container.bottom
+        height: 100
+        width: container.width
+    }
+
+/*
     Slider {
         anchors.bottom: container.bottom
         height: implicitHeight
@@ -63,5 +72,5 @@ Item {
             container.pageIndex = value
             page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, 100, 100, "1")
         }
-    }
+    }*/
 }

@@ -24,6 +24,7 @@ add_executable(Tiramisu
     src/imagerunnable.cpp
     src/pagecontroller.cpp
     src/utils/imageproc.cpp
+    src/utils/utils.cpp
     src/parsers/parser.cpp
     src/parsers/libarchiveparser.cpp
     src/parsers/unarrparser.cpp

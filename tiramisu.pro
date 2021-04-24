@@ -41,7 +41,8 @@ SOURCES += \
     src/main.cpp \
     src/pagecontroller.cpp \
     src/parsers/parser.cpp \
-    src/strnatcmp/strnatcmp.c
+    src/strnatcmp/strnatcmp.c \
+    src/utils/utils.cpp
 
 HEADERS += \
     src/asyncpageimageprovider.h \
@@ -66,6 +67,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 ANDROID_ABIS = arm64-v8a
 
 DISTFILES += \
+    TODO \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.jar \
@@ -76,6 +78,7 @@ DISTFILES += \
     src/ui/ui.qml \
     src/ui/components/ReaderComponent.qml \
     src/ui/components/NavigationDrawerComponent.qml
+    src/ui/components/MiniViewComponent.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

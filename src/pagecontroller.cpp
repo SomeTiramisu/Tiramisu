@@ -5,15 +5,11 @@
 #define PRIORITY_MAX 0
 #define PRIORITY_REQ 1
 
-PageController::PageController(QUrl book_filename, bool toram, int imgprld, QObject *parent)
+PageController::PageController(const QUrl& book_filename, bool toram, int imgprld, QObject *parent)
     : QObject(parent),
       book(book_filename, toram),
-      imagePreload(imgprld)
-{
-    if (imagePreload == 0) {
-        imagePreload = book.getSize();
-    }
-}
+      imagePreload(imgprld < 0 ? book.getSize() : imgprld)
+{}
 
 PageController::~PageController() {
     pool.clear();
@@ -21,41 +17,50 @@ PageController::~PageController() {
     qWarning("controller deleted");
 }
 
-void PageController::getAsyncPage(PageRequest req) {
-    int index = req.index;
+void PageController::getAsyncPage(PageRequest req, PageAnswer* ans) {
+    int index = req.index();
     int book_size = book.getSize();
-    pendingReq = PageRequest();
     if (index<0 || index >= book_size) {
-        emit pageReady(QImage());;
+        ans->answer(QImage());;
         return;
     }
     if (pages.value(req).matchStatus(RequestStatus::Recieved)) {
-        emit pageReady(pages.value(req).img);
+        qWarning("Controller: already reviced %i", req.index());
+        ans->answer(pages.value(req).img);
     } else if (pages.value(req).matchStatus(RequestStatus::Requested)) {
-        pendingReq = req;
+        qWarning("Controller: already requested, add to pending %i", req.index());
+        pendingReqs.insert(req, ans);
     } else {
-        pendingReq = req;
-        pool.clear();
+        qWarning("Controller: requesting, add to pending %i", req.index());
+        pendingReqs.insert(req, ans);
+        //pool.clear();
         runPage(req, PRIORITY_MAX);
+        //runLocalPage(req);
     }
     preloadPages(req);
+    clearPages(req);
 }
 
 void PageController::preloadPages(PageRequest req) {
-    int index = req.index;
+    int index = req.index();
     int book_size = book.getSize();
     for (int i=1; i<imagePreload; i++) {
-        PageRequest new_req(req);
-        PageRequest preq = new_req.addIndex(i);
-        PageRequest mreq = new_req.addIndex(-i);
+        PageRequest preq = req.addIndex(i);
+        PageRequest mreq = req.addIndex(-i);
         if (index+i<book_size && pages.value(preq).matchStatus(RequestStatus::Undefined)) {
+            qWarning("%i", preq.index());
             runPage(preq, PRIORITY_REQ);
+            //runLocalPage(preq);
         }
         if (index-i>=0 && pages.value(mreq).matchStatus(RequestStatus::Undefined)) {
+            qWarning("%i", mreq.index());
             runPage(mreq, PRIORITY_REQ);
+            //runLocalPage(mreq);
         }
     }
+}
 
+void PageController::clearPages(PageRequest req) {
     QList<PageRequest> k = pages.keys();
     for (QList<PageRequest>::iterator it=k.begin(); it !=k.end(); ++it) {
         if(not it->isLike(req) || not it->isInRange(req, imagePreload)) {
@@ -72,6 +77,7 @@ void PageController::runPage(PageRequest req, int priority) {
 }
 
 void PageController::runLocalPage(PageRequest req) {
+    pages.insert(req, Pair{RequestStatus::Requested, QImage()});
     ImageRunnable *runnable = new ImageRunnable(book, req);
     connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
     runnable->run();
@@ -83,12 +89,13 @@ QUrl PageController::getBookFilename() {
 }
 
 void PageController::handleImage(PageRequest req, QImage img) {
-    qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index, req.width, req.height, pendingReq.index, pendingReq.width, pendingReq.height);
+    //pendingReqs.isEmpty() ? qWarning("Controller: recieved!!! %i %i %i pending: None", req.index(), req.width(), req.height()): qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index(), req.width(), req.height(), pendingReqs.head().index(), pendingReqs.head().width(), pendingReqs.head().height());
     if (pages.value(req).matchStatus(RequestStatus::Requested)) {
         pages.insert(req, Pair{RequestStatus::Recieved, img});
     }
-    if (req==pendingReq) {
-        emit pageReady(pages.value(req).img);
-        pendingReq = PageRequest();
+    if (pendingReqs.contains(req)) {
+        qWarning("Controller: answaring: %i, (%i, %i)", req.index(), req.width(), req.height());
+        pendingReqs.value(req)->answer(img);
+        pendingReqs.remove(req);
     }
 }

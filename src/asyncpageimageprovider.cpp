@@ -2,21 +2,23 @@
 
 #include "utils/utils.h"
 
-AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers) { //reference sur pointeur
+AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers) //reference sur pointeur
+    : m_req(Utils::decodeId(id))
+{
     Q_UNUSED(requestedSize)
-    PageRequest req(Utils::decodeId(id));
-    PageController* controller = controllers.value(req.controller_id);
+    PageController* controller = controllers.value(m_req.controller_id());
     if (controller == nullptr) {
-        controller = new PageController(req.book_filename, true, 10);
-        controllers.insert(req.controller_id, controller);
-    } else if (controller->getBookFilename() != req.book_filename) {
+        controller = new PageController(m_req.book_filename(), true, 10);
+        controllers.insert(m_req.controller_id(), controller);
+    } else if (controller->getBookFilename() != m_req.book_filename()) {
         controller->deleteLater();
-        controller = new PageController(req.book_filename, true, 10);
-        controllers.remove(req.controller_id);
-        controllers.insert(req.controller_id, controller);
+        controller = new PageController(m_req.book_filename(), true, 10);
+        controllers.remove(m_req.controller_id());
+        controllers.insert(m_req.controller_id(), controller);
     }
-    connect(controller, &PageController::pageReady, this, &AsyncPageImageResponse::handleDone);
-    controller->getAsyncPage(req);
+    connect(&m_ans, &PageAnswer::s_answer, this, &AsyncPageImageResponse::handleDone);
+    controller->getAsyncPage(m_req, &m_ans);
+    qWarning("Provider: requested: %i, (%i, %i), %s", m_req.index(), m_req.width(), m_req.height(), m_req.book_filename().toLocalFile().toStdString().c_str());
 }
 void AsyncPageImageResponse::handleDone(QImage img) {
     m_image = img;
@@ -24,7 +26,7 @@ void AsyncPageImageResponse::handleDone(QImage img) {
 }
 
 QQuickTextureFactory *AsyncPageImageResponse::textureFactory() const {
-    qWarning("Provider: sending %i %i", m_image.width(), m_image.height());
+    qWarning("Provider: sending %i, (%i, %i)", m_req.index(), m_image.width(), m_image.height());
     return QQuickTextureFactory::textureFactoryForImage(m_image);
 }
 
