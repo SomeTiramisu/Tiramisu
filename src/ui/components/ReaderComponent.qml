@@ -8,9 +8,9 @@ Item {
     property url bookFilename: ""
 
     property int pageIndex: 0
-    function genId(book_filename: string, index: int, width: int, height: int, controller_id: string) {
+    function genId(book_filename: string, index: int, width: int, height: int, controller_id: string, controller_preload: int) {
         //console.log(JSON.stringify({book_filename, index ,width, height}))
-        return JSON.stringify({book_filename, index ,width, height, controller_id})
+        return JSON.stringify({book_filename, index ,width, height, controller_id, controller_preload})
     }
     QtObject { //workaround for private property
         id: p
@@ -30,32 +30,34 @@ Item {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0")
+        cache: false
+        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10)
     }
     TapHandler {
         id: tHandler
         onTapped: {
-            if (eventPoint.position.x > parent.width / 2) {
-                if (container.pageIndex < p.bookSize-1) {
-                    container.pageIndex++
-                }
-            } else if (container.pageIndex > 0) {
+            if (eventPoint.position.x > 2*parent.width/3 && container.pageIndex < p.bookSize-1) {
+                container.pageIndex++
+
+            } else if (eventPoint.position.x < parent.width/3 && container.pageIndex > 0) {
                 container.pageIndex--
+            } else {
             }
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, "0")
+
+            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, "0", 10)
         }
     }
     onBookFilenameChanged: {
         container.pageIndex = 0
-        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0")
+        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10)
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
     MiniViewComponent {
+        id: minidrawer
         bookFilename: container.bookFilename
-        anchors.bottom: container.bottom
-        height: 100
-        width: container.width
+        anchors.fill: parent
+        visible: false
     }
 
 /*

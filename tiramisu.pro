@@ -77,7 +77,7 @@ DISTFILES += \
     android/res/values/libs.xml \
     src/ui/ui.qml \
     src/ui/components/ReaderComponent.qml \
-    src/ui/components/NavigationDrawerComponent.qml
+    src/ui/components/NavigationDrawerComponent.qml \
     src/ui/components/MiniViewComponent.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

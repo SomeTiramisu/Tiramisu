@@ -8,11 +8,11 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
     Q_UNUSED(requestedSize)
     PageController* controller = controllers.value(m_req.controller_id());
     if (controller == nullptr) {
-        controller = new PageController(m_req.book_filename(), true, 10);
+        controller = new PageController(m_req.book_filename(), true, m_req.controller_preload());
         controllers.insert(m_req.controller_id(), controller);
     } else if (controller->getBookFilename() != m_req.book_filename()) {
         controller->deleteLater();
-        controller = new PageController(m_req.book_filename(), true, 10);
+        controller = new PageController(m_req.book_filename(), true, m_req.controller_preload());
         controllers.remove(m_req.controller_id());
         controllers.insert(m_req.controller_id(), controller);
     }

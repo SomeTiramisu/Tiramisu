@@ -18,7 +18,7 @@ signals:
 
 class PageRequest {
 public:
-    PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id);
+    PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id, int controller_preload);
     PageRequest() {};
     PageRequest addIndex(int i) const;
     ~PageRequest();
@@ -27,6 +27,7 @@ public:
     int index() const {return m_index;};
     QUrl book_filename() const {return m_book_filename;};
     QString controller_id() const {return m_controller_id;};
+    int controller_preload() const {return m_controller_preload;};
     bool isLike(const PageRequest& a) const;
     bool isInRange(const PageRequest& a, int d) const;
     bool operator==(const PageRequest& a) const;
@@ -37,6 +38,7 @@ private:
     int m_index{-1};
     QUrl m_book_filename;
     QString m_controller_id;
+    int m_controller_preload;
 };
 
 class Utils {
@@ -49,7 +51,8 @@ public:
                 jido.value("height").toInt(),
                 jido.value("index").toInt(),
                 jido.value("book_filename").toString(),
-                jido.value("controller_id").toString()
+                jido.value("controller_id").toString(),
+                jido.value("controller_preload").toInt()
     );
         //qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width(), ret.height(), ret.index(), ret.book_filename().toString().toStdString().c_str(), ret.controller_id().toStdString().c_str());
         //return ret;

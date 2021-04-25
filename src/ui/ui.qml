@@ -6,7 +6,7 @@ import QtQuick.Window 2.15
 import components 1.0
 
 
-ApplicationWindow {
+Window {
     id: root
     width:900; height: 900
     //width:1080; height: 1920
@@ -21,6 +21,7 @@ ApplicationWindow {
 
     NavigationDrawer {
         id: drawer
+        anchors.fill: parent
         onFileSelected: {
             reader.bookFilename = fn
         }

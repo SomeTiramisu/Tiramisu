@@ -1,15 +1,16 @@
 #include "utils.h"
 
-PageRequest::PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id)
+PageRequest::PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id, int controller_preload)
     : m_width(width),
       m_height(height),
       m_index(index),
       m_book_filename(book_filename),
-      m_controller_id(controller_id)
+      m_controller_id(controller_id),
+      m_controller_preload(controller_preload)
 {}
 
 PageRequest PageRequest::addIndex(int i) const {
-    return PageRequest(m_width, m_height, m_index+i, m_book_filename, m_controller_id);
+    return PageRequest(m_width, m_height, m_index+i, m_book_filename, m_controller_id, m_controller_preload);
 }
 
 PageRequest::~PageRequest() {
@@ -33,6 +34,7 @@ bool PageRequest::operator==(const PageRequest& a) const {
             && m_index==a.index()
             && m_book_filename==a.book_filename()
             && m_controller_id==a.controller_id()
+            && m_controller_preload==a.controller_preload()
             );
 }
 
