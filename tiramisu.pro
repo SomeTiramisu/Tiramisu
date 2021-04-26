@@ -35,7 +35,7 @@ SOURCES += \
     src/asyncsimpleimageprovider.cpp \
     src/backend.cpp \
     src/parsers/libarchiveparser.cpp \
-    src/parsers/popplerparser.cpp \
+    #src/parsers/popplerparser.cpp \
     src/parsers/unarrparser.cpp \
     src/utils/imageproc.cpp \
     src/imagerunnable.cpp \
@@ -52,7 +52,7 @@ HEADERS += \
     src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \
     src/parsers/parseutils.h \
-    src/parsers/popplerparser.h \
+    #src/parsers/popplerparser.h \
     src/parsers/unarrparser.h \
     src/utils/imageproc.h \
     src/imagerunnable.h \

@@ -5,7 +5,7 @@
 #include "dummyparser.h"
 #include "libarchiveparser.h"
 #include "unarrparser.h"
-#include "popplerparser.h"
+//#include "popplerparser.h"
 #include <QMutex>
 
 class Parser {
@@ -25,7 +25,7 @@ private:
     DummyParser dummy_parser;
     LibarchiveParser *libarchive_parser{nullptr};
     UnarrParser *unarr_parser{nullptr};
-    PopplerBook *poppler_parser{nullptr};
+    //PopplerBook *poppler_parser{nullptr};
 };
 
 #endif // PARSER_H
