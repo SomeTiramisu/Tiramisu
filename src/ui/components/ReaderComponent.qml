@@ -53,11 +53,11 @@ Item {
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
-    MiniViewComponent {
+    /*MiniViewComponent {
         id: minidrawer
         bookFilename: container.bookFilename
         anchors.fill: parent
-    }
+    }*/
 
     Timer {
         id: update

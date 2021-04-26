@@ -25,7 +25,7 @@ Item {
                     mipmap: true
                     width: listView.width
                     fillMode: Image.PreserveAspectFit
-                    //source: "image://simplePages/" + genSimpleId(container.bookFilename, index, 0, 0, "1", 0)
+                    source: "image://simplePages/" + genSimpleId(container.bookFilename, index, 0, 0, "1", 0)
                 }
                 Label {
                     id: txt
