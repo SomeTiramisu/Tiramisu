@@ -10,24 +10,20 @@ extern "C" {
 class UnarrParser {
 
 public:
-    UnarrParser(QUrl fn, bool toram);
+    UnarrParser(const QUrl& fn);
+    UnarrParser(QByteArray* ramArchive);
     ~UnarrParser() {};
     cv::Mat getAt(int index);
-    int getSize();
-    static bool isSupported(QUrl fn);
-    QUrl getFilename();
+    int getSize() const;
+    static bool isSupported(const QUrl& fn);
+    bool isSupported() const;
 
 private:
-    ar_stream *bookStream{nullptr};
-    ar_archive *bookArchive{nullptr};
-    std::vector<header> headers;
-    void openRamArchive();
-    void openArchive();
-    void initRamArchive();
-    int size{0};
-    QUrl filename;
-    bool isRam{false};
-    QByteArray ram_archive;
+    std::vector<header> m_headers;
+    int m_size{0};
+    QUrl m_filename;
+    bool m_isRam{false};
+    QByteArray* m_ramArchive;
 };
 
 #endif // UNARRPARSER_H

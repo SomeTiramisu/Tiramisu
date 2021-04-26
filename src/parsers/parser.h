@@ -16,16 +16,18 @@ public:
     cv::Mat getAt(int index);
     int getSize();
     QUrl getFilename() const;
-    void setFilename(const QUrl& fn);
+    void reset(const QUrl& fn, bool toram);
 private:
-    ParserLib book_lib{ParserLib::Dummy};
+    void initRamArchive();
+    ParserLib bookLib{ParserLib::Dummy};
     QUrl filename;
     inline static QMutex mutex;
-    ParserLib getBookLib(QUrl fn);
-    DummyParser dummy_parser;
-    LibarchiveParser *libarchive_parser{nullptr};
-    UnarrParser *unarr_parser{nullptr};
-    //PopplerBook *poppler_parser{nullptr};
+    ParserLib getBookLib(const QUrl& fn) const;
+    QByteArray ramArchive;
+    bool isRam{false};
+    DummyParser dummyParser;
+    LibarchiveParser *libarchiveParser{nullptr};
+    UnarrParser *unarrParser{nullptr};
 };
 
 #endif // PARSER_H
