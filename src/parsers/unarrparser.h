@@ -13,8 +13,8 @@ public:
     UnarrParser(const QUrl& fn);
     UnarrParser(QByteArray* ramArchive);
     ~UnarrParser() {};
-    cv::Mat getAt(int index);
-    int getSize() const;
+    cv::Mat at(int index);
+    int size() const;
     static bool isSupported(const QUrl& fn);
     bool isSupported() const;
 

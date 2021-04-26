@@ -8,7 +8,7 @@
 PageController::PageController(const QUrl& book_filename, bool toram, int imgprld, QObject *parent)
     : QObject(parent),
       book(book_filename, toram),
-      imagePreload(imgprld < 0 ? book.getSize() : imgprld)
+      imagePreload(imgprld < 0 ? book.size() : imgprld)
 {}
 
 PageController::~PageController() {
@@ -19,7 +19,7 @@ PageController::~PageController() {
 
 void PageController::getAsyncPage(PageRequest req, PageAnswer* ans) {
     int index = req.index();
-    int book_size = book.getSize();
+    int book_size = book.size();
     if (index<0 || index >= book_size) {
         ans->answer(QImage());;
         return;
@@ -43,7 +43,7 @@ void PageController::getAsyncPage(PageRequest req, PageAnswer* ans) {
 
 void PageController::preloadPages(PageRequest req) {
     int index = req.index();
-    int book_size = book.getSize();
+    int book_size = book.size();
     for (int i=1; i<imagePreload; i++) {
         PageRequest preq = req.addIndex(i);
         PageRequest mreq = req.addIndex(-i);
@@ -85,7 +85,7 @@ void PageController::runLocalPage(PageRequest req) {
 }
 
 QUrl PageController::getBookFilename() {
-    return book.getFilename();
+    return book.filename();
 }
 
 void PageController::handleImage(PageRequest req, QImage img) {

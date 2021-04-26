@@ -60,7 +60,7 @@ UnarrParser::UnarrParser(QByteArray* ramArchive)
     }
 }
 
-cv::Mat UnarrParser::getAt(int index) {
+cv::Mat UnarrParser::at(int index) {
     int n = m_headers[index].index;
     ar_stream *s{nullptr};
     if (m_isRam) {
@@ -82,7 +82,7 @@ cv::Mat UnarrParser::getAt(int index) {
     return img;
 }
 
-int UnarrParser::getSize() const {
+int UnarrParser::size() const {
     return m_size;
 }
 

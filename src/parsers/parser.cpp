@@ -1,32 +1,32 @@
 #include "parser.h"
 #include <QtCore>
 
-Parser::Parser(QUrl fn, bool toram)
-    : bookLib(getBookLib(fn)),
-      filename(fn),
-      isRam(toram)
+Parser::Parser(QUrl filename, bool isRam)
+    : m_bookLib(getBookLib(filename)),
+      m_filename(filename),
+      m_isRam(isRam)
 {
-    if (isRam) {
+    if (m_isRam) {
         initRamArchive();
-        if (bookLib == ParserLib::Libarchive) {
-            libarchiveParser = new LibarchiveParser(&ramArchive);
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(&m_ramArchive);
         }
-        if (bookLib == ParserLib::Unarr) {
-            unarrParser = new UnarrParser(&ramArchive);
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(&m_ramArchive);
         }
     } else {
-        if (bookLib == ParserLib::Libarchive) {
-            libarchiveParser = new LibarchiveParser(fn);
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(m_filename);
         }
-        if (bookLib == ParserLib::Unarr) {
-            unarrParser = new UnarrParser(fn);
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(m_filename);
         }
     }
 }
 
 Parser::~Parser() {
-    delete libarchiveParser;
-    delete unarrParser;
+    delete m_libarchiveParser;
+    delete m_unarrParser;
 }
 
 ParserLib Parser::getBookLib(const QUrl& fn) const {
@@ -42,51 +42,69 @@ ParserLib Parser::getBookLib(const QUrl& fn) const {
     return ParserLib::Unsupported;
 }
 
-cv::Mat Parser::getAt(int index) {
+cv::Mat Parser::at(int index) {
     QMutexLocker locker(&mutex);
-    if (bookLib == ParserLib::Dummy) {
-        return dummyParser.getAt();
+    if (m_bookLib== ParserLib::Dummy) {
+        return m_dummyParser.at();
     }
-    if (bookLib == ParserLib::Libarchive) {
-        return libarchiveParser->getAt(index);
+    if (m_bookLib== ParserLib::Libarchive) {
+        return m_libarchiveParser->at(index);
     }
-    if (bookLib == ParserLib::Unarr) {
-        return unarrParser->getAt(index);
+    if (m_bookLib== ParserLib::Unarr) {
+        return m_unarrParser->at(index);
     }
     return cv::Mat();
 
 }
 
-int Parser::getSize() {
-    if (bookLib == ParserLib::Dummy) {
-        return dummyParser.getSize();
+int Parser::size() {
+    if (m_bookLib== ParserLib::Dummy) {
+        return m_dummyParser.size();
     }
-    if (bookLib == ParserLib::Libarchive) {
-        return libarchiveParser->getSize();
+    if (m_bookLib== ParserLib::Libarchive) {
+        return m_libarchiveParser->size();
     }
-    if (bookLib == ParserLib::Unarr) {
-        return unarrParser->getSize();
+    if (m_bookLib== ParserLib::Unarr) {
+        return m_unarrParser->size();
     }
     return -1;
 }
 
-QUrl Parser::getFilename() const {
-    return filename;
+QUrl Parser::filename() const {
+    return m_filename;
 }
 
-void Parser::reset(const QUrl& fn, bool toram) {
+void Parser::reset(const QUrl& filename, bool isRam) {
     QMutexLocker locker(&mutex);
-    if (fn==filename) {
+    if (filename==m_filename) {
         return;
     }
-    delete libarchiveParser;
-    delete unarrParser;
-    Parser(fn, toram);
+    delete m_libarchiveParser;
+    delete m_unarrParser;
+    m_bookLib= getBookLib(filename);
+    m_filename = filename;
+    m_isRam = isRam;
+    if (m_isRam) {
+        initRamArchive();
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(&m_ramArchive);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(&m_ramArchive);
+        }
+    } else {
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(m_filename);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(m_filename);
+        }
+    }
 }
 
 void Parser::initRamArchive() {
-    QFile file(filename.toLocalFile());
+    QFile file(m_filename.toLocalFile());
     file.open(QIODevice::ReadOnly);
-    ramArchive = file.readAll();
+    m_ramArchive = file.readAll();
     file.close();
 }

@@ -11,23 +11,23 @@
 class Parser {
 
 public:
-    Parser(QUrl fn = QUrl(), bool toram = false);
+    Parser(QUrl filename = QUrl(), bool isRam = false);
     ~Parser();
-    cv::Mat getAt(int index);
-    int getSize();
-    QUrl getFilename() const;
-    void reset(const QUrl& fn, bool toram);
+    cv::Mat at(int index);
+    int size();
+    QUrl filename() const;
+    void reset(const QUrl& filename, bool isRam);
 private:
     void initRamArchive();
-    ParserLib bookLib{ParserLib::Dummy};
-    QUrl filename;
+    ParserLib m_bookLib{ParserLib::Dummy};
+    QUrl m_filename;
     inline static QMutex mutex;
     ParserLib getBookLib(const QUrl& fn) const;
-    QByteArray ramArchive;
-    bool isRam{false};
-    DummyParser dummyParser;
-    LibarchiveParser *libarchiveParser{nullptr};
-    UnarrParser *unarrParser{nullptr};
+    QByteArray m_ramArchive;
+    bool m_isRam{false};
+    DummyParser m_dummyParser;
+    LibarchiveParser *m_libarchiveParser{nullptr};
+    UnarrParser *m_unarrParser{nullptr};
 };
 
 #endif // PARSER_H

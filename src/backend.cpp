@@ -78,5 +78,5 @@ QString Backend::getProductName() {
 
 int Backend::getBookSize(QUrl bookFilename) {
     Parser b(bookFilename, false);
-    return b.getSize();
+    return b.size();
 }

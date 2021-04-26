@@ -21,6 +21,7 @@ add_executable(Tiramisu
     src/main.cpp
     src/backend.cpp
     src/asyncpageimageprovider.cpp
+    src/asyncsimpleimageprovider.cpp
     src/imagerunnable.cpp
     src/pagecontroller.cpp
     src/utils/imageproc.cpp
@@ -28,7 +29,7 @@ add_executable(Tiramisu
     src/parsers/parser.cpp
     src/parsers/libarchiveparser.cpp
     src/parsers/unarrparser.cpp
-    src/parsers/popplerparser.cpp
+    #src/parsers/popplerparser.cpp
     src/strnatcmp/strnatcmp.c
     src/ui/res.qrc
     )

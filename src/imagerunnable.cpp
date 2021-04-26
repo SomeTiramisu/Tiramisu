@@ -12,7 +12,7 @@ ImageRunnable::~ImageRunnable() {
 }
 
 void ImageRunnable::run() {
-    cv::Mat img = book.getAt(req.index());
+    cv::Mat img = book.at(req.index());
     if (!img.empty()) {
         ImageProc::classicProcess(img, img, req.width(), req.height());
     }

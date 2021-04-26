@@ -62,7 +62,7 @@ LibarchiveParser::LibarchiveParser(QByteArray* ramArchive)
     }
 }
 
-cv::Mat LibarchiveParser::getAt(int index) {
+cv::Mat LibarchiveParser::at(int index) {
     int n = m_headers[index].index;
     archive* a = archive_read_new();
     archive_read_support_filter_all(a);
@@ -85,7 +85,7 @@ cv::Mat LibarchiveParser::getAt(int index) {
     return img;
 }
 
-int LibarchiveParser::getSize() const {
+int LibarchiveParser::size() const {
     return m_size;
 }
 
