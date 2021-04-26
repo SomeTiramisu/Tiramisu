@@ -9,7 +9,6 @@ import components 1.0
 Window {
     id: root
     width:900; height: 900
-    //width:1080; height: 1920
     visible: true
     visibility: chooseVisibility()
     function chooseVisibility() {

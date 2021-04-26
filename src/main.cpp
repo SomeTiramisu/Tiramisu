@@ -3,6 +3,7 @@
 #include <QtQml/QQmlContext>
 #include <QQuickStyle>
 #include "asyncpageimageprovider.h"
+#include "asyncsimpleimageprovider.h"
 #include "backend.h"
 Q_DECLARE_METATYPE(PageRequest)
 
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
 
     engine.addImportPath("qrc:///ui/");
     engine.addImageProvider("pages", new AsyncPageImageProvider());
+    engine.addImageProvider("simplePages", new AsyncSimpleImageProvider());
     engine.rootContext()->setContextProperty("backend", backend); //do not take ownership
     engine.load("qrc:///ui/ui.qml");
 

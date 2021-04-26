@@ -32,6 +32,7 @@ DEFINES += \
 
 SOURCES += \
     src/asyncpageimageprovider.cpp \
+    src/asyncsimpleimageprovider.cpp \
     src/backend.cpp \
     src/parsers/libarchiveparser.cpp \
     src/parsers/popplerparser.cpp \
@@ -46,6 +47,7 @@ SOURCES += \
 
 HEADERS += \
     src/asyncpageimageprovider.h \
+    src/asyncsimpleimageprovider.h \
     src/backend.h \
     src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \

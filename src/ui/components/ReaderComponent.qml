@@ -44,7 +44,7 @@ Item {
             } else {
             }
 
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height, "0", 10)
+            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10)
         }
     }
     onBookFilenameChanged: {
@@ -57,8 +57,15 @@ Item {
         id: minidrawer
         bookFilename: container.bookFilename
         anchors.fill: parent
-        visible: false
     }
+
+    Timer {
+        id: update
+        interval: 1000
+        onTriggered: page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10)
+    }
+
+    onWidthChanged: update.start()
 
 /*
     Slider {

@@ -2,10 +2,7 @@
 
 Parser::Parser(QUrl fn, bool toram)
     : book_lib(getBookLib(fn)),
-      filename(fn),
-      libarchive_parser(nullptr),
-      unarr_parser(nullptr),
-      poppler_parser(nullptr)
+      filename(fn)
 {
     //qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
     if (book_lib == ParserLib::Libarchive) {
@@ -41,7 +38,7 @@ ParserLib Parser::getBookLib(QUrl fn) {
 }
 
 cv::Mat Parser::getAt(int index) {
-    lock.lock();
+    QMutexLocker locker(&mutex);
     cv::Mat ret;
     if (book_lib == ParserLib::Dummy) {
         ret = dummy_parser.getAt();
@@ -55,7 +52,6 @@ cv::Mat Parser::getAt(int index) {
     if (book_lib == ParserLib::Poppler) {
         ret = poppler_parser->getAt(index);
     }
-    lock.unlock();
     return ret;
 
 }
@@ -76,6 +72,26 @@ int Parser::getSize() {
     return -1;
 }
 
-QUrl Parser::getFilename() {
+QUrl Parser::getFilename() const {
     return filename;
+}
+
+void Parser::setFilename(const QUrl& fn) {
+    if (fn==getFilename()) {
+        return;
+    }
+    book_lib = getBookLib(fn);
+    filename = fn;
+    delete libarchive_parser;
+    delete unarr_parser;
+    delete poppler_parser;
+    if (book_lib == ParserLib::Libarchive) {
+        libarchive_parser = new LibarchiveParser(fn, true);
+    }
+    if (book_lib == ParserLib::Unarr) {
+        unarr_parser = new UnarrParser(fn, true);
+    }
+    if (book_lib == ParserLib::Poppler) {
+        poppler_parser = new PopplerBook(fn);
+    }
 }
