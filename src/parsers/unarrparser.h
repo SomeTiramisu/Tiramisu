@@ -5,7 +5,7 @@
 
 extern "C" {
 #include <unarr.h>
-};
+}
 
 class UnarrParser {
 

@@ -4,6 +4,8 @@ project(Tiramisu VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -std=c++2a")
+
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)

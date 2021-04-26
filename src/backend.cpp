@@ -54,7 +54,7 @@ void Backend::setBookDir(QUrl &d) {
 void Backend::setPageIndex(int &i) {
     m_pageIndex = i;
     emit pageIndexChanged();
-};
+}
 
 QUrl Backend::bookFilename() {
     return m_bookFilename;

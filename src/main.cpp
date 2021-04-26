@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     int r = app.exec();
     backend->deleteLater();
     return r;
-};
+}
 
 
 /* BUILD OPTIONS

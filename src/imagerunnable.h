@@ -15,8 +15,8 @@ public:
     ~ImageRunnable();
     void run() override;
 private:
-    Parser &book;
-    PageRequest req;
+    Parser &m_book;
+    PageRequest m_req;
 
 signals:
     void done(PageRequest req, QImage img);

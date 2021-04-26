@@ -3,8 +3,8 @@
 #include "utils/imageproc.h"
 
 ImageRunnable::ImageRunnable(Parser &book, PageRequest req)
-    : book(book),
-      req(req)
+    : m_book(book),
+      m_req(req)
 {
 }
 
@@ -12,10 +12,10 @@ ImageRunnable::~ImageRunnable() {
 }
 
 void ImageRunnable::run() {
-    cv::Mat img = book.at(req.index());
+    cv::Mat img = m_book.at(m_req.index());
     if (!img.empty()) {
-        ImageProc::classicProcess(img, img, req.width(), req.height());
+        ImageProc::classicProcess(img, img, m_req.width(), m_req.height());
     }
-    qWarning("Runnable: running: %i, (%i, %i)", req.index(), req.width(), req.height());
-    emit done(req, ImageProc::toQImage(img));
+    qWarning("Runnable: running: %i, (%i, %i)", m_req.index(), m_req.width(), m_req.height());
+    emit done(m_req, ImageProc::toQImage(img));
 }

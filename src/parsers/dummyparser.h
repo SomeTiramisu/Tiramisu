@@ -10,13 +10,13 @@ public:
     ~DummyParser() {};
     cv::Mat at() {
         return cv::Mat();
-    };
+    }
     int size() {
         return 1;
     }
     static bool isSupported(QUrl fn) {
         return fn.isEmpty();
-    };
+    }
 };
 
 #endif // DUMMYPARSER_H
