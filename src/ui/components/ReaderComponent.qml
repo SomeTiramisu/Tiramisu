@@ -31,7 +31,7 @@ Item {
     }
     TapHandler {
         id: tHandler
-        onTapped: {
+        onTapped: (eventPoint) => {
             if (eventPoint.position.x > 2*parent.width/3 && container.pageIndex < p.bookSize-1) {
                 container.pageIndex++
 

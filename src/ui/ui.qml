@@ -25,7 +25,7 @@ Window {
     NavigationDrawer {
         id: drawer
         anchors.fill: parent
-        onFileSelected: {
+        onFileSelected: (fn) => {
             reader.bookFilename = fn
         }
     }
