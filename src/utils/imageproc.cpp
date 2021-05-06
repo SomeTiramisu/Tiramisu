@@ -4,7 +4,7 @@
 
 using namespace cv;
 
-void ImageProc::createMask(const Mat& src, Mat& dst, const bool inv) {
+void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
     cvtColor(src, dst, COLOR_RGBA2GRAY);
     if (!inv) {
         threshold(dst, dst, 240, 255, THRESH_BINARY_INV); //235 origin
@@ -67,28 +67,44 @@ QImage ImageProc::toQImage(const Mat& src) {
     return QImage(new_data, src.cols, src.rows, src.step, QImage::Format_RGBA8888, &Utils::cleanupPageImage, new_data); //src.step is byte per line
 }
 
-void ImageProc::scale(const Mat& src, Mat& dst, const int view_width, const int view_height) {
+void ImageProc::scale(const Mat& src, Mat& dst, int view_width, int view_height) {
     int img_width  = src.cols;
     int img_height  = src.rows;
     double fx = static_cast<double>(view_width) / static_cast<double>(img_width);
     double fy = static_cast<double>(view_height) / static_cast<double>(img_height);
     double f = min(fx, fy);
     //qWarning("f: %f", f);
-    int interpolation;
     if (f > 1) {
-        interpolation = INTER_CUBIC;
+        resize(src, dst, Size(), f, f, INTER_CUBIC);
     } else {
-        interpolation = INTER_AREA;
+        resize(src, dst, Size(), f, f, INTER_AREA);
     }
-    resize(src, dst, Size(), f, f, interpolation);
     //qWarning("%i %i", dst.cols, dst.rows);
-    /*
-    if (dst.cols > view_width) {
-        dst = dst(Rect(0, 0, view_width, dst.rows));
+}
+
+void ImageProc::scale3(const Mat& src, Mat& dst, int view_width, int view_height) {
+    int img_width  = src.cols;
+    int img_height  = src.rows;
+    double fx = 1.0;
+    double fy = 1.0;
+    if (view_width==0 && view_height>0) {
+        fy = static_cast<double>(view_height) / static_cast<double>(img_height);
+        fx = fy;
     }
-    if (dst.rows > view_height) {
-        dst = dst(Rect(0, 0, dst.cols, view_height));
-    }*/
+    if (view_height==0 && view_width>0) {
+        fx = static_cast<double>(view_width) / static_cast<double>(img_width);
+        fy = fx;
+    }
+    if (view_width>0 && view_height>0) {
+        fx = static_cast<double>(view_width) / static_cast<double>(img_width);
+        fy = static_cast<double>(view_height) / static_cast<double>(img_height);
+    }
+    double f = min(fx, fy);
+    if (f > 1) {
+        resize(src, dst, Size(), f, f, INTER_CUBIC);
+    } else {
+        resize(src, dst, Size(), f, f, INTER_AREA);
+    }
 }
 
 void ImageProc::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
@@ -108,7 +124,7 @@ void ImageProc::scaleFit(Mat* src, Mat* dst, int view_width, int view_height) {
     *dst = dst->operator()(roi);
 }
 
-void ImageProc::tileFit(const Mat& src, Mat& dst, const int view_width, const int view_height) {
+void ImageProc::tileFit(const Mat& src, Mat& dst, int view_width, int view_height) {
     int h = 1;
     int v = 1;
     if (src.cols < view_width) {
@@ -176,7 +192,7 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     //   createMask(src, mask, true);
     Rect roi = createROI(mask);
     img = img(roi);
-    scale(img, img, width, height);
+    scale3(img, img, width, height);
     createMask(img, mask);
     img.copyTo(dst, mask);
 }

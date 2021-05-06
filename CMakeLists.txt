@@ -17,14 +17,15 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(LibArchive REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(UNARR REQUIRED libunarr)
-pkg_check_modules(POPPLER REQUIRED poppler-cpp)
+#pkg_check_modules(POPPLER REQUIRED poppler-cpp)
 
 add_executable(Tiramisu
     src/main.cpp
     src/backend.cpp
     src/asyncpageimageprovider.cpp
-    src/asyncsimpleimageprovider.cpp
-    src/imagerunnable.cpp
+    #src/asyncsimpleimageprovider.cpp
+    src/classicimagerunnable.cpp
+    src/simpleimagerunnable.cpp
     src/pagecontroller.cpp
     src/utils/imageproc.cpp
     src/utils/utils.cpp
@@ -45,6 +46,6 @@ target_link_libraries(Tiramisu
     opencv_imgcodecs
     opencv_imgproc
     ${UNARR_LINK_LIBRARIES}
-    ${POPPLER_LINK_LIBRARIES}
+    #${POPPLER_LINK_LIBRARIES}
     ${LibArchive_LIBRARIES}
     )

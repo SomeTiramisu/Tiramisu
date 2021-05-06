@@ -24,6 +24,7 @@ DEFINES += \
     BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
 }
 
+#QML_IMPORT_PATH += src/ui/
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -32,13 +33,14 @@ DEFINES += \
 
 SOURCES += \
     src/asyncpageimageprovider.cpp \
-    src/asyncsimpleimageprovider.cpp \
+    #src/asyncsimpleimageprovider.cpp \
     src/backend.cpp \
+    src/classicimagerunnable.cpp \
     src/parsers/libarchiveparser.cpp \
     #src/parsers/popplerparser.cpp \
     src/parsers/unarrparser.cpp \
+    src/simpleimagerunnable.cpp \
     src/utils/imageproc.cpp \
-    src/imagerunnable.cpp \
     src/main.cpp \
     src/pagecontroller.cpp \
     src/parsers/parser.cpp \
@@ -47,15 +49,16 @@ SOURCES += \
 
 HEADERS += \
     src/asyncpageimageprovider.h \
-    src/asyncsimpleimageprovider.h \
+    #src/asyncsimpleimageprovider.h \
     src/backend.h \
+    src/classicimagerunnable.h \
     src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \
     src/parsers/parseutils.h \
     #src/parsers/popplerparser.h \
     src/parsers/unarrparser.h \
+    src/simpleimagerunnable.h \
     src/utils/imageproc.h \
-    src/imagerunnable.h \
     src/pagecontroller.h \
     src/parsers/parser.h \
     src/strnatcmp/strnatcmp.h \

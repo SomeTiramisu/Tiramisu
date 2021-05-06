@@ -10,30 +10,28 @@ Item {
         id: drawer
         width: 0.33*container.width
         height: container.height
-            ListView {
-                id: folderView
-                anchors.fill: parent
-                FolderListModel {
-                    id: folderModel
-                    nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
-                    showDirs: false
-                    folder: backend.bookDir
-                }
-                Component {
-                    id: fileDelegate
-                    MenuItem {
-                        width: folderView.width
-                        text: fileName
-                        onTriggered: {
-                            fileSelected(fileUrl)
-                        }
-
+        ListView {
+            id: folderView
+            anchors.fill: parent
+            FolderListModel {
+                id: folderModel
+                nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
+                showDirs: false
+                folder: backend.bookDir
+            }
+            Component {
+                id: fileDelegate
+                MenuItem {
+                    width: folderView.width
+                    text: fileName
+                    onTriggered: {
+                        fileSelected(fileUrl)
                     }
                 }
-
-                model: folderModel
-                delegate: fileDelegate
             }
+            model: folderModel
+            delegate: fileDelegate
         }
     }
+}
 

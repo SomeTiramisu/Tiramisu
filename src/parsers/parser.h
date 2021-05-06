@@ -17,6 +17,7 @@ public:
     int size();
     QUrl filename() const;
     void reset(const QUrl& filename, bool isRam);
+    void tryReset(const QUrl& filename, bool isRam);
 private:
     void initRamArchive();
     ParserLib m_bookLib{ParserLib::Dummy};

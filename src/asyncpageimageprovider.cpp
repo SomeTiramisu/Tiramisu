@@ -3,7 +3,8 @@
 #include "utils/utils.h"
 
 AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers) //reference sur pointeur
-    : m_req(Utils::decodeId(id))
+    : m_req(Utils::decodeId(id)),
+      m_requestedSize(requestedSize)
 {
     Q_UNUSED(requestedSize)
     PageController* controller = controllers.value(m_req.controller_id());

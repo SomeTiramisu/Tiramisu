@@ -76,9 +76,6 @@ QUrl Parser::filename() const {
 
 void Parser::reset(const QUrl& filename, bool isRam) {
     QMutexLocker locker(&mutex);
-    if (filename==m_filename) {
-        return;
-    }
     delete m_libarchiveParser;
     delete m_unarrParser;
     m_bookLib= getBookLib(filename);
@@ -100,6 +97,13 @@ void Parser::reset(const QUrl& filename, bool isRam) {
             m_unarrParser = new UnarrParser(m_filename);
         }
     }
+}
+
+void Parser::tryReset(const QUrl &filename, bool isRam) {
+    if (filename==m_filename) {
+        return;
+    }
+    reset(filename, isRam);
 }
 
 void Parser::initRamArchive() {

@@ -12,6 +12,7 @@ public:
     QQuickTextureFactory *textureFactory() const override;
 private:
     const PageRequest m_req;
+    QSize m_requestedSize;
     PageAnswer m_ans;
     QImage m_image;
 

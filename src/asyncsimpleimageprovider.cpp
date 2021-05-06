@@ -11,7 +11,7 @@ AsyncSimpleImageResponseRunnable::AsyncSimpleImageResponseRunnable(const PageReq
 {}
 
 void AsyncSimpleImageResponseRunnable::run() {
-    m_parser->reset(m_req.book_filename(), true);
+    m_parser->tryReset(m_req.book_filename(), true);
     cv::Mat mat = m_parser->at(m_req.index());
     if(not mat.empty()) {
         cv::cvtColor(mat, mat, cv::COLOR_BGR2RGBA);

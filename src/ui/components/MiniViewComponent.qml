@@ -6,8 +6,12 @@ Item {
     id: container
     property url bookFilename: ""
     signal imageSelected(int index)
-    function genSimpleId(book_filename: string, index: int) {
-        return JSON.stringify({book_filename, index ,width: -1, height: -1, controller_id: "", controller_preload: -1})
+    QtObject { //workaround for private property
+        id: p
+        property int bookSize: 0
+    }
+    onBookFilenameChanged: {
+        p.bookSize = backend.getBookSize(bookFilename)
     }
     Drawer {
         id: drawer
@@ -22,14 +26,22 @@ Item {
             delegate: Column {
                 Image {
                     id: img
-                    mipmap: true
+                    //mipmap: true
                     width: listView.width
                     fillMode: Image.PreserveAspectFit
-                    source: "image://simplePages/" + genSimpleId(container.bookFilename, index, 0, 0, "1", 0)
+                    source: "image://pages/" + genId(container.bookFilename, index, 100, 100, "1", p.bookSize-1, "simple")
                 }
                 Label {
                     id: txt
                     text: index
+                }
+                TapHandler {
+                    id: thandler
+                    gesturePolicy: TapHandler.WithinBounds | TapHandler.ReleaseWithinBounds
+                    onSingleTapped: {
+                        eventPoint.accepted = true
+                        imageSelected(index)
+                    }
                 }
             }
         }

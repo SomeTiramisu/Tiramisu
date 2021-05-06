@@ -1,5 +1,6 @@
 #include "pagecontroller.h"
-#include "imagerunnable.h"
+#include "classicimagerunnable.h"
+#include "simpleimagerunnable.h"
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 #define PRIORITY_MAX 0
@@ -71,15 +72,21 @@ void PageController::clearPages(PageRequest req) {
 
 void PageController::runPage(PageRequest req, int priority) {
     pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ImageRunnable *runnable = new ImageRunnable(book, req);
-    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
-    pool.start(runnable, priority);
+    if (req.runnableType()=="classic") {
+        ClassicImageRunnable *runnable = new ClassicImageRunnable(book, req);
+        connect(runnable, &ClassicImageRunnable::done, this, &PageController::handleImage);
+        pool.start(runnable, priority);
+    } else if (req.runnableType()=="simple") {
+        SimpleImageRunnable *runnable = new SimpleImageRunnable(book, req);
+        connect(runnable, &SimpleImageRunnable::done, this, &PageController::handleImage);
+        pool.start(runnable, priority);
+    }
 }
 
 void PageController::runLocalPage(PageRequest req) {
     pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ImageRunnable *runnable = new ImageRunnable(book, req);
-    connect(runnable, &ImageRunnable::done, this, &PageController::handleImage);
+    ClassicImageRunnable *runnable = new ClassicImageRunnable(book, req);
+    connect(runnable, &ClassicImageRunnable::done, this, &PageController::handleImage);
     runnable->run();
     runnable->deleteLater();
 }

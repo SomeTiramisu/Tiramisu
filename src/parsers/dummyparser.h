@@ -11,7 +11,7 @@ public:
     cv::Mat at() {
         return cv::Mat();
     }
-    int size() {
+    int size() const {
         return 1;
     }
     static bool isSupported(QUrl fn) {
