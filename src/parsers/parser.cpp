@@ -107,6 +107,10 @@ void Parser::tryReset(const QUrl &filename, bool isRam) {
 }
 
 void Parser::initRamArchive() {
+    if (m_filename.isEmpty()) {
+        m_isRam = false;
+        return;
+    }
     QFile file(m_filename.toLocalFile());
     file.open(QIODevice::ReadOnly);
     m_ramArchive = file.readAll();
