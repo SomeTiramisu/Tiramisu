@@ -34,9 +34,11 @@ Item {
         onTapped: (eventPoint) => {
             if (eventPoint.position.x > 2*parent.width/3 && container.pageIndex < p.bookSize-1) {
                 container.pageIndex++
+               slider.visible = false
 
             } else if (eventPoint.position.x < parent.width/3 && container.pageIndex > 0) {
                 container.pageIndex--
+                slider.visible = false
             } else {
                 if (slider.visible) {
                     slider.visible = false
