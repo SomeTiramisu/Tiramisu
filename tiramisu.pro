@@ -24,6 +24,7 @@ DEFINES += \
     BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
 }
 
+#QML_IMPORT_PATH += src/ui/
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -32,27 +33,32 @@ DEFINES += \
 
 SOURCES += \
     src/asyncpageimageprovider.cpp \
+    #src/asyncsimpleimageprovider.cpp \
     src/backend.cpp \
+    src/classicimagerunnable.cpp \
     src/parsers/libarchiveparser.cpp \
-    src/parsers/popplerparser.cpp \
+    #src/parsers/popplerparser.cpp \
     src/parsers/unarrparser.cpp \
+    src/simpleimagerunnable.cpp \
     src/utils/imageproc.cpp \
-    src/imagerunnable.cpp \
     src/main.cpp \
     src/pagecontroller.cpp \
     src/parsers/parser.cpp \
-    src/strnatcmp/strnatcmp.c
+    src/strnatcmp/strnatcmp.c \
+    src/utils/utils.cpp
 
 HEADERS += \
     src/asyncpageimageprovider.h \
+    #src/asyncsimpleimageprovider.h \
     src/backend.h \
+    src/classicimagerunnable.h \
     src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \
     src/parsers/parseutils.h \
-    src/parsers/popplerparser.h \
+    #src/parsers/popplerparser.h \
     src/parsers/unarrparser.h \
+    src/simpleimagerunnable.h \
     src/utils/imageproc.h \
-    src/imagerunnable.h \
     src/pagecontroller.h \
     src/parsers/parser.h \
     src/strnatcmp/strnatcmp.h \
@@ -66,6 +72,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 ANDROID_ABIS = arm64-v8a
 
 DISTFILES += \
+    TODO \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.jar \
@@ -75,7 +82,8 @@ DISTFILES += \
     android/res/values/libs.xml \
     src/ui/ui.qml \
     src/ui/components/ReaderComponent.qml \
-    src/ui/components/NavigationDrawerComponent.qml
+    src/ui/components/NavigationDrawerComponent.qml \
+    src/ui/components/MiniViewComponent.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 

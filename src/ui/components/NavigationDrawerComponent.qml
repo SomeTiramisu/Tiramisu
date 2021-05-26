@@ -8,44 +8,30 @@ Item {
     signal fileSelected(url fn)
     Drawer {
         id: drawer
-        width: 0.66*root.width
-        height: root.height
-
-        ColumnLayout {
+        width: 0.33*container.width
+        height: container.height
+        ListView {
+            id: folderView
             anchors.fill: parent
-            ListView {
-                id: folderView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-
-                FolderListModel {
-                    id: folderModel
-                    nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
-                    showDirs: false
-                    folder: backend.bookDir
-                }
-                Component {
-                    id: fileDelegate
-                    MenuItem {
-                        text: fileName
-                        width: folderView.width
-                        //height: folderView.height/10
-                        height: implicitHeight
-                        onTriggered: {
-                            //console.log(fileUrl)
-                            //page.book_filename = fileUrl
-                            //page.book_size = backend.getBookSize(page.book_filename)
-                            //backend.pageIndex = 0
-                            //page.source = "image://pages/" + root.genId(page.book_filename, 0, root.width, root.height)
-                            fileSelected(fileUrl)
-                        }
-
+            FolderListModel {
+                id: folderModel
+                nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
+                showDirs: false
+                folder: backend.bookDir
+            }
+            Component {
+                id: fileDelegate
+                MenuItem {
+                    width: folderView.width
+                    text: fileName
+                    onTriggered: {
+                        fileSelected(fileUrl)
                     }
                 }
-
-                model: folderModel
-                delegate: fileDelegate
             }
+            model: folderModel
+            delegate: fileDelegate
         }
     }
 }
+

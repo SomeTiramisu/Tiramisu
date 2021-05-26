@@ -3,102 +3,120 @@
 #include <QtCore>
 #include <opencv2/imgcodecs.hpp>
 
-LibarchiveParser::LibarchiveParser(QUrl fn, bool toram)
-    : filename(fn),
-      isRam(toram)
+LibarchiveParser::LibarchiveParser(const QUrl& fn)
+    : m_filename(fn)
 {
     if (isSupported(fn)) {
-        if (isRam) {
-            initRamArchive();
-            openRamArchive();
-        } else {
-            openArchive();
-        }
+        archive* a = archive_read_new();
+        archive_read_support_filter_all(a);
+        archive_read_support_format_zip(a);
+        archive_read_open_filename(a, m_filename.toLocalFile().toStdString().c_str(),  10240);
         int i = 0;
-        size = 0;
+        m_size = 0;
         archive_entry *entry;
-        while (archive_read_next_header(bookArchive, &entry) == ARCHIVE_OK) {
+        while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
             header h = {
                 .filename = std::string(archive_entry_pathname(entry)),
                 .index = i,
                 .length = static_cast<size_t>(archive_entry_size(entry))
             };
             if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
-                headers.push_back(h);
-                size++;
+                m_headers.push_back(h);
+                m_size++;
             }
-            archive_read_data_skip(bookArchive);
+            archive_read_data_skip(a);
             i++;
         }
-        archive_read_free(bookArchive);
-        std::sort(headers.begin(), headers.end(), ParserUtils::naturalCompare);
+        archive_read_free(a);
+        std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
     }
 }
 
-void LibarchiveParser::openArchive() {
-    bookArchive = archive_read_new();
-    archive_read_support_filter_all(bookArchive);
-    archive_read_support_format_zip(bookArchive);
-    archive_read_open_filename(bookArchive, filename.toLocalFile().toStdString().c_str(),  10240);
+LibarchiveParser::LibarchiveParser(QByteArray* ramArchive)
+    : m_isRam(true),
+      m_ramArchive(ramArchive)
+{
+    if (isSupported()) {
+        archive* a = archive_read_new();
+        archive_read_support_filter_all(a);
+        archive_read_support_format_zip(a);
+        archive_read_open_memory(a, m_ramArchive->constData(), m_ramArchive->length());
+        int i = 0;
+        m_size = 0;
+        archive_entry *entry;
+        while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
+            header h = {
+                .filename = std::string(archive_entry_pathname(entry)),
+                .index = i,
+                .length = static_cast<size_t>(archive_entry_size(entry))
+            };
+            if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
+                m_headers.push_back(h);
+                m_size++;
+            }
+            archive_read_data_skip(a);
+            i++;
+        }
+        archive_read_free(a);
+        std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
+    }
 }
 
-void LibarchiveParser::openRamArchive() {
-    bookArchive = archive_read_new();
-    archive_read_support_filter_all(bookArchive);
-    archive_read_support_format_zip(bookArchive);
-    archive_read_open_memory(bookArchive, ram_archive.constData(), ram_archive.length()); //may be incorrect
-}
-
-void LibarchiveParser::initRamArchive() {
-    QFile file(filename.toLocalFile());
-    file.open(QIODevice::ReadOnly);
-    ram_archive = file.readAll();
-    file.close();
-}
-
-cv::Mat LibarchiveParser::getAt(int index) {
-    int n = headers[index].index;
-    if (isRam) {
-        openRamArchive();
+cv::Mat LibarchiveParser::at(int index) {
+    int n = m_headers[index].index;
+    archive* a = archive_read_new();
+    archive_read_support_filter_all(a);
+    archive_read_support_format_zip(a);
+    if (m_isRam) {
+        archive_read_open_memory(a, m_ramArchive->constData(), m_ramArchive->length());
     } else {
-        openArchive();
+        archive_read_open_filename(a, m_filename.toLocalFile().toStdString().c_str(),  10240);
     }
     archive_entry *entry{nullptr};
     for (int i=0; i<=n; i++) {
-        archive_read_next_header(bookArchive, &entry);
+        archive_read_next_header(a, &entry);
     }
-    size_t length = headers[index].length;
-    //delete[] buf; deleted after Image creation
+    size_t length = m_headers[index].length;
     char* buf = new char[length]; //TODO: use voud buffer
-    archive_read_data(bookArchive, buf, length);
-    archive_read_free(bookArchive);
+    archive_read_data(a, buf, length);
+    archive_read_free(a);
     cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
     delete[] buf;
     return img;
 }
 
-int LibarchiveParser::getSize() {
-    return size;
+int LibarchiveParser::size() const {
+    return m_size;
 }
 
-QUrl LibarchiveParser::getFilename() {
-    return filename;
-}
-
-bool LibarchiveParser::isSupported(QUrl fn) {
+bool LibarchiveParser::isSupported(const QUrl& fn) {
     if (fn.isEmpty()) {
         return false;
     }
-    archive *a;
-    int r;
-    a = archive_read_new();
+    archive *a = archive_read_new();
     archive_read_support_filter_all(a);
     archive_read_support_format_zip(a);
-    r = archive_read_open_filename(a, fn.toLocalFile().toStdString().c_str(), 10240);
+    int r = archive_read_open_filename(a, fn.toLocalFile().toStdString().c_str(), 10240);
     if (r != ARCHIVE_OK) {
         return false;
     }
     archive_read_free(a);
     return  true;
 
+}
+
+bool LibarchiveParser::isSupported() const {
+    if (m_isRam) {
+        archive* a = archive_read_new();
+        archive_read_support_filter_all(a);
+        archive_read_support_format_zip(a);
+        int r = archive_read_open_memory(a, m_ramArchive->constData(), m_ramArchive->length());
+        if (r != ARCHIVE_OK) {
+            return false;
+        }
+        archive_read_free(a);
+        return  true;
+    } else {
+        return isSupported(m_filename);
+    }
 }

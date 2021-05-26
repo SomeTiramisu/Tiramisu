@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import components 1.0
 
 Item {
     id: container
@@ -7,10 +8,6 @@ Item {
     property url bookFilename: ""
 
     property int pageIndex: 0
-    function genId(book_filename: string, index: int, width: int, height: int) {
-        //console.log(JSON.stringify({book_filename, index ,width, height}))
-        return JSON.stringify({book_filename, index ,width, height})
-    }
     QtObject { //workaround for private property
         id: p
         property int bookSize: 0
@@ -29,39 +26,59 @@ Item {
         anchors.fill: parent
         fillMode: Image.Pad
         smooth: false
-        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height)
+        cache: false
+        source: "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10, "classic")
     }
     TapHandler {
         id: tHandler
-        onTapped: {
-            if (eventPoint.position.x > parent.width / 2) {
-                if (container.pageIndex < p.bookSize-1) {
-                    container.pageIndex++
-                }
-            } else if (container.pageIndex > 0) {
+        onTapped: (eventPoint) => {
+            if (eventPoint.position.x > 2*parent.width/3 && container.pageIndex < p.bookSize-1) {
+                container.pageIndex++
+               slider.visible = false
+
+            } else if (eventPoint.position.x < parent.width/3 && container.pageIndex > 0) {
                 container.pageIndex--
+                slider.visible = false
+            } else {
+                if (slider.visible) {
+                    slider.visible = false
+                } else {
+                    slider.visible = true
+                }
             }
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height)
         }
     }
     onBookFilenameChanged: {
         container.pageIndex = 0
-        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height)
+        page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10, "classic")
         p.bookSize = backend.getBookSize(bookFilename)
     }
 
-    /*Slider {
+
+    Timer {
+        id: update
+        interval: 1000
+        onTriggered: page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10, "classic")
+    }
+
+    onWidthChanged: update.restart()
+    onPageIndexChanged: page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, container.width, container.height, "0", 10, "classic")
+
+
+    Slider {
+        id: slider
+        visible: false
         anchors.bottom: container.bottom
         height: implicitHeight
         width: container.width
         from: 0
         to: p.bookSize-1
+        live: false
         snapMode: Slider.SnapAlways
         stepSize: 1
         value: container.pageIndex
-        onMoved: {
+        onValueChanged: {
             container.pageIndex = value
-            page.source = "image://pages/" + genId(container.bookFilename, container.pageIndex, root.width, root.height)
         }
-    }*/
+    }
 }

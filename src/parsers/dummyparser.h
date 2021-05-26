@@ -8,18 +8,15 @@ class DummyParser {
 public:
     DummyParser() {};
     ~DummyParser() {};
-    cv::Mat getAt() {
+    cv::Mat at() {
         return cv::Mat();
-    };
-    int getSize() {
+    }
+    int size() const {
         return 1;
     }
     static bool isSupported(QUrl fn) {
         return fn.isEmpty();
-    };
-    QUrl getFilename() {
-        return QUrl();
-    };
+    }
 };
 
 #endif // DUMMYPARSER_H

@@ -6,10 +6,9 @@ import QtQuick.Window 2.15
 import components 1.0
 
 
-ApplicationWindow {
+Window {
     id: root
     width:900; height: 900
-    //width:1080; height: 1920
     visible: true
     visibility: chooseVisibility()
     function chooseVisibility() {
@@ -18,10 +17,15 @@ ApplicationWindow {
         }
         return "Windowed"
     }
+    function genId(book_filename: string, index: int, width: int, height: int, controller_id: string, controller_preload: int, runnable_type: string) {
+        //console.log(JSON.stringify({book_filename, index ,width, height}))
+        return JSON.stringify({book_filename, index ,width, height, controller_id, controller_preload, runnable_type})
+    }
 
     NavigationDrawer {
         id: drawer
-        onFileSelected: {
+        anchors.fill: parent
+        onFileSelected: (fn) => {
             reader.bookFilename = fn
         }
     }
@@ -31,5 +35,12 @@ ApplicationWindow {
         anchors.fill: parent
         bgFilename: backend.bgFilename
     }
+
+    /*MiniViewComponent {
+        id: minidrawer
+        bookFilename: reader.bookFilename
+        anchors.fill: parent
+        onImageSelected: reader.pageIndex = index
+    }*/
 }
 

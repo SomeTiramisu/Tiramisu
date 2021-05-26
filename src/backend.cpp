@@ -54,7 +54,7 @@ void Backend::setBookDir(QUrl &d) {
 void Backend::setPageIndex(int &i) {
     m_pageIndex = i;
     emit pageIndexChanged();
-};
+}
 
 QUrl Backend::bookFilename() {
     return m_bookFilename;
@@ -78,5 +78,5 @@ QString Backend::getProductName() {
 
 int Backend::getBookSize(QUrl bookFilename) {
     Parser b(bookFilename, false);
-    return b.getSize();
+    return b.size();
 }

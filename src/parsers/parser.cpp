@@ -1,31 +1,35 @@
 #include "parser.h"
+#include <QtCore>
 
-Parser::Parser(QUrl fn, bool toram)
-    : book_lib(getBookLib(fn)),
-      filename(fn),
-      libarchive_parser(nullptr),
-      unarr_parser(nullptr),
-      poppler_parser(nullptr)
+Parser::Parser(QUrl filename, bool isRam)
+    : m_bookLib(getBookLib(filename)),
+      m_filename(filename),
+      m_isRam(isRam)
 {
-    //qWarning("Book opened: %s", fn.toLocalFile().toStdString().c_str());
-    if (book_lib == ParserLib::Libarchive) {
-        libarchive_parser = new LibarchiveParser(fn, toram);
-    }
-    if (book_lib == ParserLib::Unarr) {
-        unarr_parser = new UnarrParser(fn, toram);
-    }
-    if (book_lib == ParserLib::Poppler) {
-        poppler_parser = new PopplerBook(fn);
+    if (m_isRam) {
+        initRamArchive();
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(&m_ramArchive);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(&m_ramArchive);
+        }
+    } else {
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(m_filename);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(m_filename);
+        }
     }
 }
 
 Parser::~Parser() {
-    delete libarchive_parser;
-    delete unarr_parser;
-    delete poppler_parser;
+    delete m_libarchiveParser;
+    delete m_unarrParser;
 }
 
-ParserLib Parser::getBookLib(QUrl fn) {
+ParserLib Parser::getBookLib(const QUrl& fn) const {
     if (DummyParser::isSupported(fn)) {
         return ParserLib::Dummy;
     }
@@ -35,47 +39,80 @@ ParserLib Parser::getBookLib(QUrl fn) {
     if (UnarrParser::isSupported(fn)) {
         return ParserLib::Unarr;
     }
-    //if(PopplerBook::isSupported(fn)) Disable pdf support for the moment
-    //    return ParserLib::Poppler;
     return ParserLib::Unsupported;
 }
 
-cv::Mat Parser::getAt(int index) {
-    lock.lock();
-    cv::Mat ret;
-    if (book_lib == ParserLib::Dummy) {
-        ret = dummy_parser.getAt();
+cv::Mat Parser::at(int index) {
+    QMutexLocker locker(&mutex);
+    if (m_bookLib== ParserLib::Dummy) {
+        return m_dummyParser.at();
     }
-    if (book_lib == ParserLib::Libarchive) {
-        ret = libarchive_parser->getAt(index);
+    if (m_bookLib== ParserLib::Libarchive) {
+        return m_libarchiveParser->at(index);
     }
-    if (book_lib == ParserLib::Unarr) {
-        ret = unarr_parser->getAt(index);
+    if (m_bookLib== ParserLib::Unarr) {
+        return m_unarrParser->at(index);
     }
-    if (book_lib == ParserLib::Poppler) {
-        ret = poppler_parser->getAt(index);
-    }
-    lock.unlock();
-    return ret;
+    return cv::Mat();
 
 }
 
-int Parser::getSize() {
-    if (book_lib == ParserLib::Dummy) {
-        return dummy_parser.getSize();
+int Parser::size() {
+    if (m_bookLib== ParserLib::Dummy) {
+        return m_dummyParser.size();
     }
-    if (book_lib == ParserLib::Libarchive) {
-        return libarchive_parser->getSize();
+    if (m_bookLib== ParserLib::Libarchive) {
+        return m_libarchiveParser->size();
     }
-    if (book_lib == ParserLib::Unarr) {
-        return unarr_parser->getSize();
-    }
-    if (book_lib == ParserLib::Poppler) {
-        return poppler_parser->getSize();
+    if (m_bookLib== ParserLib::Unarr) {
+        return m_unarrParser->size();
     }
     return -1;
 }
 
-QUrl Parser::getFilename() {
-    return filename;
+QUrl Parser::filename() const {
+    return m_filename;
+}
+
+void Parser::reset(const QUrl& filename, bool isRam) {
+    QMutexLocker locker(&mutex);
+    delete m_libarchiveParser;
+    delete m_unarrParser;
+    m_bookLib= getBookLib(filename);
+    m_filename = filename;
+    m_isRam = isRam;
+    if (m_isRam) {
+        initRamArchive();
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(&m_ramArchive);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(&m_ramArchive);
+        }
+    } else {
+        if (m_bookLib== ParserLib::Libarchive) {
+            m_libarchiveParser = new LibarchiveParser(m_filename);
+        }
+        if (m_bookLib== ParserLib::Unarr) {
+            m_unarrParser = new UnarrParser(m_filename);
+        }
+    }
+}
+
+void Parser::tryReset(const QUrl &filename, bool isRam) {
+    if (filename==m_filename) {
+        return;
+    }
+    reset(filename, isRam);
+}
+
+void Parser::initRamArchive() {
+    if (m_filename.isEmpty()) {
+        m_isRam = false;
+        return;
+    }
+    QFile file(m_filename.toLocalFile());
+    file.open(QIODevice::ReadOnly);
+    m_ramArchive = file.readAll();
+    file.close();
 }
