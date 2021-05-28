@@ -19,6 +19,7 @@ signals:
 class PageRequest {
 public:
     PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id, int controller_preload, QString runnable_type);
+    static PageRequest fromId(const QString& id);
     PageRequest() {};
     PageRequest addIndex(int i) const;
     ~PageRequest();
@@ -46,21 +47,6 @@ private:
 
 class Utils {
 public:
-    static PageRequest decodeId(QString id) {
-        //qWarning("id: %s", id.toStdString().c_str());
-        QJsonObject jido = QJsonDocument::fromJson(QUrl::fromPercentEncoding(id.toUtf8()).toUtf8()).object(); //boncourage
-        return PageRequest(
-                jido.value("width").toInt(),
-                jido.value("height").toInt(),
-                jido.value("index").toInt(),
-                jido.value("book_filename").toString(),
-                jido.value("controller_id").toString(),
-                jido.value("controller_preload").toInt(),
-                jido.value("runnable_type").toString()
-    );
-        //qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width(), ret.height(), ret.index(), ret.book_filename().toString().toStdString().c_str(), ret.controller_id().toStdString().c_str());
-        //return ret;
-    }
     static void cleanupPageImage(void* info) { //info is pointing to image data
         uchar* data = static_cast<uchar*>(info);
         delete[] data;
