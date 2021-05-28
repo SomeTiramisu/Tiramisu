@@ -1,7 +1,6 @@
 #ifndef PARSEUTILS_H
 #define PARSEUTILS_H
 
-#include <opencv2/core.hpp>
 #include <QUrl>
 #include "../utils/utils.h"
 
@@ -21,6 +20,14 @@ struct header {
     std::string filename;
     int index;
     size_t length;
+};
+
+class ParserBase {
+public:
+    virtual ~ParserBase() {};
+    virtual QByteArray at(int index) = 0;
+    virtual int size() const = 0;
+    virtual bool isSupported() const = 0;
 };
 
 class ParserUtils {

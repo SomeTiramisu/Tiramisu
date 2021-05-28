@@ -1,5 +1,6 @@
 #include "imageproc.h"
 #include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include "utils.h"
 
 using namespace cv;
@@ -65,6 +66,18 @@ QImage ImageProc::toQImage(const Mat& src) {
     uchar* new_data = new uchar[length];
     std::memcpy(new_data, src.data, length);
     return QImage(new_data, src.cols, src.rows, src.step, QImage::Format_RGBA8888, &Utils::cleanupPageImage, new_data); //src.step is byte per line
+}
+
+cv::Mat ImageProc::fromByteArray(const QByteArray& src) {
+    if (src.isEmpty()) {
+        return  cv::Mat();
+    }
+    uchar* buf = new uchar[src.length()];
+    std::memcpy(buf, src.constData(), src.length());
+    cv::Mat img = imdecode(cv::Mat(1, src.length() , CV_8UC1, buf), cv::IMREAD_COLOR);
+    delete[] buf;
+    cvtColor(img, img, COLOR_BGR2RGBA);
+    return img;
 }
 
 void ImageProc::scale(const Mat& src, Mat& dst, int view_width, int view_height) {
@@ -186,7 +199,7 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     Mat img;
     Mat mask;
     img = src;
-    cvtColor(img, img, COLOR_BGR2RGBA);
+    //cvtColor(img, img, COLOR_BGR2RGBA);
     createMask(src, mask);
     //if (mask.size() == img.size()) //TODO black and white margin support
     //   createMask(src, mask, true);

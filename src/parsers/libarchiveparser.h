@@ -8,16 +8,16 @@ extern "C" {
 #include <archive_entry.h>
 }
 
-class LibarchiveParser {
+class LibarchiveParser: public ParserBase {
 
 public:
     LibarchiveParser(const QUrl& fn);
     LibarchiveParser(QByteArray* ramArchive);
     ~LibarchiveParser() {};
-    cv::Mat at(int index);
-    int size() const;
+    QByteArray at(int index) override;
+    int size() const override;
     static bool isSupported(const QUrl& fn);
-    bool isSupported() const;
+    bool isSupported() const override;
 
 private:
     std::vector<header> m_headers;

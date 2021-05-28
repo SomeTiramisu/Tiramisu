@@ -9,7 +9,7 @@ SimpleImageRunnable::SimpleImageRunnable(Parser &book, PageRequest req)
 {}
 
 void SimpleImageRunnable::run() {
-    cv::Mat img = m_book.at(m_req.index());
+    cv::Mat img = ImageProc::fromByteArray(m_book.at(m_req.index()));
     if (not img.empty()) {
         cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
         ImageProc::scale3(img, img, m_req.width(), m_req.height());

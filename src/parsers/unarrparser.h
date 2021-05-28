@@ -7,16 +7,16 @@ extern "C" {
 #include <unarr.h>
 }
 
-class UnarrParser {
+class UnarrParser: public ParserBase {
 
 public:
     UnarrParser(const QUrl& fn);
     UnarrParser(QByteArray* ramArchive);
     ~UnarrParser() {};
-    cv::Mat at(int index);
-    int size() const;
+    QByteArray at(int index) override;
+    int size() const override;
     static bool isSupported(const QUrl& fn);
-    bool isSupported() const;
+    bool isSupported() const override;
 
 private:
     std::vector<header> m_headers;

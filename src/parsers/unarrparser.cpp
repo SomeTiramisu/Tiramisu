@@ -60,7 +60,7 @@ UnarrParser::UnarrParser(QByteArray* ramArchive)
     }
 }
 
-cv::Mat UnarrParser::at(int index) {
+QByteArray UnarrParser::at(int index) {
     int n = m_headers[index].index;
     ar_stream *s{nullptr};
     if (m_isRam) {
@@ -77,9 +77,10 @@ cv::Mat UnarrParser::at(int index) {
     ar_entry_uncompress(a, buf, length);
     ar_close_archive(a);
     ar_close(s);
-    cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
+    QByteArray array(buf, length);
+    //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
     delete[] buf;
-    return img;
+    return array;
 }
 
 int UnarrParser::size() const {

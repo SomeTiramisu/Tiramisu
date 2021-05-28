@@ -8,8 +8,8 @@ class DummyParser {
 public:
     DummyParser() {};
     ~DummyParser() {};
-    cv::Mat at() {
-        return cv::Mat();
+    QByteArray at() {
+        return QByteArray();
     }
     int size() const {
         return 1;

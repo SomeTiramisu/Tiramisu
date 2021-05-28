@@ -62,7 +62,7 @@ LibarchiveParser::LibarchiveParser(QByteArray* ramArchive)
     }
 }
 
-cv::Mat LibarchiveParser::at(int index) {
+QByteArray LibarchiveParser::at(int index) {
     int n = m_headers[index].index;
     archive* a = archive_read_new();
     archive_read_support_filter_all(a);
@@ -80,9 +80,10 @@ cv::Mat LibarchiveParser::at(int index) {
     char* buf = new char[length]; //TODO: use voud buffer
     archive_read_data(a, buf, length);
     archive_read_free(a);
-    cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
+    QByteArray array(buf, length);
+    //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
     delete[] buf;
-    return img;
+    return array;
 }
 
 int LibarchiveParser::size() const {
