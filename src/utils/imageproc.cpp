@@ -10,7 +10,7 @@ void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
     if (!inv) {
         threshold(dst, dst, 240, 255, THRESH_BINARY_INV); //235 origin
     } else {
-        threshold(dst, dst, 235, 255, THRESH_BINARY); //un peux trop violent
+        threshold(dst, dst, 50, 255, THRESH_BINARY);
     }
 }
 
@@ -201,9 +201,12 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     img = src;
     //cvtColor(img, img, COLOR_BGR2RGBA);
     createMask(src, mask);
-    //if (mask.size() == img.size()) //TODO black and white margin support
-    //   createMask(src, mask, true);
     Rect roi = createROI(mask);
+    //qWarning("img: %i %i, mask: %i %i", src.cols, src.rows, roi.width, roi.height);
+    //if (src.cols == roi.width && src.rows == roi.height) {//TODO black and white margin support
+    //  createMask(src, mask, true);
+    //  roi = createROI(mask);
+    //}
     img = img(roi);
     scale3(img, img, width, height);
     createMask(img, mask);
