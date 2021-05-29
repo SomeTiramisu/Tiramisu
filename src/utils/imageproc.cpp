@@ -80,6 +80,16 @@ cv::Mat ImageProc::fromByteArray(const QByteArray& src) {
     return img;
 }
 
+QByteArray ImageProc::toPng(const Mat &src) {
+    if (src.empty()) {
+        return QByteArray();
+    }
+    std::vector<uchar> array;
+    cv::imencode(".png", src, array);
+    const char* buf = reinterpret_cast<const char*>(array.data());
+    return QByteArray(buf, array.size());
+}
+
 void ImageProc::scale(const Mat& src, Mat& dst, int view_width, int view_height) {
     int img_width  = src.cols;
     int img_height  = src.rows;
@@ -196,10 +206,8 @@ void ImageProc::centerFit(const Mat& src, Mat& dst, int view_width, int view_hei
 }
 
 void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) {
-    Mat img;
+    Mat tmp;
     Mat mask;
-    img = src;
-    //cvtColor(img, img, COLOR_BGR2RGBA);
     createMask(src, mask);
     Rect roi = createROI(mask);
     //qWarning("img: %i %i, mask: %i %i", src.cols, src.rows, roi.width, roi.height);
@@ -207,8 +215,7 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     //  createMask(src, mask, true);
     //  roi = createROI(mask);
     //}
-    img = img(roi);
-    scale3(img, img, width, height);
-    createMask(img, mask);
-    img.copyTo(dst, mask);
+    scale3(src(roi), tmp, width, height);
+    createMask(tmp, mask);
+    tmp.copyTo(dst, mask);
 }

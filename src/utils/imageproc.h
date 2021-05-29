@@ -13,6 +13,7 @@ public:
     static QPixmap toQPixmap(const Mat& src);
     static QImage toQImage(const Mat& src);
     static cv::Mat fromByteArray(const QByteArray& src);
+    static QByteArray toPng(const Mat& src);
     static void createMask(const Mat& src, Mat& dst, bool inv=false);
     static Rect createROI(const Mat& src);
     static void createAlpha(Mat* src, Mat* dst);
