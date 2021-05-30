@@ -18,7 +18,7 @@ signals:
 
 class PageRequest {
 public:
-    PageRequest(int width, int height, int index, QUrl book_filename, QString controller_id, int controller_preload, QString runnable_type);
+    PageRequest(int width, int height, int index, QUrl filename, QString controllerId, int controllerPreload, QString runnableType);
     static PageRequest fromId(const QString& id);
     PageRequest() {};
     PageRequest addIndex(int i) const;
@@ -26,9 +26,9 @@ public:
     int width() const {return m_width;};
     int height() const {return m_height;};
     int index() const {return m_index;};
-    QUrl book_filename() const {return m_book_filename;};
-    QString controller_id() const {return m_controller_id;};
-    int controller_preload() const {return m_controller_preload;};
+    QUrl filename() const {return m_filename;};
+    QString schedulerId() const {return m_schedulerId;};
+    int schedulerPreload() const {return m_schedulerPreload;};
     QString runnableType() const {return m_runnableType;}
     bool isLike(const PageRequest& a) const;
     bool isInRange(const PageRequest& a, int d) const;
@@ -38,9 +38,9 @@ private:
     int m_width{-1};
     int m_height{-1};
     int m_index{-1};
-    QUrl m_book_filename;
-    QString m_controller_id;
-    int m_controller_preload;
+    QUrl m_filename;
+    QString m_schedulerId;
+    int m_schedulerPreload;
     QString m_runnableType{"simple"};
 
 };

@@ -17,9 +17,9 @@ Window {
         }
         return "Windowed"
     }
-    function genId(book_filename: string, index: int, width: int, height: int, controller_id: string, controller_preload: int, runnable_type: string) {
+    function genId(filename: string, index: int, width: int, height: int, schedulerId: string, schedulerPreload: int, runnableType: string) {
         //console.log(JSON.stringify({book_filename, index ,width, height}))
-        return JSON.stringify({book_filename, index ,width, height, controller_id, controller_preload, runnable_type})
+        return JSON.stringify({filename, index ,width, height, schedulerId, schedulerPreload, runnableType})
     }
 
     NavigationDrawer {

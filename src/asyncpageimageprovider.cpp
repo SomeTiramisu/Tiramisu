@@ -7,19 +7,19 @@ AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &r
       m_requestedSize(requestedSize)
 {
     Q_UNUSED(requestedSize)
-    PageScheduler* scheduler = schedulers.value(m_req.controller_id());
+    PageScheduler* scheduler = schedulers.value(m_req.schedulerId());
     if (scheduler == nullptr) {
-        scheduler = new PageScheduler(m_req.book_filename(), true, m_req.controller_preload());
-        schedulers.insert(m_req.controller_id(), scheduler);
-    } else if (scheduler->getBookFilename() != m_req.book_filename()) {
+        scheduler = new PageScheduler(m_req.filename(), true, m_req.schedulerPreload());
+        schedulers.insert(m_req.schedulerId(), scheduler);
+    } else if (scheduler->getBookFilename() != m_req.filename()) {
         scheduler->deleteLater();
-        scheduler = new PageScheduler(m_req.book_filename(), true, m_req.controller_preload());
-        schedulers.remove(m_req.controller_id());
-        schedulers.insert(m_req.controller_id(), scheduler);
+        scheduler = new PageScheduler(m_req.filename(), true, m_req.schedulerPreload());
+        schedulers.remove(m_req.schedulerId());
+        schedulers.insert(m_req.schedulerId(), scheduler);
     }
     connect(&m_ans, &PageAnswer::s_answer, this, &AsyncPageImageResponse::handleDone);
     scheduler->getAsyncPage(m_req, &m_ans);
-    qWarning("Provider: requested: %i, (%i, %i), %s", m_req.index(), m_req.width(), m_req.height(), m_req.book_filename().toLocalFile().toStdString().c_str());
+    qWarning("Provider: requested: %i, (%i, %i), %s", m_req.index(), m_req.width(), m_req.height(), m_req.filename().toLocalFile().toStdString().c_str());
 }
 void AsyncPageImageResponse::handleDone(QImage img) {
     m_image = img;

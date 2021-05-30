@@ -68,7 +68,7 @@ public slots:
 };
 
 static inline uint qHash(const PageRequest& req, uint seed) {
-    return qHash(req.width() << 20 | req.height()<<10 | req.index(), seed) ^ qHash(req.book_filename(), seed);
+    return qHash(req.width() << 20 | req.height()<<10 | req.index(), seed) ^ qHash(req.filename(), seed);
 }
 
 #endif // PAGESCHEDULER_H
