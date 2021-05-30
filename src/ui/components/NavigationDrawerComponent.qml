@@ -16,7 +16,8 @@ Item {
             FolderListModel {
                 id: folderModel
                 nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
-                showDirs: false
+                showDirs: true
+                showDotAndDotDot: true
                 folder: backend.bookDir
             }
             Component {
@@ -25,7 +26,12 @@ Item {
                     width: folderView.width
                     text: fileName
                     onTriggered: {
-                        fileSelected(fileUrl)
+                        if (fileIsDir) {
+                            folderModel.folder = fileUrl
+                        } else {
+
+                            fileSelected(fileUrl)
+                        }
                     }
                 }
             }
