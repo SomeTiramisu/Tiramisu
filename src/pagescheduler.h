@@ -1,5 +1,5 @@
-#ifndef PAGECONTROLLER_H
-#define PAGECONTROLLER_H
+#ifndef PAGESCHEDULER_H
+#define PAGESCHEDULER_H
 
 #include <QObject>
 #include <QThreadPool>
@@ -14,6 +14,11 @@ enum RequestStatus {
     Requested,
     Recieved,
     Undefined
+};
+
+enum RequetPriority {
+    Max = 1,
+    Req = 0
 };
 
 struct Pair {
@@ -33,26 +38,26 @@ struct Pair {
     }
 };
 
-class PageController : public QObject
+class PageScheduler : public QObject
 {
     Q_OBJECT
 public:
-    PageController(const QUrl& book_filename, bool toram = false, int imgprld = -1, QObject *parent = nullptr);
-    ~PageController();
+    PageScheduler(const QUrl& filename, bool toRam = false, int imgPrld = -1, QObject *parent = nullptr);
+    ~PageScheduler();
     void getAsyncPage(PageRequest req, PageAnswer* ans);
     QUrl getBookFilename();
 
 private:
     void preloadPages(PageRequest req);
     void clearPages(PageRequest req);
-    void runPage(PageRequest req, int priority);
+    void runPage(PageRequest req, RequetPriority priority);
     void runLocalPage(PageRequest req);
-    QThreadPool pool;
-    QHash<PageRequest, Pair> pages;
-    Parser book;
-    QHash<PageRequest, PageAnswer*> pendingReqs;
-    const int imagePreload;
-    QMutex lock;
+    QThreadPool m_pool;
+    QHash<PageRequest, Pair> m_pages;
+    Parser m_parser;
+    QHash<PageRequest, PageAnswer*> m_pendingReqs;
+    const int m_imagePreload;
+    QMutex m_lock;
 
 public slots:
     void handleImage(PageRequest req, QImage img);
@@ -66,4 +71,4 @@ static inline uint qHash(const PageRequest& req, uint seed) {
     return qHash(req.width() << 20 | req.height()<<10 | req.index(), seed) ^ qHash(req.book_filename(), seed);
 }
 
-#endif // PAGECONTROLLER_H
+#endif // PAGESCHEDULER_H

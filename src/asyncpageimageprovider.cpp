@@ -2,23 +2,23 @@
 
 #include "utils/utils.h"
 
-AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageController*>& controllers) //reference sur pointeur
+AsyncPageImageResponse::AsyncPageImageResponse(const QString &id, const QSize &requestedSize, QHash<QString, PageScheduler*>& schedulers) //reference sur pointeur
     : m_req(PageRequest::fromId(id)),
       m_requestedSize(requestedSize)
 {
     Q_UNUSED(requestedSize)
-    PageController* controller = controllers.value(m_req.controller_id());
-    if (controller == nullptr) {
-        controller = new PageController(m_req.book_filename(), true, m_req.controller_preload());
-        controllers.insert(m_req.controller_id(), controller);
-    } else if (controller->getBookFilename() != m_req.book_filename()) {
-        controller->deleteLater();
-        controller = new PageController(m_req.book_filename(), true, m_req.controller_preload());
-        controllers.remove(m_req.controller_id());
-        controllers.insert(m_req.controller_id(), controller);
+    PageScheduler* scheduler = schedulers.value(m_req.controller_id());
+    if (scheduler == nullptr) {
+        scheduler = new PageScheduler(m_req.book_filename(), true, m_req.controller_preload());
+        schedulers.insert(m_req.controller_id(), scheduler);
+    } else if (scheduler->getBookFilename() != m_req.book_filename()) {
+        scheduler->deleteLater();
+        scheduler = new PageScheduler(m_req.book_filename(), true, m_req.controller_preload());
+        schedulers.remove(m_req.controller_id());
+        schedulers.insert(m_req.controller_id(), scheduler);
     }
     connect(&m_ans, &PageAnswer::s_answer, this, &AsyncPageImageResponse::handleDone);
-    controller->getAsyncPage(m_req, &m_ans);
+    scheduler->getAsyncPage(m_req, &m_ans);
     qWarning("Provider: requested: %i, (%i, %i), %s", m_req.index(), m_req.width(), m_req.height(), m_req.book_filename().toLocalFile().toStdString().c_str());
 }
 void AsyncPageImageResponse::handleDone(QImage img) {
@@ -39,6 +39,6 @@ AsyncPageImageProvider::~AsyncPageImageProvider() {
 }
 
 QQuickImageResponse *AsyncPageImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize) {
-    AsyncPageImageResponse *response = new AsyncPageImageResponse(id, requestedSize, controllers);
+    AsyncPageImageResponse *response = new AsyncPageImageResponse(id, requestedSize, schedulers);
     return response;
 }

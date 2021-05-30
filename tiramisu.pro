@@ -36,13 +36,13 @@ SOURCES += \
     #src/asyncsimpleimageprovider.cpp \
     src/backend.cpp \
     src/classicimagerunnable.cpp \
+    src/pagescheduler.cpp \
     src/parsers/libarchiveparser.cpp \
     #src/parsers/popplerparser.cpp \
     src/parsers/unarrparser.cpp \
     src/simpleimagerunnable.cpp \
     src/utils/imageproc.cpp \
     src/main.cpp \
-    src/pagecontroller.cpp \
     src/parsers/parser.cpp \
     src/strnatcmp/strnatcmp.c \
     src/utils/utils.cpp
@@ -52,6 +52,7 @@ HEADERS += \
     #src/asyncsimpleimageprovider.h \
     src/backend.h \
     src/classicimagerunnable.h \
+    src/pagescheduler.h \
     src/parsers/dummyparser.h \
     src/parsers/libarchiveparser.h \
     src/parsers/parseutils.h \
@@ -59,7 +60,6 @@ HEADERS += \
     src/parsers/unarrparser.h \
     src/simpleimagerunnable.h \
     src/utils/imageproc.h \
-    src/pagecontroller.h \
     src/parsers/parser.h \
     src/strnatcmp/strnatcmp.h \
     src/utils/utils.h

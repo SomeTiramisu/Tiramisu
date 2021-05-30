@@ -10,11 +10,11 @@ class SimpleImageRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    SimpleImageRunnable(Parser &book, PageRequest req);
+    SimpleImageRunnable(Parser &parser, PageRequest req);
     ~SimpleImageRunnable() {};
     void run() override;
 private:
-    Parser &m_book;
+    Parser &m_parser;
     PageRequest m_req;
 
 signals:

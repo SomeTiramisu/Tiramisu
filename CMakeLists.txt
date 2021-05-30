@@ -26,7 +26,7 @@ add_executable(Tiramisu
     #src/asyncsimpleimageprovider.cpp
     src/classicimagerunnable.cpp
     src/simpleimagerunnable.cpp
-    src/pagecontroller.cpp
+    src/pagescheduler.cpp
     src/utils/imageproc.cpp
     src/utils/utils.cpp
     src/parsers/parser.cpp

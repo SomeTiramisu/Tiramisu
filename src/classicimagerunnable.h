@@ -11,11 +11,11 @@ class ClassicImageRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    ClassicImageRunnable(Parser &book, PageRequest req);
+    ClassicImageRunnable(Parser &parser, PageRequest req);
     ~ClassicImageRunnable() {};
     void run() override;
 private:
-    Parser &m_book;
+    Parser &m_parser;
     PageRequest m_req;
 
 signals:
