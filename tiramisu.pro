@@ -39,6 +39,7 @@ SOURCES += \
     src/pagescheduler.cpp \
     src/parsers/libarchiveparser.cpp \
     #src/parsers/popplerparser.cpp \
+    src/parsers/parseutils.cpp \
     src/parsers/unarrparser.cpp \
     src/simpleimagerunnable.cpp \
     src/utils/imageproc.cpp \

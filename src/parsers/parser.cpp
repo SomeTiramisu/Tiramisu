@@ -10,11 +10,13 @@ Parser::Parser(QUrl filename, bool isRam)
         QFile file(m_filename.toLocalFile());
         file.open(QIODevice::ReadOnly);
         QByteArray ramArchive = file.readAll();
-        ParserBase* parser;
+        ParserBase* parser = new DummyParser();
         if (m_bookLib== ParserLib::Libarchive) {
+            delete parser;
             parser = new LibarchiveParser(&ramArchive);
         }
         if (m_bookLib== ParserLib::Unarr) {
+            delete parser;
             parser = new UnarrParser(&ramArchive);
         }
         m_ramExArchive.reserve(parser->size());
@@ -25,31 +27,30 @@ Parser::Parser(QUrl filename, bool isRam)
         delete parser;
     } else {
         m_isRam = false; //case of isEmpty is true
+        m_parser = new DummyParser();
         if (m_bookLib== ParserLib::Libarchive) {
-            m_libarchiveParser = new LibarchiveParser(m_filename);
+            delete m_parser;
+            m_parser = new LibarchiveParser(m_filename);
         }
         if (m_bookLib== ParserLib::Unarr) {
-            m_unarrParser = new UnarrParser(m_filename);
+            delete m_parser;
+            m_parser = new UnarrParser(m_filename);
         }
     }
 }
 
 Parser::~Parser() {
-    delete m_libarchiveParser;
-    delete m_unarrParser;
+    delete m_parser;
 }
 
 ParserLib Parser::getBookLib(const QUrl& fn) const {
-    if (DummyParser::isSupported(fn)) {
-        return ParserLib::Dummy;
-    }
     if (LibarchiveParser::isSupported(fn)) {
         return ParserLib::Libarchive;
     }
     if (UnarrParser::isSupported(fn)) {
         return ParserLib::Unarr;
     }
-    return ParserLib::Unsupported;
+    return ParserLib::Dummy;
 }
 
 QByteArray Parser::at(int index) {
@@ -59,32 +60,14 @@ QByteArray Parser::at(int index) {
         //qWarning("check, %i, %i", img.width(), img.height());
         return m_ramExArchive.at(index);
     }
-    if (m_bookLib== ParserLib::Dummy) {
-        return m_dummyParser.at();
-    }
-    if (m_bookLib== ParserLib::Libarchive) {
-        return m_libarchiveParser->at(index);
-    }
-    if (m_bookLib== ParserLib::Unarr) {
-        return m_unarrParser->at(index);
-    }
-    return QByteArray();
+    return m_parser->at(index);
 }
 
-int Parser::size() {
+int Parser::size() const {
     if (m_isRam) {
         return m_ramExArchive.size();
     }
-    if (m_bookLib== ParserLib::Dummy) {
-        return m_dummyParser.size();
-    }
-    if (m_bookLib== ParserLib::Libarchive) {
-        return m_libarchiveParser->size();
-    }
-    if (m_bookLib== ParserLib::Unarr) {
-        return m_unarrParser->size();
-    }
-    return -1;
+    return m_parser->size();
 }
 
 QUrl Parser::filename() const {

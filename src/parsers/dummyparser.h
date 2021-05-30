@@ -3,19 +3,25 @@
 
 #include "parseutils.h"
 
-class DummyParser {
+class DummyParser: public ParserBase {
 
 public:
     DummyParser() {};
-    ~DummyParser() {};
-    QByteArray at() {
+    ~DummyParser() override {};
+    QByteArray at(int index) override {
+        Q_UNUSED(index)
         return QByteArray();
     }
-    int size() const {
+    int size() const override {
         return 1;
     }
     static bool isSupported(QUrl fn) {
-        return fn.isEmpty();
+        Q_UNUSED(fn)
+        return true;
+    }
+
+    bool isSupported() const override {
+        return true;
     }
 };
 

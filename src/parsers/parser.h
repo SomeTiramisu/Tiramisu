@@ -13,7 +13,7 @@ public:
     Parser(QUrl filename = QUrl(), bool isRam = false);
     ~Parser();
     QByteArray at(int index);
-    int size();
+    int size() const;
     QUrl filename() const;
 
 private:
@@ -23,9 +23,7 @@ private:
     ParserLib getBookLib(const QUrl& fn) const;
     QVector<QByteArray> m_ramExArchive;
     bool m_isRam{false};
-    DummyParser m_dummyParser;
-    LibarchiveParser *m_libarchiveParser{nullptr};
-    UnarrParser *m_unarrParser{nullptr};
+    ParserBase *m_parser{nullptr};
 };
 
 #endif // PARSER_H

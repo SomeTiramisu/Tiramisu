@@ -13,7 +13,7 @@ class LibarchiveParser: public ParserBase {
 public:
     LibarchiveParser(const QUrl& fn);
     LibarchiveParser(QByteArray* ramArchive);
-    ~LibarchiveParser() {};
+    ~LibarchiveParser() override {};
     QByteArray at(int index) override;
     int size() const override;
     static bool isSupported(const QUrl& fn);

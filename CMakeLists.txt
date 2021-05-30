@@ -29,6 +29,7 @@ add_executable(Tiramisu
     src/pagescheduler.cpp
     src/utils/imageproc.cpp
     src/utils/utils.cpp
+    src/parsers/parseutils.cpp
     src/parsers/parser.cpp
     src/parsers/libarchiveparser.cpp
     src/parsers/unarrparser.cpp

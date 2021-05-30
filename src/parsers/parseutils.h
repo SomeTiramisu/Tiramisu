@@ -24,7 +24,7 @@ struct header {
 
 class ParserBase {
 public:
-    virtual ~ParserBase() {};
+    virtual ~ParserBase() = 0;
     virtual QByteArray at(int index) = 0;
     virtual int size() const = 0;
     virtual bool isSupported() const = 0;

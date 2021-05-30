@@ -12,7 +12,7 @@ class UnarrParser: public ParserBase {
 public:
     UnarrParser(const QUrl& fn);
     UnarrParser(QByteArray* ramArchive);
-    ~UnarrParser() {};
+    ~UnarrParser() override {};
     QByteArray at(int index) override;
     int size() const override;
     static bool isSupported(const QUrl& fn);
