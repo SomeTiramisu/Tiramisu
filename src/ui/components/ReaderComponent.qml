@@ -76,5 +76,15 @@ Item {
         onValueChanged: {
             container.pageIndex = value
         }
+
+        Label {
+            id: label
+            text: parent.valueAt(parent.position)
+            style: Text.Outline
+            color: "white"
+            styleColor: "black"
+            anchors.bottom: parent.handle.top
+            anchors.horizontalCenter: parent.handle.horizontalCenter
+        }
     }
 }
