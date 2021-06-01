@@ -8,7 +8,7 @@ Item {
     signal fileSelected(url fn)
     Drawer {
         id: drawer
-        width: 0.33*container.width
+        width: 0.66*container.width
         height: container.height
         ListView {
             id: folderView
