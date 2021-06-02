@@ -4,3 +4,6 @@ PageItem::PageItem()
 {
 
 }
+
+void PageItem::paint(QPainter *painter) {
+}

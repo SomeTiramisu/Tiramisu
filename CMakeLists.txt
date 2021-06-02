@@ -1,17 +1,20 @@
+cmake_policy(SET CMP0048 NEW)
+project(Tiramisu VERSION 1.0)
 cmake_minimum_required(VERSION 3.19)
 
-project(Tiramisu VERSION 1.0)
+set(QT5_DEP_VERSION 5.15)
+
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -std=c++2a")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -std=c++20")
 
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 COMPONENTS Quick Core Widgets QuickControls2 REQUIRED)
+find_package(Qt5 ${QT5_DEP_VERSION} REQUIRED COMPONENTS Qml Quick Gui Core Widgets QuickControls2)
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(LibArchive REQUIRED)
@@ -19,34 +22,5 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(UNARR REQUIRED libunarr)
 #pkg_check_modules(POPPLER REQUIRED poppler-cpp)
 
-add_executable(Tiramisu
-    src/main.cpp
-    src/backend.cpp
-    src/asyncpageimageprovider.cpp
-    #src/asyncsimpleimageprovider.cpp
-    src/classicimagerunnable.cpp
-    src/simpleimagerunnable.cpp
-    src/pagescheduler.cpp
-    src/utils/imageproc.cpp
-    src/utils/utils.cpp
-    src/parsers/parseutils.cpp
-    src/parsers/parser.cpp
-    src/parsers/libarchiveparser.cpp
-    src/parsers/unarrparser.cpp
-    #src/parsers/popplerparser.cpp
-    src/strnatcmp/strnatcmp.c
-    src/ui/res.qrc
-    )
+add_subdirectory(src)
 
-target_link_libraries(Tiramisu
-    Qt5::Widgets
-    Qt5::Qml
-    Qt5::Quick
-    Qt5::QuickControls2
-    opencv_core
-    opencv_imgcodecs
-    opencv_imgproc
-    ${UNARR_LINK_LIBRARIES}
-    #${POPPLER_LINK_LIBRARIES}
-    ${LibArchive_LIBRARIES}
-    )

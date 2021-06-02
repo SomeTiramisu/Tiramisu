@@ -1,97 +1,15 @@
-QT       += core gui qml quick quickcontrols2
+TEMPLATE = subdirs
 
-TARGET = Tiramisu
+SUBDIRS = \
+    app \
+    qtquick
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+app.file = src/app/app.pro
+qtquick.file = src/qtquick/qtquick.pro
 
-CONFIG += c++17 qtquickcompiler
+app.depends = qtquick
 
-android {
-LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
-INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
-DEFINES += \
-    ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \
-    ARCHIVE_DIR=\\\"/storage/emulated/0\\\" \
-    BACKGROUND_FILENAME=\\\"/storage/emulated/0/b.png\\\"
-}
-
-!android {
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
-INCLUDEPATH += /usr/include/opencv4/
-DEFINES += \
-    ARCHIVE_FILENAME=\\\"/home/guillaume/reader/b.cbr\\\" \
-    ARCHIVE_DIR=\\\"/home/guillaume/reader\\\" \
-    BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
-}
-
-#QML_IMPORT_PATH += src/ui/
-
-
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
-SOURCES += \
-    src/asyncpageimageprovider.cpp \
-    #src/asyncsimpleimageprovider.cpp \
-    src/backend.cpp \
-    src/classicimagerunnable.cpp \
-    src/pagepreloader.cpp \
-    src/pagescheduler.cpp \
-    src/parsers/libarchiveparser.cpp \
-    #src/parsers/popplerparser.cpp \
-    src/parsers/parseutils.cpp \
-    src/parsers/unarrparser.cpp \
-    src/qquickitems/pageitem.cpp \
-    src/simpleimagerunnable.cpp \
-    src/utils/imageproc.cpp \
-    src/main.cpp \
-    src/parsers/parser.cpp \
-    src/strnatcmp/strnatcmp.c \
-    src/utils/utils.cpp
-
-HEADERS += \
-    src/asyncpageimageprovider.h \
-    #src/asyncsimpleimageprovider.h \
-    src/backend.h \
-    src/classicimagerunnable.h \
-    src/pagepreloader.h \
-    src/pagescheduler.h \
-    src/parsers/dummyparser.h \
-    src/parsers/libarchiveparser.h \
-    src/parsers/parseutils.h \
-    #src/parsers/popplerparser.h \
-    src/parsers/unarrparser.h \
-    src/qquickitems/pageitem.h \
-    src/simpleimagerunnable.h \
-    src/utils/imageproc.h \
-    src/parsers/parser.h \
-    src/strnatcmp/strnatcmp.h \
-    src/utils/utils.h
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+CONFIG += c++17
 
 ANDROID_ABIS = arm64-v8a
-
-DISTFILES += \
-    TODO \
-    android/AndroidManifest.xml \
-    android/build.gradle \
-    android/gradle/wrapper/gradle-wrapper.jar \
-    android/gradle/wrapper/gradle-wrapper.properties \
-    android/gradlew \
-    android/gradlew.bat \
-    android/res/values/libs.xml \
-    src/ui/ui.qml \
-    src/ui/components/ReaderComponent.qml \
-    src/ui/components/NavigationDrawerComponent.qml \
-    src/ui/components/MiniViewComponent.qml
-
-ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
-
-RESOURCES += \
-    src/ui/res.qrc
-
+ANDROID_PACKAGE_SOURCE_DIR = ./android

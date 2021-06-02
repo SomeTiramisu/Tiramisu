@@ -1,0 +1,81 @@
+QT += core gui widgets qml quick quickcontrols2
+
+TARGET = Tiramisu
+
+CONFIG += c++17 qtquickcompiler
+
+android {
+LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
+INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
+DEFINES += \
+    ARCHIVE_FILENAME=\\\"/storage/emulated/0/b.cbr\\\" \
+    ARCHIVE_DIR=\\\"/storage/emulated/0\\\" \
+    BACKGROUND_FILENAME=\\\"/storage/emulated/0/b.png\\\"
+}
+
+!android {
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
+INCLUDEPATH += /usr/include/opencv4/
+DEFINES += \
+    ARCHIVE_FILENAME=\\\"/home/guillaume/reader/b.cbr\\\" \
+    ARCHIVE_DIR=\\\"/home/guillaume/reader\\\" \
+    BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
+}
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
+
+ANDROID_ABIS = arm64-v8a
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+RESOURCES += \
+    src/app/resources.qrc
+
+DISTFILES += \
+    src/app/qml/Main.qml \
+    src/app/qml/NavigationDrawer.qml \
+    src/app/qml/ReaderView.qml \
+    src/app/qml/background.png \
+    src/qtquick/qmldir
+
+HEADERS += \
+    src/qtquick/asyncpageimageprovider.h \
+    src/qtquick/backend.h \
+    src/qtquick/classicimagerunnable.h \
+    src/qtquick/pageitem.h \
+    src/qtquick/pagepreloader.h \
+    src/qtquick/pagescheduler.h \
+    src/qtquick/parsers/dummyparser.h \
+    src/qtquick/parsers/libarchiveparser.h \
+    src/qtquick/parsers/parser.h \
+    src/qtquick/parsers/parseutils.h \
+    #src/qtquick/parsers/popplerparser.h \
+    src/qtquick/parsers/unarrparser.h \
+    src/qtquick/qmlplugin.h \
+    src/qtquick/simpleimagerunnable.h \
+    src/qtquick/strnatcmp/strnatcmp.h \
+    src/qtquick/utils/imageproc.h \
+    src/qtquick/utils/utils.h
+
+SOURCES += \
+    src/app/main.cpp \
+    src/qtquick/asyncpageimageprovider.cpp \
+    src/qtquick/backend.cpp \
+    src/qtquick/classicimagerunnable.cpp \
+    src/qtquick/pageitem.cpp \
+    src/qtquick/pagepreloader.cpp \
+    src/qtquick/pagescheduler.cpp \
+    src/qtquick/parsers/libarchiveparser.cpp \
+    src/qtquick/parsers/parser.cpp \
+    src/qtquick/parsers/parseutils.cpp \
+    #src/qtquick/parsers/popplerparser.cpp \
+    src/qtquick/parsers/unarrparser.cpp \
+    src/qtquick/qmlplugin.cpp \
+    src/qtquick/simpleimagerunnable.cpp \
+    src/qtquick/strnatcmp/strnatcmp.c \
+    src/qtquick/utils/imageproc.cpp \
+    src/qtquick/utils/utils.cpp
+

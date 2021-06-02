@@ -12,7 +12,6 @@ class PageItem: public QQuickPaintedItem
     Q_PROPERTY(int schedulerPreload READ schedulerPreload WRITE setSchedulerPreload NOTIFY schedulerPreloadChanged)
     Q_PROPERTY(QString runnableType READ runnableType WRITE setRunnableType NOTIFY runnableTypeChanged)
 
-
 public:
     PageItem();
     ~PageItem() {};
@@ -26,6 +25,7 @@ public:
     void setSchedulerId(QString& schedulerId) {};
     void setSchedulerPreload(int schedulerPreload) {};
     void setRunnableType(QString& runnableType) {};
+    void paint(QPainter *painter) override;
 
 private:
     QUrl m_filename;

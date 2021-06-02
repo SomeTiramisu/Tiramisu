@@ -44,6 +44,7 @@ private:
     QString m_runnableType{"simple"};
 
 };
+Q_DECLARE_METATYPE(PageRequest)
 
 class Utils {
 public:

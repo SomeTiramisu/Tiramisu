@@ -2,34 +2,21 @@
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QQuickStyle>
-#include "asyncpageimageprovider.h"
-//#include "asyncsimpleimageprovider.h"
-#include "backend.h"
-Q_DECLARE_METATYPE(PageRequest)
+
 
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QGuiApplication::setOrganizationName("custro");
-    QGuiApplication::setOrganizationDomain("org.custro");
-    QGuiApplication::setApplicationName("Tiramisu");
+    app.setOrganizationDomain("org.custro");
+    app.setApplicationName("Tiramisu");
     QQuickStyle::setStyle("Material");
 
-    qRegisterMetaType<PageRequest>();
     QQmlApplicationEngine engine;
+    engine.addImportPath("qrc:/qml");
+    engine.load("qrc:/qml/Main.qml");
 
-    Backend* backend = new Backend();
-
-    engine.addImportPath("qrc:///ui/");
-    engine.addImageProvider("pages", new AsyncPageImageProvider());
-    //engine.addImageProvider("simplePages", new AsyncSimpleImageProvider());
-    engine.rootContext()->setContextProperty("backend", backend); //do not take ownership
-    engine.load("qrc:///ui/ui.qml");
-
-    int r = app.exec();
-    backend->deleteLater();
-    return r;
+    return app.exec();
 }
 
 

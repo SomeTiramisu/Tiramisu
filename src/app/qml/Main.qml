@@ -3,7 +3,6 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls 2.15
 import Qt.labs.folderlistmodel 2.15
 import QtQuick.Window 2.15
-import components 1.0
 
 
 Window {
@@ -29,11 +28,11 @@ Window {
             reader.bookFilename = fn
         }
     }
-    Reader {
+    ReaderView {
         id: reader
         visible: true
         anchors.fill: parent
-        bgFilename: backend.bgFilename
+        bgFilename: ""
     }
 
     /*MiniViewComponent {

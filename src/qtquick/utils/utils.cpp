@@ -8,7 +8,10 @@ PageRequest::PageRequest(int width, int height, int index, QUrl filename, QStrin
       m_schedulerId(schedulerId),
       m_schedulerPreload(schedulerPreload),
       m_runnableType(runnableType)
-{}
+{
+    static const int typeId = qRegisterMetaType<PageRequest>();
+    Q_UNUSED(typeId)
+}
 
 PageRequest PageRequest::fromId(const QString& id) {
     //qWarning("id: %s", id.toStdString().c_str());
