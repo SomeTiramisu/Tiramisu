@@ -42,7 +42,7 @@ class PageScheduler : public QObject
 {
     Q_OBJECT
 public:
-    PageScheduler(const QUrl& filename, bool toRam = false, int imgPrld = -1, QObject *parent = nullptr);
+    PageScheduler(const QUrl& filename = QUrl(), int imgPrld = -1, QObject *parent = nullptr);
     ~PageScheduler();
     void getAsyncPage(PageRequest req, PageAnswer* ans);
     QUrl getBookFilename();

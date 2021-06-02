@@ -18,7 +18,7 @@ signals:
 
 class PageRequest {
 public:
-    PageRequest(int width, int height, int index, QUrl filename, QString controllerId, int controllerPreload, QString runnableType);
+    PageRequest(int width, int height, int index, QUrl filename, int controllerPreload);
     static PageRequest fromId(const QString& id);
     PageRequest() {};
     PageRequest addIndex(int i) const;
@@ -27,9 +27,7 @@ public:
     int height() const {return m_height;};
     int index() const {return m_index;};
     QUrl filename() const {return m_filename;};
-    QString schedulerId() const {return m_schedulerId;};
     int schedulerPreload() const {return m_schedulerPreload;};
-    QString runnableType() const {return m_runnableType;}
     bool isLike(const PageRequest& a) const;
     bool isInRange(const PageRequest& a, int d) const;
     bool operator==(const PageRequest& a) const;
@@ -39,10 +37,7 @@ private:
     int m_height{-1};
     int m_index{-1};
     QUrl m_filename;
-    QString m_schedulerId;
     int m_schedulerPreload;
-    QString m_runnableType{"simple"};
-
 };
 Q_DECLARE_METATYPE(PageRequest)
 

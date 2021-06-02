@@ -18,7 +18,7 @@ Item {
                 nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
                 showDirs: true
                 showDotAndDotDot: true
-                folder: backend.bookDir
+                folder: "/home/guillaume"
             }
             Component {
                 id: fileDelegate

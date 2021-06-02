@@ -16,10 +16,6 @@ Window {
         }
         return "Windowed"
     }
-    function genId(filename: string, index: int, width: int, height: int, schedulerId: string, schedulerPreload: int, runnableType: string) {
-        //console.log(JSON.stringify({book_filename, index ,width, height}))
-        return JSON.stringify({filename, index ,width, height, schedulerId, schedulerPreload, runnableType})
-    }
 
     NavigationDrawer {
         id: drawer
@@ -32,7 +28,7 @@ Window {
         id: reader
         visible: true
         anchors.fill: parent
-        bgFilename: ""
+        bgFilename: "qrc:/qml/background.png"
     }
 
     /*MiniViewComponent {

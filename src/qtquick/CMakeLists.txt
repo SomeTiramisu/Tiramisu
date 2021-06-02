@@ -1,12 +1,12 @@
 set(qmlplugin_SRCS
     qmlplugin.cpp
-    asyncpageimageprovider.cpp
+    #asyncpageimageprovider.cpp
     backend.cpp
     classicimagerunnable.cpp
     pageitem.cpp
     pagepreloader.cpp
     pagescheduler.cpp
-    simpleimagerunnable.cpp
+    #simpleimagerunnable.cpp
     parsers/parser.cpp
     parsers/parseutils.cpp
     parsers/libarchiveparser.cpp

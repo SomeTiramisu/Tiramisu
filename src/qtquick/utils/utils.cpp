@@ -1,13 +1,11 @@
 #include "utils.h"
 
-PageRequest::PageRequest(int width, int height, int index, QUrl filename, QString schedulerId, int schedulerPreload, QString runnableType)
+PageRequest::PageRequest(int width, int height, int index, QUrl filename, int schedulerPreload)
     : m_width(width),
       m_height(height),
       m_index(index),
       m_filename(filename),
-      m_schedulerId(schedulerId),
-      m_schedulerPreload(schedulerPreload),
-      m_runnableType(runnableType)
+      m_schedulerPreload(schedulerPreload)
 {
     static const int typeId = qRegisterMetaType<PageRequest>();
     Q_UNUSED(typeId)
@@ -21,15 +19,13 @@ PageRequest PageRequest::fromId(const QString& id) {
             jido.value("height").toInt(),
             jido.value("index").toInt(),
             jido.value("filename").toString(),
-            jido.value("schedulerId").toString(),
-            jido.value("schedulerPreload").toInt(),
-            jido.value("runnableType").toString()
+            jido.value("schedulerPreload").toInt()
                 );
     //qWarning("DecodeID: decoded: %i, %i, %i, %s, %s", ret.width(), ret.height(), ret.index(), ret.book_filename().toString().toStdString().c_str(), ret.controller_id().toStdString().c_str());
 }
 
 PageRequest PageRequest::addIndex(int i) const {
-    return PageRequest(m_width, m_height, m_index+i, m_filename, m_schedulerId, m_schedulerPreload, m_runnableType);
+    return PageRequest(m_width, m_height, m_index+i, m_filename, m_schedulerPreload);
 }
 
 PageRequest::~PageRequest() {
@@ -39,9 +35,7 @@ PageRequest::~PageRequest() {
 bool PageRequest::isLike(const PageRequest& a) const {
     return (m_width==a.width()
             && m_height==a.height()
-            && m_filename==a.filename()
-            && m_schedulerId==a.schedulerId())
-            && m_runnableType==a.runnableType();
+            && m_filename==a.filename());
 }
 
 bool PageRequest::isInRange(const PageRequest& a, int d) const {
@@ -53,10 +47,7 @@ bool PageRequest::operator==(const PageRequest& a) const {
             && m_height==a.height()
             && m_index==a.index()
             && m_filename==a.filename()
-            && m_schedulerId==a.schedulerId()
-            && m_schedulerPreload==a.schedulerPreload()
-            && m_runnableType==a.runnableType()
-            );
+            && m_schedulerPreload==a.schedulerPreload());
 }
 
 bool PageRequest::operator!=(const PageRequest& a) const {

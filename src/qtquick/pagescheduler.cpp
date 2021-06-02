@@ -1,22 +1,22 @@
 #include "pagescheduler.h"
 #include "classicimagerunnable.h"
-#include "simpleimagerunnable.h"
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
-PageScheduler::PageScheduler(const QUrl& filename, bool toRam, int imgPrld, QObject *parent)
+PageScheduler::PageScheduler(const QUrl& filename, int imgPrld, QObject *parent)
     : QObject(parent),
-      m_parser(filename, toRam),
+      m_parser(filename, true),
       m_imagePreload(imgPrld < 0 ? m_parser.size() : imgPrld)
 {}
 
 PageScheduler::~PageScheduler() {
     m_pool.clear();
     m_pool.waitForDone();
-    qWarning("controller deleted");
+    qWarning("scheduler deleted");
 }
 
 void PageScheduler::getAsyncPage(PageRequest req, PageAnswer* ans) {
+    qWarning("Hello You from Scheduler");
     int index = req.index();
     int book_size = m_parser.size();
     if (index<0 || index >= book_size) {
@@ -47,12 +47,12 @@ void PageScheduler::preloadPages(PageRequest req) {
         PageRequest preq = req.addIndex(i);
         PageRequest mreq = req.addIndex(-i);
         if (index+i<book_size && m_pages.value(preq).matchStatus(RequestStatus::Undefined)) {
-            qWarning("%i", preq.index());
+            //qWarning("%i", preq.index());
             runPage(preq, RequetPriority::Req);
             //runLocalPage(preq);
         }
         if (index-i>=0 && m_pages.value(mreq).matchStatus(RequestStatus::Undefined)) {
-            qWarning("%i", mreq.index());
+            //qWarning("%i", mreq.index());
             runPage(mreq, RequetPriority::Req);
             //runLocalPage(mreq);
         }
@@ -70,15 +70,9 @@ void PageScheduler::clearPages(PageRequest req) {
 
 void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    if (req.runnableType()=="classic") {
-        ClassicImageRunnable *runnable = new ClassicImageRunnable(m_parser, req);
-        connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
-        m_pool.start(runnable, priority);
-    } else if (req.runnableType()=="simple") {
-        SimpleImageRunnable *runnable = new SimpleImageRunnable(m_parser, req);
-        connect(runnable, &SimpleImageRunnable::done, this, &PageScheduler::handleImage);
-        m_pool.start(runnable, priority);
-    }
+    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_parser, req);
+    connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
+    m_pool.start(runnable, priority);
 }
 
 void PageScheduler::runLocalPage(PageRequest req) {
@@ -95,6 +89,7 @@ QUrl PageScheduler::getBookFilename() {
 
 void PageScheduler::handleImage(PageRequest req, QImage img) {
     //pendingReqs.isEmpty() ? qWarning("Controller: recieved!!! %i %i %i pending: None", req.index(), req.width(), req.height()): qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index(), req.width(), req.height(), pendingReqs.head().index(), pendingReqs.head().width(), pendingReqs.head().height());
+    qWarning("Handled Sheduler");
     if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
         m_pages.insert(req, Pair{RequestStatus::Recieved, img});
     }
