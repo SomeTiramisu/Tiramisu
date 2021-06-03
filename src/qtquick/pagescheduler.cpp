@@ -3,10 +3,10 @@
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
-PageScheduler::PageScheduler(const QUrl& filename, int imgPrld, QObject *parent)
+PageScheduler::PageScheduler(PagePreloader* preloader, QObject *parent)
     : QObject(parent),
-      m_parser(filename, true),
-      m_imagePreload(imgPrld < 0 ? m_parser.size() : imgPrld)
+      m_preloader(preloader),
+      m_imagePreload(20)
 {}
 
 PageScheduler::~PageScheduler() {
@@ -18,7 +18,7 @@ PageScheduler::~PageScheduler() {
 void PageScheduler::getAsyncPage(PageRequest req, PageAnswer* ans) {
     qWarning("Hello You from Scheduler");
     int index = req.index();
-    int book_size = m_parser.size();
+    int book_size = m_preloader->size();
     if (index<0 || index >= book_size) {
         ans->answer(QImage());;
         return;
@@ -42,7 +42,7 @@ void PageScheduler::getAsyncPage(PageRequest req, PageAnswer* ans) {
 
 void PageScheduler::preloadPages(PageRequest req) {
     int index = req.index();
-    int book_size = m_parser.size();
+    int book_size = m_preloader->size();
     for (int i=1; i<m_imagePreload; i++) {
         PageRequest preq = req.addIndex(i);
         PageRequest mreq = req.addIndex(-i);
@@ -70,21 +70,17 @@ void PageScheduler::clearPages(PageRequest req) {
 
 void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_parser, req);
+    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
     connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
     m_pool.start(runnable, priority);
 }
 
 void PageScheduler::runLocalPage(PageRequest req) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_parser, req);
+    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
     connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
     runnable->run();
     runnable->deleteLater();
-}
-
-QUrl PageScheduler::getBookFilename() {
-    return m_parser.filename();
 }
 
 void PageScheduler::handleImage(PageRequest req, QImage img) {

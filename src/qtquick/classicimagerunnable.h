@@ -4,18 +4,18 @@
 #include <QObject>
 #include <QRunnable>
 #include <QImage>
-#include "parsers/parser.h"
+#include "pagepreloader.h"
 #include "utils/utils.h"
 
 class ClassicImageRunnable : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    ClassicImageRunnable(Parser &parser, PageRequest req);
+    ClassicImageRunnable(PagePreloader* preloader, const PageRequest& req);
     ~ClassicImageRunnable() {};
     void run() override;
 private:
-    Parser &m_parser;
+    PagePreloader *m_preloader;
     PageRequest m_req;
 
 signals:

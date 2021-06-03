@@ -2,13 +2,13 @@
 
 #include "utils/imageproc.h"
 
-ClassicImageRunnable::ClassicImageRunnable(Parser &parser, PageRequest req)
-    : m_parser(parser),
+ClassicImageRunnable::ClassicImageRunnable(PagePreloader* preloader, const PageRequest& req)
+    : m_preloader(preloader),
       m_req(req)
 {}
 
 void ClassicImageRunnable::run() {
-    cv::Mat img = ImageProc::fromByteArray(m_parser.at(m_req.index()));
+    cv::Mat img = ImageProc::fromByteArray(m_preloader->at(m_req.index()));
     if (not img.empty()) {
         ImageProc::classicProcess(img, img, m_req.width(), m_req.height());
     }

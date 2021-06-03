@@ -10,16 +10,15 @@ class PageAnswer: public QObject {
     Q_OBJECT
 public:
     void answer(QImage img) {
-        emit s_answer(img);
+        emit imageReady(img);
     }
 signals:
-    void s_answer(QImage img);
+    void imageReady(QImage img);
 };
 
 class PageRequest {
 public:
-    PageRequest(int width, int height, int index, QUrl filename, int controllerPreload);
-    static PageRequest fromId(const QString& id);
+    PageRequest(int width, int height, int index, QUrl filename);
     PageRequest() {};
     PageRequest addIndex(int i) const;
     ~PageRequest();
@@ -27,7 +26,6 @@ public:
     int height() const {return m_height;};
     int index() const {return m_index;};
     QUrl filename() const {return m_filename;};
-    int schedulerPreload() const {return m_schedulerPreload;};
     bool isLike(const PageRequest& a) const;
     bool isInRange(const PageRequest& a, int d) const;
     bool operator==(const PageRequest& a) const;
@@ -37,7 +35,6 @@ private:
     int m_height{-1};
     int m_index{-1};
     QUrl m_filename;
-    int m_schedulerPreload;
 };
 Q_DECLARE_METATYPE(PageRequest)
 

@@ -6,7 +6,8 @@
 #include <QHash>
 #include <QSet>
 #include <QImage>
-#include "parsers/parser.h"
+#include <QMutex>
+#include "pagepreloader.h"
 #include "utils/utils.h"
 
 enum RequestStatus {
@@ -42,10 +43,9 @@ class PageScheduler : public QObject
 {
     Q_OBJECT
 public:
-    PageScheduler(const QUrl& filename = QUrl(), int imgPrld = -1, QObject *parent = nullptr);
+    PageScheduler(PagePreloader* preloader, QObject *parent = nullptr);
     ~PageScheduler();
     void getAsyncPage(PageRequest req, PageAnswer* ans);
-    QUrl getBookFilename();
 
 private:
     void preloadPages(PageRequest req);
@@ -54,7 +54,7 @@ private:
     void runLocalPage(PageRequest req);
     QThreadPool m_pool;
     QHash<PageRequest, Pair> m_pages;
-    Parser m_parser;
+    PagePreloader* m_preloader{nullptr};
     QHash<PageRequest, PageAnswer*> m_pendingReqs;
     const int m_imagePreload;
     QMutex m_lock;

@@ -21,7 +21,7 @@ private:
     QUrl m_filename;
     inline static QMutex mutex;
     ParserLib getBookLib(const QUrl& fn) const;
-    QVector<QByteArray> m_ramExArchive;
+    QByteArray m_ramArchive;
     bool m_isRam{false};
     ParserBase *m_parser{nullptr};
 };
