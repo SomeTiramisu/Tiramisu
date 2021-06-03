@@ -32,7 +32,7 @@ void PageItem::setFilename(const QUrl &filename) {
 
 void PageItem::setIndex(int index) {
     m_index = index;
-    PageRequest req(this->width(), this->height(), index, m_filename);
+    PageRequest req(width(), height(), index, m_filename);
     //PageRequest req(500, 500, index, m_filename, 20);
 
     if (m_ans) {
@@ -47,7 +47,9 @@ void PageItem::setIndex(int index) {
 }
 
 void PageItem::paint(QPainter *painter) {
-    painter->drawImage(0, 0, m_image);
+    int x = width()/2 - m_image.width()/2;
+    int y = height()/2 - m_image.height()/2;
+    painter->drawImage(x, y, m_image);
 }
 
 void PageItem::handleImage(QImage img) {

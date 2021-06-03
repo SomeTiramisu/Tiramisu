@@ -15,7 +15,6 @@ PageRequest PageRequest::addIndex(int i) const {
 }
 
 PageRequest::~PageRequest() {
-    //delete m_ans;
 }
 
 bool PageRequest::isLike(const PageRequest& a) const {
