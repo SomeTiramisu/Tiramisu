@@ -12,8 +12,8 @@ class ImageProc
 public:
     static QPixmap toQPixmap(const Mat& src);
     static QImage toQImage(const Mat& src);
-    static cv::Mat fromByteArray(const QByteArray& src);
-    static QByteArray toPng(const Mat& src);
+    static cv::Mat fromByteArray(const QByteArray& src); //RGBA colors
+    static QByteArray toPng(const Mat& src); //assuming RGBA colors
     static void createMask(const Mat& src, Mat& dst, bool inv=false);
     static Rect createROI(const Mat& src);
     static void createAlpha(Mat* src, Mat* dst);
@@ -26,6 +26,8 @@ public:
     static void sharpen(const Mat& src, Mat& dst);
     static void centerFit(const Mat& src, Mat& dst, int view_width, int view_height);
     static void classicProcess(const Mat& src, Mat& dst, int width, int height); //assuming color RGBA
+    static void cropProcess(const Mat& src, Mat& dst); //assuming color RGBA
+    static void scaleProcess(const Mat& src, Mat& dst, int width, int height); //assuming color RGBA
 };
 
 #endif

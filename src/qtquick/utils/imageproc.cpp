@@ -84,8 +84,13 @@ QByteArray ImageProc::toPng(const Mat &src) {
     if (src.empty()) {
         return QByteArray();
     }
+    cv::Mat tmp;
+    cvtColor(src, tmp, COLOR_RGBA2BGRA);
     std::vector<uchar> array;
-    cv::imencode(".png", src, array);
+    std::vector<int> params;
+    params.push_back(IMWRITE_PNG_COMPRESSION);
+    params.push_back(3); //may be 2. 1 is too less
+    cv::imencode(".png", tmp, array, params);
     const char* buf = reinterpret_cast<const char*>(array.data());
     return QByteArray(buf, array.size());
 }
@@ -216,6 +221,22 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     //  roi = createROI(mask);
     //}
     scale3(src(roi), tmp, width, height);
+    createMask(tmp, mask);
+    tmp.copyTo(dst, mask);
+}
+
+void ImageProc::cropProcess(const Mat &src, Mat &dst) {
+    Mat tmp;
+    Mat mask;
+    createMask(src, mask);
+    Rect roi = createROI(mask);
+    src(roi).copyTo(dst);
+}
+
+void ImageProc::scaleProcess(const Mat &src, Mat &dst, int width, int height) {
+    Mat tmp;
+    Mat mask;
+    scale3(src, tmp, width, height);
     createMask(tmp, mask);
     tmp.copyTo(dst, mask);
 }

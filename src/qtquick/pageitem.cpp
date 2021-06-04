@@ -23,25 +23,23 @@ void PageItem::setFilename(const QUrl &filename) {
         m_preloader->deleteLater();
     }
     m_preloader = new PagePreloader(filename);
+    connect(m_preloader, &PagePreloader::isReady, this, &PageItem::preloaderReady);
     m_scheduler = new PageScheduler(m_preloader);
+    connect(m_scheduler, &PageScheduler::imageReady, this, &PageItem::handleImage);
     m_bookSize = m_preloader->size(); //TODO
-    setIndex(0);
+    //setIndex(0); now when preloader is ready
     emit filenameChanged();
     emit bookSizeChanged();
 }
 
 void PageItem::setIndex(int index) {
-    m_index = index;
-    PageRequest req(width(), height(), index, m_filename);
-    //PageRequest req(500, 500, index, m_filename, 20);
-
-    if (m_ans) {
-        m_ans->deleteLater();
+    if (not m_preloader->ready()) {
+        return;
     }
-    m_ans = new PageAnswer();
-    connect(m_ans, &PageAnswer::imageReady, this, &PageItem::handleImage);
+    m_index = index;
+    m_req = PageRequest(width(), height(), index, m_filename);;
     qWarning("Hello You %i", index);
-    m_scheduler->getAsyncPage(req, m_ans);
+    m_scheduler->getAsyncPage(m_req);
     //m_image = QImage("/home/guillaume/reader/000.jpg");
     emit indexChanged();
 }
@@ -52,8 +50,14 @@ void PageItem::paint(QPainter *painter) {
     painter->drawImage(x, y, m_image);
 }
 
-void PageItem::handleImage(QImage img) {
-    qWarning("Handled Page");
-    m_image = img;
-    this->update();
+void PageItem::handleImage(PageRequest req, QImage img) {
+    if (req == m_req) {
+        qWarning("Handled Page");
+        m_image = img;
+        this->update();
+    }
+}
+
+void PageItem::preloaderReady() {
+    setIndex(0);
 }
