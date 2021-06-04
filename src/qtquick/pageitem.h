@@ -27,7 +27,7 @@ private:
     int m_bookSize{0};
     PageScheduler* m_scheduler{nullptr};
     PagePreloader* m_preloader{nullptr};
-    PageAnswer* m_ans{nullptr};
+    PageRequest m_req;
     QImage m_image;
 
 signals:
@@ -36,7 +36,7 @@ signals:
     void bookSizeChanged();
 
 public slots:
-    void handleImage(QImage img);
+    void handleImage(PageRequest req, QImage img);
 };
 
 #endif // PAGEITEM_H

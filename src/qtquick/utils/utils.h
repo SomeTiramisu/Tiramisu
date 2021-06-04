@@ -6,16 +6,6 @@
 #include <QJsonObject>
 #include <QImage>
 
-class PageAnswer: public QObject {
-    Q_OBJECT
-public:
-    void answer(QImage img) {
-        emit imageReady(img);
-    }
-signals:
-    void imageReady(QImage img);
-};
-
 class PageRequest {
 public:
     PageRequest(int width, int height, int index, QUrl filename);

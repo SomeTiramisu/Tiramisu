@@ -45,7 +45,7 @@ class PageScheduler : public QObject
 public:
     PageScheduler(PagePreloader* preloader, QObject *parent = nullptr);
     ~PageScheduler();
-    void getAsyncPage(PageRequest req, PageAnswer* ans);
+    void getAsyncPage(PageRequest req);
 
 private:
     void preloadPages(PageRequest req);
@@ -55,14 +55,14 @@ private:
     QThreadPool m_pool;
     QHash<PageRequest, Pair> m_pages;
     PagePreloader* m_preloader{nullptr};
-    QHash<PageRequest, PageAnswer*> m_pendingReqs;
+    QSet<PageRequest> m_pendingReqs;
     const int m_imagePreload;
     QMutex m_lock;
 
 public slots:
     void handleImage(PageRequest req, QImage img);
-//signals:
-    //void pageReady(PageRequest req, QImage img);
+signals:
+    void imageReady(PageRequest req, QImage img);
 
 
 };

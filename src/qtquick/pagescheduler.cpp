@@ -15,23 +15,23 @@ PageScheduler::~PageScheduler() {
     qWarning("scheduler deleted");
 }
 
-void PageScheduler::getAsyncPage(PageRequest req, PageAnswer* ans) {
+void PageScheduler::getAsyncPage(PageRequest req) {
     qWarning("Hello You from Scheduler");
     int index = req.index();
     int book_size = m_preloader->size();
     if (index<0 || index >= book_size) {
-        ans->answer(QImage());;
+        emit imageReady(req, QImage());
         return;
     }
     if (m_pages.value(req).matchStatus(RequestStatus::Recieved)) {
         qWarning("Controller: already reviced %i", req.index());
-        ans->answer(m_pages.value(req).img);
+        emit imageReady(req, m_pages.value(req).img);
     } else if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
         qWarning("Controller: already requested, add to pending %i", req.index());
-        m_pendingReqs.insert(req, ans);
+        m_pendingReqs.insert(req);
     } else {
         qWarning("Controller: requesting, add to pending %i", req.index());
-        m_pendingReqs.insert(req, ans);
+        m_pendingReqs.insert(req);
         //pool.clear();
         runPage(req, RequetPriority::Max);
         //runLocalPage(req);
@@ -91,7 +91,7 @@ void PageScheduler::handleImage(PageRequest req, QImage img) {
     }
     if (m_pendingReqs.contains(req)) {
         qWarning("Controller: answaring: %i, (%i, %i)", req.index(), req.width(), req.height());
-        m_pendingReqs.value(req)->answer(img);
+        emit imageReady(req, img);
         m_pendingReqs.remove(req);
     }
 }
