@@ -21,7 +21,7 @@ set(qmlplugin_SRCS
 
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})
 
-target_link_libraries(tiramisuqmlplugin
+target_link_libraries(tiramisuqmlplugin PRIVATE
     Qt6::Qml
     Qt6::Gui
     Qt6::Quick

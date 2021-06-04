@@ -6,7 +6,7 @@ qt6_add_resources(APP_SRCS resources.qrc)
 
 qt6_add_executable(tiramisuapp ${APP_SRCS})
 
-target_link_libraries(tiramisuapp
+target_link_libraries(tiramisuapp PRIVATE
     Qt6::QuickControls2
     tiramisuqmlplugin
 )
