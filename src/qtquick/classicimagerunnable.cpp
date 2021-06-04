@@ -13,5 +13,5 @@ void ClassicImageRunnable::run() {
         ImageProc::classicProcess(img, img, m_req.width(), m_req.height());
     }
     qWarning("ClassicRunnable: running: %i, (%i, %i)", m_req.index(), m_req.width(), m_req.height());
-    emit done(m_req, ImageProc::toQImage(img));
+    emit imageReady(m_req, ImageProc::toQImage(img));
 }

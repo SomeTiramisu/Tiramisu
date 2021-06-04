@@ -19,7 +19,7 @@ private:
     PageRequest m_req;
 
 signals:
-    void done(PageRequest req, QImage img);
+    void imageReady(PageRequest req, QImage img);
 };
 
 #endif // CLASSICIMAGERUNNABLE_H

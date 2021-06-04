@@ -71,14 +71,14 @@ void PageScheduler::clearPages(PageRequest req) {
 void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
     ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
-    connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
+    connect(runnable, &ClassicImageRunnable::imageReady, this, &PageScheduler::handleImage);
     m_pool.start(runnable, priority);
 }
 
 void PageScheduler::runLocalPage(PageRequest req) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
     ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
-    connect(runnable, &ClassicImageRunnable::done, this, &PageScheduler::handleImage);
+    connect(runnable, &ClassicImageRunnable::imageReady, this, &PageScheduler::handleImage);
     runnable->run();
     runnable->deleteLater();
 }
