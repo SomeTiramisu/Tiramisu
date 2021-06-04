@@ -57,7 +57,6 @@ private:
     PagePreloader* m_preloader{nullptr};
     QSet<PageRequest> m_pendingReqs;
     const int m_imagePreload;
-    QMutex m_lock;
 
 public slots:
     void handleImage(PageRequest req, QImage img);

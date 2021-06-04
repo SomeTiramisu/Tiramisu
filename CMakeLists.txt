@@ -14,7 +14,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt5 ${QT5_DEP_VERSION} REQUIRED COMPONENTS Qml Quick Gui QuickControls2)
+find_package(Qt5 ${QT5_DEP_VERSION} COMPONENTS Qml Quick Gui QuickControls2 REQUIRED)
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 find_package(LibArchive REQUIRED)

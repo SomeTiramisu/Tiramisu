@@ -219,3 +219,19 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
     createMask(tmp, mask);
     tmp.copyTo(dst, mask);
 }
+
+void ImageProc::cropProcess(const Mat &src, Mat &dst) {
+    Mat tmp;
+    Mat mask;
+    createMask(src, mask);
+    Rect roi = createROI(mask);
+    src(roi).copyTo(dst);
+}
+
+void ImageProc::scaleProcess(const Mat &src, Mat &dst, int width, int height) {
+    Mat tmp;
+    Mat mask;
+    scale3(src, tmp, width, height);
+    createMask(tmp, mask);
+    tmp.copyTo(dst, mask);
+}

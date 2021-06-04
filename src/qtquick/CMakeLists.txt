@@ -16,6 +16,7 @@ set(qmlplugin_SRCS
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
     croprunnable.cpp
+    scalerunnable.cpp
 )
 
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})
