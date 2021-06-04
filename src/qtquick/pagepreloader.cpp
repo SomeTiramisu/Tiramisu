@@ -23,6 +23,9 @@ PagePreloader::~PagePreloader() {
     if (m_parser) {
         delete m_parser;
     }
+    m_pool.clear();
+    m_pool.waitForDone();
+    qWarning("preloader deleted");
 }
 
 QByteArray PagePreloader::at(int index) {
@@ -35,6 +38,10 @@ int PagePreloader::size() const {
 
 QUrl PagePreloader::filename() const {
     return m_filename;
+}
+
+bool PagePreloader::ready() const {
+    return m_count == 0;
 }
 
 void PagePreloader::handlePng(int index, QByteArray array) {

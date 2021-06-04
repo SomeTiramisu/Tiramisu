@@ -1,5 +1,5 @@
 #include "pagescheduler.h"
-#include "classicimagerunnable.h"
+#include "scalerunnable.h"
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
@@ -70,15 +70,15 @@ void PageScheduler::clearPages(PageRequest req) {
 
 void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
-    connect(runnable, &ClassicImageRunnable::imageReady, this, &PageScheduler::handleImage);
+    ScaleRunnable *runnable = new ScaleRunnable(m_preloader, req);
+    connect(runnable, &ScaleRunnable::imageReady, this, &PageScheduler::handleImage);
     m_pool.start(runnable, priority);
 }
 
 void PageScheduler::runLocalPage(PageRequest req) {
     m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ClassicImageRunnable *runnable = new ClassicImageRunnable(m_preloader, req);
-    connect(runnable, &ClassicImageRunnable::imageReady, this, &PageScheduler::handleImage);
+    ScaleRunnable *runnable = new ScaleRunnable(m_preloader, req);
+    connect(runnable, &ScaleRunnable::imageReady, this, &PageScheduler::handleImage);
     runnable->run();
     runnable->deleteLater();
 }

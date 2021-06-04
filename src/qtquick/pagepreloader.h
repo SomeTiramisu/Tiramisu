@@ -18,6 +18,7 @@ public:
     QByteArray at(int index);
     int size() const;
     QUrl filename() const;
+    bool ready() const;
 
 private:
     Parser *m_parser{nullptr};
