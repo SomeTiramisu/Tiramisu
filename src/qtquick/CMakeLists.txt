@@ -20,9 +20,10 @@ set(qmlplugin_SRCS
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})
 
 target_link_libraries(tiramisuqmlplugin
-    Qt::Qml
-    Qt::Gui
-    Qt::Quick
+    Qt6::Qml
+    Qt6::Gui
+    Qt6::Quick
+    Qt6::Core
     opencv_core
     opencv_imgcodecs
     opencv_imgproc
@@ -31,5 +32,5 @@ target_link_libraries(tiramisuqmlplugin
     ${LibArchive_LIBRARIES}
 )
 
-set_target_properties(tiramisuqmlplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/tiramisu")
-file(COPY qmldir DESTINATION "${CMAKE_BINARY_DIR}/bin/tiramisu")
+set_target_properties(tiramisuqmlplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tiramisu)
+file(COPY qmldir DESTINATION ${CMAKE_BINARY_DIR}/bin/tiramisu)
