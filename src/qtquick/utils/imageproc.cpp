@@ -246,6 +246,10 @@ void ImageProc::scaleProcess(const Mat &src, Mat &dst, int width, int height) {
 
 void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
     Mat tmp = fromByteArray(src);
+    if (tmp.empty()) {
+        qWarning("losslessCrop failed, img is empty");
+        return;
+    }
     Mat mask;
     createMask(tmp, mask);
     Rect roi = createROI(mask); //Now we have x, y, width, height
@@ -256,12 +260,20 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
     xform.r.h = roi.height;
     xform.r.x = roi.x;
     xform.r.y = roi.y;
-    // xform.r.x < 0 || xform.r.y < 0 || xform.r.w < 1 || xform.r.h < 1 ==> return
+    if (xform.r.x < 0 || xform.r.y < 0 || xform.r.w < 1 || xform.r.h < 1) {
+        qWarning("losslessCrop failed, the whole img is cropped");
+        return;
+    }
     xform.options |= TJXOPT_CROP;
+    xform.options |= TJXOPT_TRIM;
     uchar *dstBuf = NULL; // TurboJpeg dynamic allocation
     ulong dstSize = 0;
     tjTransform(tjInstance, reinterpret_cast<const uchar*>(src.constData()), src.size(), 1, &dstBuf, &dstSize, &xform, 0);
+    if (dstSize == 0) {
+        qWarning("0 dstSize");
+    }
     src.clear();
-    src = QByteArray(reinterpret_cast<const char*>(dstBuf), dstSize);
-    delete [] dstBuf;
+    src = QByteArray(reinterpret_cast<char*>(dstBuf), dstSize);
+    tjFree(dstBuf);
+    tjDestroy(tjInstance);
 }
