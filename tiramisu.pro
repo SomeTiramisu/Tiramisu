@@ -9,7 +9,5 @@ qtquick.file = src/qtquick/qtquick.pro
 
 app.depends = qtquick
 
-CONFIG += c++17
-
-ANDROID_ABIS = arm64-v8a
-ANDROID_PACKAGE_SOURCE_DIR = ./android
+CONFIG += c++20
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000

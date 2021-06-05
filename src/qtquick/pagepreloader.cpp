@@ -9,7 +9,7 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     if (m_filename.isEmpty()) {
         return;
     }
-    m_parser = new Parser(m_filename);
+    m_parser = new Parser(m_filename, true);
     m_pages.resize(m_parser->size());
     m_count = m_parser->size();
     for (int i=0; i<m_parser->size(); i++) {

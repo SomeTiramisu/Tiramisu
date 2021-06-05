@@ -89,7 +89,7 @@ QByteArray ImageProc::toPng(const Mat &src) {
     std::vector<uchar> array;
     std::vector<int> params;
     params.push_back(IMWRITE_PNG_COMPRESSION);
-    params.push_back(3); //may be 2. 1 is too less
+    params.push_back(1); //may be 2. 1 is too less
     cv::imencode(".png", tmp, array, params);
     const char* buf = reinterpret_cast<const char*>(array.data());
     return QByteArray(buf, array.size());

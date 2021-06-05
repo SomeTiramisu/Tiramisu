@@ -48,7 +48,7 @@ ParserLib Parser::getBookLib(const QUrl& fn) const {
 }
 
 QByteArray Parser::at(int index) {
-    QMutexLocker locker(&mutex);
+    //QMutexLocker locker(&mutex);
     return m_parser->at(index);
 }
 

@@ -12,3 +12,8 @@ target_link_libraries(tiramisuapp PRIVATE
 )
 
 set_target_properties(tiramisuapp PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+if(ANDROID)
+    qt_android_generate_deployment_settings(tiramisuapp)
+    #qt_android_add_apk_target(tiramisuapp)
+endif()

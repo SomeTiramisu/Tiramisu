@@ -18,7 +18,8 @@ Item {
                 nameFilters: ["*.cbz", "*.cbr"/*, "*.pdf"*/]
                 showDirs: true
                 showDotAndDotDot: true
-                folder: "/home/guillaume"
+                folder: filesPath
+                //folder: "file:/storage/emulated/0"
             }
             Component {
                 id: fileDelegate
@@ -29,7 +30,6 @@ Item {
                         if (fileIsDir) {
                             folderModel.folder = fileUrl
                         } else {
-
                             fileSelected(fileUrl)
                         }
                     }

@@ -7,6 +7,10 @@ Item {
     property url bgFilename: ""
     property url bookFilename: ""
 
+    Component.onCompleted: {
+        console.log(width, height)
+    }
+
     Image {
         id: background
         source: container.bgFilename

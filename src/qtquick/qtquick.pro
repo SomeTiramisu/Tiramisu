@@ -8,24 +8,26 @@ QML_IMPORT_MAJOR_VERSION = 1
 
 TARGET = tiramisuqmlplugin
 
-DESTDIR = ../../bin/qtquick/tiramisu
+#DESTDIR = ../../bin/qtquick/tiramisu
 
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
 android {
-LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/
+LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 }
 !android {
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /usr/include/opencv4/
 }
+
 
 DISTFILES += \
     qmldir
 
 HEADERS += \
-    asyncpageimageprovider.h \
+    #asyncpageimageprovider.h \
     backend.h \
     classicimagerunnable.h \
+    croprunnable.h \
     pageitem.h \
     pagepreloader.h \
     pagescheduler.h \
@@ -36,15 +38,17 @@ HEADERS += \
     #parsers/popplerparser.h \
     parsers/unarrparser.h \
     qmlplugin.h \
+    scalerunnable.h \
     simpleimagerunnable.h \
     strnatcmp/strnatcmp.h \
     utils/imageproc.h \
     utils/utils.h
 
 SOURCES += \
-    asyncpageimageprovider.cpp \
+    #asyncpageimageprovider.cpp \
     backend.cpp \
     classicimagerunnable.cpp \
+    croprunnable.cpp \
     pageitem.cpp \
     pagepreloader.cpp \
     pagescheduler.cpp \
@@ -54,6 +58,7 @@ SOURCES += \
     #parsers/popplerparser.cpp \
     parsers/unarrparser.cpp \
     qmlplugin.cpp \
+    scalerunnable.cpp \
     simpleimagerunnable.cpp \
     strnatcmp/strnatcmp.c \
     utils/imageproc.cpp \

@@ -31,7 +31,7 @@ Q_DECLARE_METATYPE(PageRequest)
 class Utils {
 public:
     static void cleanupPageImage(void* info) { //info is pointing to image data
-        uchar* data = static_cast<uchar*>(info);
+        uchar* data = reinterpret_cast<uchar*>(info);
         delete[] data;
         //qWarning("data deleted");
     }

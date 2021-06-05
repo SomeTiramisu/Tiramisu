@@ -11,7 +11,7 @@ Window {
     visible: true
     visibility: chooseVisibility()
     function chooseVisibility() {
-        if (backend.getProductName() === "android") {
+        if (productName == "android") {
             return "FullScreen"
         }
         return "Windowed"

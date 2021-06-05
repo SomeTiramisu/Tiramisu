@@ -2,8 +2,8 @@
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QQuickStyle>
-
-
+#include <QStandardPaths>
+#include <QUrl>
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,21 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle("Material");
 
     QQmlApplicationEngine engine;
+    engine.addImportPath("assets:/");
     engine.addImportPath("qrc:/qml");
+
+    QString productName(QSysInfo::productType());
+    QUrl filesPath;
+    if (productName == "android") {
+        filesPath = QUrl::fromLocalFile(QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)[0]);
+        //filesPath = "/storage/emulated/0";
+    } else {
+        filesPath = QUrl::fromLocalFile(QStandardPaths::standardLocations(QStandardPaths::HomeLocation)[0]);
+    }
+    //qWarning("initial properties %s %s", productName.toStdString().c_str(), filesPath.toStdString().c_str());
+    engine.rootContext()->setContextProperty("productName", productName);
+    engine.rootContext()->setContextProperty("filesPath", filesPath);
+
     engine.load("qrc:/qml/Main.qml");
 
     return app.exec();
