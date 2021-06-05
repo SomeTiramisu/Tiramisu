@@ -3,6 +3,10 @@
 #include <opencv2/imgcodecs.hpp>
 #include "utils.h"
 
+extern "C" {
+#include "turbojpeg.h"
+}
+
 using namespace cv;
 
 void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
@@ -226,7 +230,6 @@ void ImageProc::classicProcess(const Mat& src, Mat& dst, int width, int height) 
 }
 
 void ImageProc::cropProcess(const Mat &src, Mat &dst) {
-    Mat tmp;
     Mat mask;
     createMask(src, mask);
     Rect roi = createROI(mask);
@@ -239,4 +242,26 @@ void ImageProc::scaleProcess(const Mat &src, Mat &dst, int width, int height) {
     scale3(src, tmp, width, height);
     createMask(tmp, mask);
     tmp.copyTo(dst, mask);
+}
+
+void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
+    Mat tmp = fromByteArray(src);
+    Mat mask;
+    createMask(tmp, mask);
+    Rect roi = createROI(mask); //Now we have x, y, width, height
+    tjtransform xform;
+    tjhandle tjInstance = tjInitTransform();
+    memset(&xform, 0, sizeof(tjtransform)); //initialise xform to 0
+    xform.r.w = roi.width;
+    xform.r.h = roi.height;
+    xform.r.x = roi.x;
+    xform.r.y = roi.y;
+    // xform.r.x < 0 || xform.r.y < 0 || xform.r.w < 1 || xform.r.h < 1 ==> return
+    xform.options |= TJXOPT_CROP;
+    uchar *dstBuf = NULL; // TurboJpeg dynamic allocation
+    ulong dstSize = 0;
+    tjTransform(tjInstance, reinterpret_cast<const uchar*>(src.constData()), src.size(), 1, &dstBuf, &dstSize, &xform, 0);
+    src.clear();
+    src = QByteArray(reinterpret_cast<const char*>(dstBuf), dstSize);
+    delete [] dstBuf;
 }

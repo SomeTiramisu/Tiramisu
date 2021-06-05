@@ -32,6 +32,7 @@ target_link_libraries(tiramisuqmlplugin PRIVATE
     ${UNARR_LINK_LIBRARIES}
     #${POPPLER_LINK_LIBRARIES}
     ${LibArchive_LIBRARIES}
+    ${TURBOJPEG_LINK_LIBRARIES}
 )
 
 set_target_properties(tiramisuqmlplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tiramisu)

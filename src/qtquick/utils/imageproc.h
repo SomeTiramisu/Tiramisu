@@ -28,6 +28,7 @@ public:
     static void classicProcess(const Mat& src, Mat& dst, int width, int height); //assuming color RGBA
     static void cropProcess(const Mat& src, Mat& dst); //assuming color RGBA
     static void scaleProcess(const Mat& src, Mat& dst, int width, int height); //assuming color RGBA
+    static void jpegLosslessCropProcess(QByteArray& src);
 };
 
 #endif
