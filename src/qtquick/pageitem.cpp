@@ -11,17 +11,13 @@ PageItem::PageItem(QQuickItem *parent)
 
 PageItem::~PageItem() {
     m_scheduler->deleteLater();
+    m_preloader->deleteLater();
 }
 
 void PageItem::setFilename(const QUrl &filename) {
     m_filename = filename;
-    if (m_scheduler) {
-        m_scheduler->deleteLater();
-
-    }
-    if (m_preloader) {
-        m_preloader->deleteLater();
-    }
+    m_scheduler->deleteLater();
+    m_preloader->deleteLater();
     m_preloader = new PagePreloader(filename);
     m_scheduler = new PageScheduler(m_preloader);
     connect(m_scheduler, &PageScheduler::imageReady, this, &PageItem::handleImage);

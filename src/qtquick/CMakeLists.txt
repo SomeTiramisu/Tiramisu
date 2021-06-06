@@ -1,7 +1,7 @@
 set(qmlplugin_SRCS
     qmlplugin.cpp
     #asyncpageimageprovider.cpp
-    backend.cpp
+    #backend.cpp
     #runnables/classicimagerunnable.cpp
     pageitem.cpp
     pagepreloader.cpp

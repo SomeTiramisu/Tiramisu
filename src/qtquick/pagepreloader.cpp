@@ -18,11 +18,12 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
 }
 
 PagePreloader::~PagePreloader() {
+    m_pool.clear();
+    m_pool.waitForDone();
+    qWarning("DEL");
     if (m_parser) {
         delete m_parser;
     }
-    m_pool.clear();
-    m_pool.waitForDone();
     qWarning("preloader deleted");
 }
 
@@ -57,6 +58,7 @@ void PagePreloader::handleRoi(int index, QByteArray png, cv::Rect roi) {
     m_count--;
     if (m_count==0) {
         delete m_parser;
+        m_parser = nullptr;
         qWarning("preload Parser deleted");
     }
 }
