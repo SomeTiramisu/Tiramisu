@@ -33,6 +33,7 @@ private:
     QUrl m_filename;
     QThreadPool m_pool;
     bool isReady{false};
+    int m_count{0};
 
 public slots:
     void handleRoi(int index, QByteArray png, cv::Rect roi);

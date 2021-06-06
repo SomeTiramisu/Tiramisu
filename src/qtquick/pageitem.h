@@ -37,7 +37,6 @@ signals:
 
 public slots:
     void handleImage(PageRequest req, QImage img);
-    void preloaderReady();
 };
 
 #endif // PAGEITEM_H

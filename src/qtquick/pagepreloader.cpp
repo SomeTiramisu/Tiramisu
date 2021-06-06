@@ -11,10 +11,10 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     }
     m_parser = new Parser(m_filename, true);
     m_pages.resize(m_parser->size());
+    m_count = m_parser->size();
     for (int i=0; i<m_parser->size(); i++) {
-        runLocalCrop(i);
+        runCrop(i);
     }
-    delete m_parser; //TODO
 }
 
 PagePreloader::~PagePreloader() {
@@ -27,6 +27,7 @@ PagePreloader::~PagePreloader() {
 }
 
 PngPair PagePreloader::at(int index) {
+    m_pool.waitForDone(); //here because at() is called from another thread
     return m_pages.at(index);
 }
 
@@ -53,4 +54,9 @@ QUrl PagePreloader::filename() const {
 
 void PagePreloader::handleRoi(int index, QByteArray png, cv::Rect roi) {
     m_pages.replace(index, PngPair{png, roi});
+    m_count--;
+    if (m_count==0) {
+        delete m_parser;
+        qWarning("preload Parser deleted");
+    }
 }

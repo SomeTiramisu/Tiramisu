@@ -26,7 +26,7 @@ void PageItem::setFilename(const QUrl &filename) {
     m_scheduler = new PageScheduler(m_preloader);
     connect(m_scheduler, &PageScheduler::imageReady, this, &PageItem::handleImage);
     m_bookSize = m_preloader->size(); //TODO
-    //setIndex(0); now when preloader is ready
+    setIndex(0);
     emit filenameChanged();
     emit bookSizeChanged();
 }
@@ -52,8 +52,4 @@ void PageItem::handleImage(PageRequest req, QImage img) {
         m_image = img;
         this->update();
     }
-}
-
-void PageItem::preloaderReady() {
-    setIndex(0);
 }
