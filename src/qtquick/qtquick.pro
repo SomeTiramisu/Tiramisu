@@ -45,7 +45,8 @@ HEADERS += \
     utils/imageproc.h \
     utils/utils.h \
     runnables/cropdetectrunnable.h \
-    runnables/cropscalerunnable.h
+    runnables/cropscalerunnable.h \
+    utils/crop.h
 
 SOURCES += \
     #asyncpageimageprovider.cpp \
@@ -68,4 +69,5 @@ SOURCES += \
     utils/imageproc.cpp \
     utils/utils.cpp \
     runnables/cropdetectrunnable.cpp \
-    runnables/cropscalerunnable.cpp
+    runnables/cropscalerunnable.cpp \
+    utils/crop.cpp

@@ -2,6 +2,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include "utils.h"
+#include "crop.h"
 
 extern "C" {
 #include "turbojpeg.h"
@@ -282,7 +283,8 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
 Rect ImageProc::cropDetect(const Mat &src) {
     Mat mask;
     createMask(src, mask);
-    return createROI(mask);
+    //return createROI(mask);
+    return findBorders(mask);
 }
 
 void ImageProc::cropScaleProcess(const Mat &src, Mat &dst, const Rect &roi, int width, int height) {

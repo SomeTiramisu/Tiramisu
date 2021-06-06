@@ -20,6 +20,7 @@ set(qmlplugin_SRCS
     #runnables/scalerunnable.cpp
     runnables/cropdetectrunnable.cpp
     runnables/cropscalerunnable.cpp
+    utils/crop.cpp
 )
 
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})
