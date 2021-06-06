@@ -1,6 +1,6 @@
 #include "croprunnable.h"
 
-#include "utils/imageproc.h"
+#include "../utils/imageproc.h"
 
 CropRunnable::CropRunnable(Parser* parser, int index)
     : m_index(index),

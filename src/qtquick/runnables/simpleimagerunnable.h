@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QRunnable>
-#include "parsers/parser.h"
-#include "utils/utils.h"
+#include "../parsers/parser.h"
+#include "../utils/utils.h"
 
 class SimpleImageRunnable : public QObject, public QRunnable
 {

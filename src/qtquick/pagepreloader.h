@@ -7,7 +7,13 @@
 #include <QObject>
 #include <QThreadPool>
 #include <QByteArray>
+#include <opencv2/core.hpp>
 #include "parsers/parser.h"
+
+struct PngPair {
+    QByteArray png;
+    cv::Rect roi;
+};
 
 class PagePreloader: public QObject
 {
@@ -15,7 +21,7 @@ class PagePreloader: public QObject
 public:
     PagePreloader(QUrl filename = QUrl(), QObject* parent = nullptr);
     ~PagePreloader();
-    QByteArray at(int index);
+    PngPair at(int index);
     void runCrop(int index);
     void runLocalCrop(int index);
     int size() const;
@@ -23,13 +29,13 @@ public:
 
 private:
     Parser *m_parser{nullptr};
-    QVector<QByteArray> m_pages;
+    QVector<PngPair> m_pages;
     QUrl m_filename;
     QThreadPool m_pool;
     bool isReady{false};
 
 public slots:
-    void handlePng(int index, QByteArray png);
+    void handleRoi(int index, QByteArray png, cv::Rect roi);
 };
 
 #endif // PAGEPRELOADER_H

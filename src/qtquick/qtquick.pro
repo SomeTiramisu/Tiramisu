@@ -26,9 +26,9 @@ DISTFILES += \
 HEADERS += \
     #asyncpageimageprovider.h \
     backend.h \
-    classicimagerunnable.h \
-    croprunnable.h \
-    losslesscroprunnable.h \
+    #runnables/classicimagerunnable.h \
+    #runnables/croprunnable.h \
+    #runnables/losslesscroprunnable.h \
     pageitem.h \
     pagepreloader.h \
     pagescheduler.h \
@@ -39,18 +39,20 @@ HEADERS += \
     #parsers/popplerparser.h \
     parsers/unarrparser.h \
     qmlplugin.h \
-    scalerunnable.h \
-    simpleimagerunnable.h \
+    #runnables/scalerunnable.h \
+    #runnables/simpleimagerunnable.h \
     strnatcmp/strnatcmp.h \
     utils/imageproc.h \
-    utils/utils.h
+    utils/utils.h \
+    runnables/cropdetectrunnable.h \
+    runnables/cropscalerunnable.h
 
 SOURCES += \
     #asyncpageimageprovider.cpp \
     backend.cpp \
-    classicimagerunnable.cpp \
-    croprunnable.cpp \
-    losslesscroprunnable.cpp \
+    #runnables/classicimagerunnable.cpp \
+    #runnables/croprunnable.cpp \
+    #runnables/losslesscroprunnable.cpp \
     pageitem.cpp \
     pagepreloader.cpp \
     pagescheduler.cpp \
@@ -60,8 +62,10 @@ SOURCES += \
     #parsers/popplerparser.cpp \
     parsers/unarrparser.cpp \
     qmlplugin.cpp \
-    scalerunnable.cpp \
-    simpleimagerunnable.cpp \
+    #runnables/scalerunnable.cpp \
+    #runnables/simpleimagerunnable.cpp \
     strnatcmp/strnatcmp.c \
     utils/imageproc.cpp \
-    utils/utils.cpp
+    utils/utils.cpp \
+    runnables/cropdetectrunnable.cpp \
+    runnables/cropscalerunnable.cpp

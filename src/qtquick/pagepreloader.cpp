@@ -1,6 +1,6 @@
 #include "pagepreloader.h"
 
-#include "losslesscroprunnable.h"
+#include "runnables/cropdetectrunnable.h"
 
 PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     : QObject(parent),
@@ -14,6 +14,7 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     for (int i=0; i<m_parser->size(); i++) {
         runLocalCrop(i);
     }
+    delete m_parser; //TODO
 }
 
 PagePreloader::~PagePreloader() {
@@ -25,21 +26,21 @@ PagePreloader::~PagePreloader() {
     qWarning("preloader deleted");
 }
 
-QByteArray PagePreloader::at(int index) {
+PngPair PagePreloader::at(int index) {
     return m_pages.at(index);
 }
 
 void PagePreloader::runCrop(int index) {
-    LosslessCropRunnable* runnable = new LosslessCropRunnable(m_parser, index);
-    connect(runnable, &LosslessCropRunnable::pngReady, this, &PagePreloader::handlePng);
+    CropDetectRunnable* runnable = new CropDetectRunnable(m_parser, index);
+    connect(runnable, &CropDetectRunnable::roiReady, this, &PagePreloader::handleRoi);
     m_pool.start(runnable);
 }
 
 void PagePreloader::runLocalCrop(int index) {
-    LosslessCropRunnable* runnable = new LosslessCropRunnable(m_parser, index);
-    connect(runnable, &LosslessCropRunnable::pngReady, this, &PagePreloader::handlePng);
+    CropDetectRunnable* runnable = new CropDetectRunnable(m_parser, index);
+    connect(runnable, &CropDetectRunnable::roiReady, this, &PagePreloader::handleRoi);
     runnable->run();
-    runnable->autoDelete();
+    runnable->deleteLater();
 }
 
 int PagePreloader::size() const {
@@ -50,6 +51,6 @@ QUrl PagePreloader::filename() const {
     return m_filename;
 }
 
-void PagePreloader::handlePng(int index, QByteArray array) {
-    m_pages.replace(index, array);
+void PagePreloader::handleRoi(int index, QByteArray png, cv::Rect roi) {
+    m_pages.replace(index, PngPair{png, roi});
 }

@@ -22,7 +22,7 @@ enum RequetPriority {
     Req = 0
 };
 
-struct Pair {
+struct PagePair {
     RequestStatus status{RequestStatus::Undefined};
     QImage img;
 
@@ -30,11 +30,11 @@ struct Pair {
         return status == s;
     }
 
-    bool operator==(const Pair& a) const {
+    bool operator==(const PagePair& a) const {
         return (status==a.status && img==a.img);
     }
 
-    bool operator!=(const Pair& a) const {
+    bool operator!=(const PagePair& a) const {
         return not operator==(a);
     }
 };
@@ -53,7 +53,7 @@ private:
     void runPage(PageRequest req, RequetPriority priority);
     void runLocalPage(PageRequest req);
     QThreadPool m_pool;
-    QHash<PageRequest, Pair> m_pages;
+    QHash<PageRequest, PagePair> m_pages;
     PagePreloader* m_preloader{nullptr};
     QSet<PageRequest> m_pendingReqs;
     const int m_imagePreload;

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QRunnable>
-#include "parsers/parser.h"
+#include "../parsers/parser.h"
 
 class CropRunnable: public QObject, public QRunnable
 {

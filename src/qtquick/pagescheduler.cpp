@@ -1,5 +1,5 @@
 #include "pagescheduler.h"
-#include "scalerunnable.h"
+#include "runnables/cropscalerunnable.h"
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
@@ -69,16 +69,16 @@ void PageScheduler::clearPages(PageRequest req) {
 }
 
 void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
-    m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ScaleRunnable *runnable = new ScaleRunnable(m_preloader, req);
-    connect(runnable, &ScaleRunnable::imageReady, this, &PageScheduler::handleImage);
+    m_pages.insert(req, PagePair{RequestStatus::Requested, QImage()});
+    CropScaleRunnable *runnable = new CropScaleRunnable(m_preloader, req);
+    connect(runnable, &CropScaleRunnable::imageReady, this, &PageScheduler::handleImage);
     m_pool.start(runnable, priority);
 }
 
 void PageScheduler::runLocalPage(PageRequest req) {
-    m_pages.insert(req, Pair{RequestStatus::Requested, QImage()});
-    ScaleRunnable *runnable = new ScaleRunnable(m_preloader, req);
-    connect(runnable, &ScaleRunnable::imageReady, this, &PageScheduler::handleImage);
+    m_pages.insert(req, PagePair{RequestStatus::Requested, QImage()});
+    CropScaleRunnable *runnable = new CropScaleRunnable(m_preloader, req);
+    connect(runnable, &CropScaleRunnable::imageReady, this, &PageScheduler::handleImage);
     runnable->run();
     runnable->deleteLater();
 }
@@ -87,7 +87,7 @@ void PageScheduler::handleImage(PageRequest req, QImage img) {
     //pendingReqs.isEmpty() ? qWarning("Controller: recieved!!! %i %i %i pending: None", req.index(), req.width(), req.height()): qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index(), req.width(), req.height(), pendingReqs.head().index(), pendingReqs.head().width(), pendingReqs.head().height());
     qWarning("Handled Sheduler");
     if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
-        m_pages.insert(req, Pair{RequestStatus::Recieved, img});
+        m_pages.insert(req, PagePair{RequestStatus::Recieved, img});
     }
     if (m_pendingReqs.contains(req)) {
         qWarning("Controller: answaring: %i, (%i, %i)", req.index(), req.width(), req.height());

@@ -1,6 +1,6 @@
 #include "simpleimagerunnable.h"
 
-#include "utils/imageproc.h"
+#include "../utils/imageproc.h"
 #include <opencv2/imgproc.hpp>
 
 SimpleImageRunnable::SimpleImageRunnable(Parser &parser, PageRequest req)

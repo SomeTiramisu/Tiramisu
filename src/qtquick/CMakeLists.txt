@@ -2,7 +2,7 @@ set(qmlplugin_SRCS
     qmlplugin.cpp
     #asyncpageimageprovider.cpp
     backend.cpp
-    classicimagerunnable.cpp
+    #runnables/classicimagerunnable.cpp
     pageitem.cpp
     pagepreloader.cpp
     pagescheduler.cpp
@@ -15,9 +15,11 @@ set(qmlplugin_SRCS
     utils/utils.cpp
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
-    croprunnable.cpp
-    losslesscroprunnable.cpp
-    scalerunnable.cpp
+    runnables/croprunnable.cpp
+    #runnables/losslesscroprunnable.cpp
+    #runnables/scalerunnable.cpp
+    runnables/cropdetectrunnable.cpp
+    runnables/cropscalerunnable.cpp
 )
 
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})

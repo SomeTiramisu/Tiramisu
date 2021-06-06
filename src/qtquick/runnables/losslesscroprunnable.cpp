@@ -1,6 +1,6 @@
 #include "losslesscroprunnable.h"
 
-#include "utils/imageproc.h"
+#include "../utils/imageproc.h"
 
 LosslessCropRunnable::LosslessCropRunnable(Parser* parser, int index)
     : m_index(index),

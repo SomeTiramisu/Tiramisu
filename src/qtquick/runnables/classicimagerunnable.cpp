@@ -1,6 +1,6 @@
 #include "classicimagerunnable.h"
 
-#include "utils/imageproc.h"
+#include "../utils/imageproc.h"
 
 ClassicImageRunnable::ClassicImageRunnable(PagePreloader* preloader, const PageRequest& req)
     : m_preloader(preloader),

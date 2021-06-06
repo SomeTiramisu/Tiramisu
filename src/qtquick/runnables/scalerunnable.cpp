@@ -1,6 +1,6 @@
 #include "scalerunnable.h"
 
-#include "utils/imageproc.h"
+#include "../utils/imageproc.h"
 
 ScaleRunnable::ScaleRunnable(PagePreloader* preloader, const PageRequest& req)
     : m_preloader(preloader),

@@ -278,3 +278,17 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
     tjFree(dstBuf);
     tjDestroy(tjInstance);
 }
+
+Rect ImageProc::cropDetect(const Mat &src) {
+    Mat mask;
+    createMask(src, mask);
+    return createROI(mask);
+}
+
+void ImageProc::cropScaleProcess(const Mat &src, Mat &dst, const Rect &roi, int width, int height) {
+    Mat tmp;
+    Mat mask;
+    scale3(src(roi), tmp, width, height);
+    createMask(tmp, mask);
+    tmp.copyTo(dst, mask);
+}

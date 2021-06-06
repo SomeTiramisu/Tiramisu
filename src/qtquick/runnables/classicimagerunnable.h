@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QRunnable>
 #include <QImage>
-#include "pagepreloader.h"
-#include "utils/utils.h"
+#include "../pagepreloader.h"
+#include "../utils/utils.h"
 
 class ClassicImageRunnable : public QObject, public QRunnable
 {
