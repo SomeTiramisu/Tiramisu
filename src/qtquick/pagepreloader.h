@@ -16,19 +16,17 @@ public:
     PagePreloader(QUrl filename = QUrl(), QObject* parent = nullptr);
     ~PagePreloader();
     QByteArray at(int index);
+    void runCrop(int index);
+    void runLocalCrop(int index);
     int size() const;
     QUrl filename() const;
-    bool ready() const;
 
 private:
     Parser *m_parser{nullptr};
     QVector<QByteArray> m_pages;
     QUrl m_filename;
     QThreadPool m_pool;
-    int m_count{0};
-
-signals:
-    void isReady();
+    bool isReady{false};
 
 public slots:
     void handlePng(int index, QByteArray png);

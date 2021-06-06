@@ -23,7 +23,6 @@ void PageItem::setFilename(const QUrl &filename) {
         m_preloader->deleteLater();
     }
     m_preloader = new PagePreloader(filename);
-    connect(m_preloader, &PagePreloader::isReady, this, &PageItem::preloaderReady);
     m_scheduler = new PageScheduler(m_preloader);
     connect(m_scheduler, &PageScheduler::imageReady, this, &PageItem::handleImage);
     m_bookSize = m_preloader->size(); //TODO
@@ -33,9 +32,6 @@ void PageItem::setFilename(const QUrl &filename) {
 }
 
 void PageItem::setIndex(int index) {
-    if (not m_preloader->ready()) {
-        return;
-    }
     m_index = index;
     m_req = PageRequest(width(), height(), index, m_filename);;
     qWarning("Hello You %i", index);

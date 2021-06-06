@@ -271,9 +271,10 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
     tjTransform(tjInstance, reinterpret_cast<const uchar*>(src.constData()), src.size(), 1, &dstBuf, &dstSize, &xform, 0);
     if (dstSize == 0) {
         qWarning("0 dstSize");
+    } else {
+        src.clear();
+        src = QByteArray(reinterpret_cast<char*>(dstBuf), dstSize);
     }
-    src.clear();
-    src = QByteArray(reinterpret_cast<char*>(dstBuf), dstSize);
     tjFree(dstBuf);
     tjDestroy(tjInstance);
 }

@@ -1,6 +1,6 @@
 #include "pagepreloader.h"
 
-#include "croprunnable.h"
+#include "losslesscroprunnable.h"
 
 PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     : QObject(parent),
@@ -11,11 +11,8 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     }
     m_parser = new Parser(m_filename, true);
     m_pages.resize(m_parser->size());
-    m_count = m_parser->size();
     for (int i=0; i<m_parser->size(); i++) {
-        CropRunnable* runnable = new CropRunnable(m_parser, i);
-        connect(runnable, &CropRunnable::pngReady, this, &PagePreloader::handlePng);
-        m_pool.start(runnable);
+        runLocalCrop(i);
     }
 }
 
@@ -32,6 +29,19 @@ QByteArray PagePreloader::at(int index) {
     return m_pages.at(index);
 }
 
+void PagePreloader::runCrop(int index) {
+    LosslessCropRunnable* runnable = new LosslessCropRunnable(m_parser, index);
+    connect(runnable, &LosslessCropRunnable::pngReady, this, &PagePreloader::handlePng);
+    m_pool.start(runnable);
+}
+
+void PagePreloader::runLocalCrop(int index) {
+    LosslessCropRunnable* runnable = new LosslessCropRunnable(m_parser, index);
+    connect(runnable, &LosslessCropRunnable::pngReady, this, &PagePreloader::handlePng);
+    runnable->run();
+    runnable->autoDelete();
+}
+
 int PagePreloader::size() const {
     return m_pages.size();
 }
@@ -40,14 +50,6 @@ QUrl PagePreloader::filename() const {
     return m_filename;
 }
 
-bool PagePreloader::ready() const {
-    return m_count == 0;
-}
-
 void PagePreloader::handlePng(int index, QByteArray array) {
     m_pages.replace(index, array);
-    m_count--;
-    if (m_count == 0) {
-        emit isReady();
-    }
 }

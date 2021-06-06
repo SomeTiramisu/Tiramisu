@@ -11,11 +11,11 @@ TARGET = tiramisuqmlplugin
 #DESTDIR = ../../bin/qtquick/tiramisu
 
 android {
-LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
+LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lturbojpeg
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 }
 !android {
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lturbojpeg
 INCLUDEPATH += /usr/include/opencv4/
 }
 
@@ -28,6 +28,7 @@ HEADERS += \
     backend.h \
     classicimagerunnable.h \
     croprunnable.h \
+    losslesscroprunnable.h \
     pageitem.h \
     pagepreloader.h \
     pagescheduler.h \
@@ -49,6 +50,7 @@ SOURCES += \
     backend.cpp \
     classicimagerunnable.cpp \
     croprunnable.cpp \
+    losslesscroprunnable.cpp \
     pageitem.cpp \
     pagepreloader.cpp \
     pagescheduler.cpp \
