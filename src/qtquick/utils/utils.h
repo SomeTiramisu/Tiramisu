@@ -5,6 +5,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QImage>
+#include <opencv2/core.hpp>
 
 class PageRequest {
 public:
@@ -26,7 +27,7 @@ private:
     int m_index{-1};
     QUrl m_filename;
 };
-Q_DECLARE_METATYPE(PageRequest)
+
 
 class Utils {
 public:
@@ -36,5 +37,8 @@ public:
         //qWarning("data deleted");
     }
 };
+
+Q_DECLARE_METATYPE(PageRequest);
+Q_DECLARE_METATYPE(cv::Rect);
 
 #endif // UTILS_H
