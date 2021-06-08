@@ -21,7 +21,7 @@ void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
 
 Rect ImageProc::createROI(const Mat& src) {
     Rect roi = boundingRect(src); //may be inverted
-    if (roi == Rect(0, 0, 0, 0)) { //fix for while images
+    if (roi.empty()) { //fix for while images
         roi = Rect(0,0, src.cols, src.rows);
     }
     return roi;
@@ -283,8 +283,11 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
 Rect ImageProc::cropDetect(const Mat &src) {
     Mat mask;
     createMask(src, mask);
-    //return createROI(mask);
-    return findBorders(mask);
+    Rect roi = findBorders(mask);
+    if (roi.empty()) { //fix for white images
+        roi = Rect(0,0, src.cols, src.rows);
+    }
+    return roi;
 }
 
 void ImageProc::cropScaleProcess(const Mat &src, Mat &dst, const Rect &roi, int width, int height) {
