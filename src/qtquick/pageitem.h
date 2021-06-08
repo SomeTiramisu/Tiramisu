@@ -2,6 +2,7 @@
 #define PAGEITEM_H
 
 #include <QQuickPaintedItem>
+#include <QTimer>
 #include "pagescheduler.h"
 
 class PageItem: public QQuickPaintedItem
@@ -29,6 +30,7 @@ private:
     PagePreloader* m_preloader{nullptr};
     PageRequest m_req;
     QImage m_image;
+    QTimer m_resizeTimer;
 
 signals:
     void filenameChanged();
@@ -36,6 +38,8 @@ signals:
     void bookSizeChanged();
 
 public slots:
+    void onRotationChanged();
+    void resizeTimeout();
     void handleImage(PageRequest req, QImage img);
 };
 

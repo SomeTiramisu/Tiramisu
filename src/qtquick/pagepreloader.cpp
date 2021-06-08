@@ -6,6 +6,7 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
     : QObject(parent),
       m_filename(filename)
 {
+    qWarning("preloader created");
     if (m_filename.isEmpty()) {
         return;
     }
@@ -20,7 +21,6 @@ PagePreloader::PagePreloader(QUrl filename, QObject* parent)
 PagePreloader::~PagePreloader() {
     m_pool.clear();
     m_pool.waitForDone();
-    qWarning("DEL");
     if (m_parser) {
         delete m_parser;
     }
