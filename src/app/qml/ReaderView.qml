@@ -7,8 +7,8 @@ Item {
     property url bgFilename: ""
     property url bookFilename: ""
 
-    Component.onCompleted: {
-        console.log(width, height)
+    onBookFilenameChanged: {
+        slider.value = 0
     }
 
     Image {
@@ -24,16 +24,16 @@ Item {
         id: page
         anchors.fill: parent
         filename: bookFilename
-        index: 0
+        index: slider.value
     }
 
     TapHandler {
         id: tHandler
         onTapped: (eventPoint) => {
                       if (eventPoint.position.x > 2*parent.width/3 && page.index < page.bookSize-1) {
-                          page.index++
+                          slider.value++
                       } else if (eventPoint.position.x < parent.width/3 && page.index > 0) {
-                          page.index--
+                          slider.value--
                       }
                       if (slider.visible && page.index > 0 && page.index < page.bookSize-1) {
                           slider.visible = false
@@ -53,10 +53,6 @@ Item {
         live: false
         snapMode: Slider.SnapAlways
         stepSize: 1
-        value: page.index
-        onValueChanged: {
-            page.index = value
-        }
         Label {
             id: label
             text: parent.valueAt(parent.position)
