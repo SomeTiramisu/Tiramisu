@@ -24,6 +24,7 @@ void PageItem::setFilename(const QUrl &filename) {
     m_preloader->deleteLater();
     m_preloader = new PagePreloader(filename);
     m_scheduler = new PageScheduler(m_preloader);
+    connect(m_preloader, &PagePreloader::progressChanged, this, [this]{emit preloaderProgressChanged();});
     connect(m_scheduler, &PageScheduler::imageReady, this, &PageItem::handleImage);
     m_bookSize = m_preloader->size(); //TODO
     setIndex(0);
@@ -47,11 +48,15 @@ void PageItem::paint(QPainter *painter) {
 }
 
 void PageItem::onRotationChanged() {
-    if(m_index >= m_preloader->size()) { //size = 0
-        return;
+    //if(m_index >= m_preloader->size()) { //size = 0
+    //    return;
+    //}
+    //QByteArray png = m_preloader->at(m_index).png;
+    //m_image = QImage::fromData(png).scaled(size().toSize(), Qt::KeepAspectRatio);
+    if (m_tmpImage.isNull()) {
+        m_tmpImage = m_image;
     }
-    QByteArray png = m_preloader->at(m_index).png;
-    m_image = QImage::fromData(png).scaled(size().toSize(), Qt::KeepAspectRatio);
+    m_image = m_tmpImage.scaled(size().toSize(), Qt::KeepAspectRatio);
     this->update();
     m_resizeTimer.start(100);
 }
@@ -59,6 +64,7 @@ void PageItem::onRotationChanged() {
 void PageItem::resizeTimeout() {
     m_req = PageRequest(width(), height(), m_index, m_filename);
     m_scheduler->getAsyncPage(m_req);
+    m_tmpImage = QImage();
 }
 
 void PageItem::handleImage(PageRequest req, QImage img) {

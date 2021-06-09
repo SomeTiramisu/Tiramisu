@@ -26,6 +26,7 @@ public:
     void runLocalCrop(int index);
     int size() const;
     QUrl filename() const;
+    int progress();
 
 private:
     Parser *m_parser{nullptr};
@@ -33,7 +34,10 @@ private:
     QUrl m_filename;
     QThreadPool m_pool;
     bool isReady{false};
-    int m_count{0};
+    int m_progress{0};
+
+signals:
+    void progressChanged();
 
 public slots:
     void handleRoi(int index, QByteArray png, cv::Rect roi);

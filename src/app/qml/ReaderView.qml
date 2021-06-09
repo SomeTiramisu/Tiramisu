@@ -67,4 +67,21 @@ Item {
             anchors.horizontalCenter: parent.handle.horizontalCenter
         }
     }
+    ProgressBar {
+        id: progress
+        visible: true
+        anchors.bottom: container.bottom
+        width: container.width
+        height: implicitHeight
+        from: 0
+        to: page.bookSize
+        value: page.preloaderProgress
+        onPositionChanged: {
+            if (position == 1.0) {
+                visible = false
+            } else {
+                visible = true
+            }
+        }
+    }
 }
