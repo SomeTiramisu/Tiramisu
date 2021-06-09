@@ -8,6 +8,7 @@ PageItem::PageItem(QQuickItem *parent)
     m_preloader = new PagePreloader();
     m_scheduler = new PageScheduler(m_preloader);
 
+    m_resizeTimer.setSingleShot(true);
     connect(&m_resizeTimer, &QTimer::timeout, this, &PageItem::resizeTimeout);
     connect(this, &QQuickItem::widthChanged, this, &PageItem::onRotationChanged);
     connect(this, &QQuickItem::heightChanged, this, &PageItem::onRotationChanged);
