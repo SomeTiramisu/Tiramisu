@@ -77,7 +77,7 @@ Item {
         to: page.bookSize
         value: page.preloaderProgress
         onPositionChanged: {
-            if (position == 1.0) {
+            if (position == 1.0 || position == 0.0) {
                 visible = false
             } else {
                 visible = true
