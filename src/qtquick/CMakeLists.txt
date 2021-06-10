@@ -15,7 +15,7 @@ set(qmlplugin_SRCS
     utils/utils.cpp
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
-    runnables/croprunnable.cpp
+    #runnables/croprunnable.cpp
     #runnables/losslesscroprunnable.cpp
     #runnables/scalerunnable.cpp
     runnables/cropdetectrunnable.cpp

@@ -63,7 +63,8 @@ QPixmap ImageProc::toQPixmap(const Mat& src) {
     return QPixmap::fromImage(toQImage(src));
 }
 
-QImage ImageProc::toQImage(const Mat& src) {
+
+/*QImage ImageProc::toQImage(const Mat& src) {
     if (src.empty()) {
         return QImage();
     }
@@ -71,6 +72,14 @@ QImage ImageProc::toQImage(const Mat& src) {
     uchar* new_data = new uchar[length];
     std::memcpy(new_data, src.data, length);
     return QImage(new_data, src.cols, src.rows, src.step, QImage::Format_RGBA8888, &Utils::cleanupPageImage, new_data); //src.step is byte per line
+}*/
+
+QImage ImageProc::toQImage(const Mat& src) {
+    if (src.empty()) {
+        return QImage();
+    }
+    QImage tmp(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
+    return tmp.copy();
 }
 
 cv::Mat ImageProc::fromByteArray(const QByteArray& src) {
@@ -283,17 +292,17 @@ void ImageProc::jpegLosslessCropProcess(QByteArray& src) {
 Rect ImageProc::cropDetect(const Mat &src) {
     Mat mask;
     createMask(src, mask);
-    Rect roi = findBorders(mask);
-    if (roi.empty()) { //fix for white images
-        roi = Rect(0,0, src.cols, src.rows);
-    }
-    return roi;
+    return findBorders(mask);
 }
 
 void ImageProc::cropScaleProcess(const Mat &src, Mat &dst, const Rect &roi, int width, int height) {
     Mat tmp;
     Mat mask;
-    scale3(src(roi), tmp, width, height);
+    Rect froi(roi);
+    if (froi.empty()) { //fix for white images
+        froi = Rect(0,0, src.cols, src.rows);
+    }
+    scale3(src(froi), tmp, width, height);
     createMask(tmp, mask);
     tmp.copyTo(dst, mask);
 }
