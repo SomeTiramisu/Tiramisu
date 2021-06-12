@@ -10,6 +10,7 @@ target_link_libraries(tiramisuqmlplugin PRIVATE
     Qt6::Gui
     Qt6::Quick
     Qt6::Core
+    tiramisu
 )
 
 set_target_properties(tiramisuqmlplugin PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tiramisu)

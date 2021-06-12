@@ -1,4 +1,5 @@
 set(tiramisu_SRCS
+    tiramisu.cpp
     pagepreloader.cpp
     pagescheduler.cpp
     parsers/parser.cpp

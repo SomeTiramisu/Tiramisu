@@ -45,13 +45,13 @@ class PageScheduler : public QObject
 public:
     PageScheduler(PagePreloader* preloader, QObject *parent = nullptr);
     ~PageScheduler();
-    void getAsyncPage(PageRequest req);
+    QImage getAsyncPage(PageRequest req);
 
 private:
     void preloadPages(PageRequest req);
     void clearPages(PageRequest req);
     void runPage(PageRequest req, RequetPriority priority);
-    void runLocalPage(PageRequest req);
+    QImage runLocalPage(PageRequest req);
     QThreadPool m_pool;
     QHash<PageRequest, PagePair> m_pages;
     PagePreloader* m_preloader{nullptr};

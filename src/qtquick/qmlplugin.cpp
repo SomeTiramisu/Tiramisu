@@ -7,7 +7,6 @@
 void QmlPlugin::initializeEngine(QQmlEngine *engine, const char *uri) {
     Q_UNUSED(engine)
     Q_UNUSED(uri)
-    qRegisterMetaType<cv::Rect>();
 }
 
 void QmlPlugin::registerTypes(const char *uri) {

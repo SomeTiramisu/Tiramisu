@@ -14,6 +14,7 @@ public:
     CropScaleRunnable(PagePreloader* preloader, const PageRequest& req);
     ~CropScaleRunnable() {};
     void run() override;
+    QImage runLocal();
 private:
     PagePreloader *m_preloader;
     PageRequest m_req;

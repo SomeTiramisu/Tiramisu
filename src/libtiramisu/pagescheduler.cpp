@@ -15,29 +15,25 @@ PageScheduler::~PageScheduler() {
     qWarning("scheduler deleted");
 }
 
-void PageScheduler::getAsyncPage(PageRequest req) {
-    qWarning("Hello You from Scheduler");
+QImage PageScheduler::getAsyncPage(PageRequest req) {
     int index = req.index();
     int book_size = m_preloader->size();
     if (index<0 || index >= book_size) {
-        emit imageReady(req, QImage());
-        return;
+        return QImage();
     }
     if (m_pages.value(req).matchStatus(RequestStatus::Recieved)) {
         qWarning("Controller: already reviced %i", req.index());
-        emit imageReady(req, m_pages.value(req).img);
     } else if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
-        qWarning("Controller: already requested, add to pending %i", req.index());
-        m_pendingReqs.insert(req);
+        qWarning("Controller: already requested, rerun local %i", req.index());
+        m_pendingReqs.remove(req);
+        m_pages.insert(req, PagePair{RequestStatus::Recieved, runLocalPage(req)});
     } else {
-        qWarning("Controller: requesting, add to pending %i", req.index());
-        m_pendingReqs.insert(req);
-        //pool.clear();
-        runPage(req, RequetPriority::Max);
-        //runLocalPage(req);
+        qWarning("Controller: running locally %i", req.index());
+        m_pages.insert(req, PagePair{RequestStatus::Recieved, runLocalPage(req)});
     }
     preloadPages(req);
     clearPages(req);
+    return m_pages.value(req).img;;
 }
 
 void PageScheduler::preloadPages(PageRequest req) {
@@ -75,12 +71,9 @@ void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
     m_pool.start(runnable, priority);
 }
 
-void PageScheduler::runLocalPage(PageRequest req) {
-    m_pages.insert(req, PagePair{RequestStatus::Requested, QImage()});
-    CropScaleRunnable *runnable = new CropScaleRunnable(m_preloader, req);
-    connect(runnable, &CropScaleRunnable::imageReady, this, &PageScheduler::handleImage);
-    runnable->run();
-    runnable->deleteLater();
+QImage PageScheduler::runLocalPage(PageRequest req) {
+    CropScaleRunnable runnable = CropScaleRunnable(m_preloader, req);
+    return runnable.runLocal();
 }
 
 void PageScheduler::handleImage(PageRequest req, QImage img) {
