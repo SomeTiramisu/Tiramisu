@@ -23,6 +23,6 @@ QImage CropScaleRunnable::runLocal() {
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, pair.roi, m_req.width(), m_req.height());
     }
-    qWarning("CropScaleRunnable: running: %i, (%i, %i)", m_req.index(), m_req.width(), m_req.height());
+    qWarning("CropScaleRunnable: runningLocal: %i, (%i, %i) orig: (%i %i)", m_req.index(), m_req.width(), m_req.height(), img.cols, img.rows);
     return ImageProc::toQImage(img);
 }

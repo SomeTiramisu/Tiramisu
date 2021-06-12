@@ -16,8 +16,6 @@ PageItem::~PageItem() {
 
 void PageItem::setFilename(const QUrl &filename) {
     m_filename = filename;
-    m_tiramisu.setFilename(filename);
-    m_bookSize = m_tiramisu.bookSize(); //TODO
     setIndex(0);
     emit filenameChanged();
     emit bookSizeChanged();
@@ -29,6 +27,7 @@ void PageItem::setIndex(int index) {
     qWarning("Hello You %i", index);
     //m_image = QImage("/home/guillaume/reader/000.jpg");
     m_image = m_tiramisu.get(m_req);
+    qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
     this->update();
     emit indexChanged();
 }

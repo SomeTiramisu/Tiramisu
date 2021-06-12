@@ -55,15 +55,10 @@ private:
     QThreadPool m_pool;
     QHash<PageRequest, PagePair> m_pages;
     PagePreloader* m_preloader{nullptr};
-    QSet<PageRequest> m_pendingReqs;
     const int m_imagePreload;
 
 public slots:
     void handleImage(PageRequest req, QImage img);
-signals:
-    void imageReady(PageRequest req, QImage img);
-
-
 };
 
 static inline uint qHash(const PageRequest& req, uint seed) {

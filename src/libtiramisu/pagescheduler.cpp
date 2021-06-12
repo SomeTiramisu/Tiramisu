@@ -25,11 +25,10 @@ QImage PageScheduler::getAsyncPage(PageRequest req) {
         qWarning("Controller: already reviced %i", req.index());
     } else if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
         qWarning("Controller: already requested, rerun local %i", req.index());
-        m_pendingReqs.remove(req);
-        m_pages.insert(req, PagePair{RequestStatus::Recieved, runLocalPage(req)});
+        runLocalPage(req);
     } else {
         qWarning("Controller: running locally %i", req.index());
-        m_pages.insert(req, PagePair{RequestStatus::Recieved, runLocalPage(req)});
+        runLocalPage(req);
     }
     preloadPages(req);
     clearPages(req);
@@ -73,7 +72,10 @@ void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
 
 QImage PageScheduler::runLocalPage(PageRequest req) {
     CropScaleRunnable runnable = CropScaleRunnable(m_preloader, req);
-    return runnable.runLocal();
+    QImage img = runnable.runLocal();
+    qWarning("LOCAL(%i): %i %i", req.index(), img.width(), img.height() );
+    m_pages.insert(req, PagePair{RequestStatus::Recieved, img});
+    return img;
 }
 
 void PageScheduler::handleImage(PageRequest req, QImage img) {
@@ -81,10 +83,5 @@ void PageScheduler::handleImage(PageRequest req, QImage img) {
     qWarning("Handled Sheduler");
     if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
         m_pages.insert(req, PagePair{RequestStatus::Recieved, img});
-    }
-    if (m_pendingReqs.contains(req)) {
-        qWarning("Controller: answaring: %i, (%i, %i)", req.index(), req.width(), req.height());
-        emit imageReady(req, img);
-        m_pendingReqs.remove(req);
     }
 }

@@ -16,9 +16,9 @@ public:
     QImage get(PageRequest req);
     int bookSize() const {return m_bookSize;}
     int preloaderProgress() const { return m_preloader->progress();}
-    void setFilename(const QUrl& filename);
 
 private:
+    void setFilename(const QUrl& filename);
     QUrl m_filename;
     int m_bookSize{0};
     PageScheduler* m_scheduler{nullptr};
