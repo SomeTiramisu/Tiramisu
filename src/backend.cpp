@@ -1,18 +1,25 @@
 #include "backend.h"
-#include "book.h"
+#include "parsers/parser.h"
 
-//#define ARCHIVE_FILENAME "/home/guillaume/reader/b.cbr"
-//#define BACKGROUND_FILENAME "/home/guillaume/reader/b.png"
-//#define ARCHIVE_FILENAME "/storage/emulated/0/b.cbr"
-//#define BACKGROUND_FILENAME "/storage/emulated/0/b.png"
+#include <QStandardPaths>
 
 Backend::Backend() {
     m_init = true;
     m_pageIndex = 0;
-    QUrl bkfn(QUrl::fromLocalFile(ARCHIVE_FILENAME));
-    QUrl bgfn("qrc:/res/background.png");
-    QUrl bkdr(QUrl::fromLocalFile(ARCHIVE_DIR));
-    //setBookFilename(bkfn);
+    QUrl bgfn("qrc:///res/background.png");
+    QUrl bkdr;
+    if (QSysInfo::productType() == "android") {
+        QStringList locations(QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation));
+        if (not locations.empty()) {
+            bkdr = QUrl::fromLocalFile(locations[0]);
+        } else {
+            locations = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+            bkdr = QUrl::fromLocalFile(locations[0]);
+        }
+    } else {
+        QStringList locations = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
+        bkdr = QUrl::fromLocalFile(locations[0]);
+    }
     setBookDir(bkdr);
     setBgFilename(bgfn);
 }
@@ -47,7 +54,7 @@ void Backend::setBookDir(QUrl &d) {
 void Backend::setPageIndex(int &i) {
     m_pageIndex = i;
     emit pageIndexChanged();
-};
+}
 
 QUrl Backend::bookFilename() {
     return m_bookFilename;
@@ -70,6 +77,6 @@ QString Backend::getProductName() {
 }
 
 int Backend::getBookSize(QUrl bookFilename) {
-    Book b = Book(bookFilename);
-    return b.getSize();
+    Parser b(bookFilename, false);
+    return b.size();
 }

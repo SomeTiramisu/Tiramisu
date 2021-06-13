@@ -1,32 +1,36 @@
-#include <QApplication>
+#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
-#include "pageimageprovider.h"
+#include <QQuickStyle>
 #include "asyncpageimageprovider.h"
+//#include "asyncsimpleimageprovider.h"
 #include "backend.h"
-Q_DECLARE_METATYPE(Page)
+Q_DECLARE_METATYPE(PageRequest)
 
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
-    QCoreApplication::setOrganizationName("custro");
-    QCoreApplication::setOrganizationDomain("org.custro");
-    QCoreApplication::setApplicationName("reader");
+    QGuiApplication app(argc, argv);
+    QGuiApplication::setOrganizationName("custro");
+    QGuiApplication::setOrganizationDomain("org.custro");
+    QGuiApplication::setApplicationName("Tiramisu");
+    QQuickStyle::setStyle("Material");
 
-    qRegisterMetaType<Page>();
+    qRegisterMetaType<PageRequest>();
     QQmlApplicationEngine engine;
 
-    Backend *backend = new Backend();
-    //PageImageProvider *imp = new PageImageProvider(backend);
-    AsyncPageImageProvider *aimp = new AsyncPageImageProvider();
+    Backend* backend = new Backend();
 
-    engine.addImageProvider("pages", aimp);
-    engine.rootContext()->setContextProperty("backend", backend);
+    engine.addImportPath("qrc:///ui/");
+    engine.addImageProvider("pages", new AsyncPageImageProvider());
+    //engine.addImageProvider("simplePages", new AsyncSimpleImageProvider());
+    engine.rootContext()->setContextProperty("backend", backend); //do not take ownership
+    engine.load("qrc:///ui/ui.qml");
 
-    engine.load(":/res/ui.qml");
-    return app.exec();
-};
+    int r = app.exec();
+    backend->deleteLater();
+    return r;
+}
 
 
 /* BUILD OPTIONS

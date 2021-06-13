@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>background.png</file>
+    </qresource>
+    <qresource prefix="/ui">
+        <file>ui.qml</file>
+        <file>components/qmldir</file>
+        <file>components/ReaderComponent.qml</file>
+        <file>components/NavigationDrawerComponent.qml</file>
+        <file>components/MiniViewComponent.qml</file>
+    </qresource>
+</RCC>

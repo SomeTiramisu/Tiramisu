@@ -1,8 +1,10 @@
-QT       += core gui qml quick
+QT       += core gui qml quick quickcontrols2
+
+TARGET = Tiramisu
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17 qtquickcompiler
 
 android {
 LIBS += -L/home/guillaume/reader/cpp/reader/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lpoppler-cpp
@@ -22,6 +24,7 @@ DEFINES += \
     BACKGROUND_FILENAME=\\\"/home/guillaume/reader/b.png\\\"
 }
 
+#QML_IMPORT_PATH += src/ui/
 
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -29,26 +32,38 @@ DEFINES += \
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    asyncpageimageprovider.cpp \
-    backend.cpp \
-    book.cpp \
-    imageproc.cpp \
-    main.cpp \
-    pagecontroller.cpp \
-    pageimageprovider.cpp \
-    pageworker.cpp \
-    strnatcmp/strnatcmp.c
+    src/asyncpageimageprovider.cpp \
+    #src/asyncsimpleimageprovider.cpp \
+    src/backend.cpp \
+    src/classicimagerunnable.cpp \
+    src/pagescheduler.cpp \
+    src/parsers/libarchiveparser.cpp \
+    #src/parsers/popplerparser.cpp \
+    src/parsers/parseutils.cpp \
+    src/parsers/unarrparser.cpp \
+    src/simpleimagerunnable.cpp \
+    src/utils/imageproc.cpp \
+    src/main.cpp \
+    src/parsers/parser.cpp \
+    src/strnatcmp/strnatcmp.c \
+    src/utils/utils.cpp
 
 HEADERS += \
-    asyncpageimageprovider.h \
-    backend.h \
-    book.h \
-    imageproc.h \
-    pagecontroller.h \
-    pageimageprovider.h \
-    pageworker.h \
-    helper.h \
-    strnatcmp/strnatcmp.h
+    src/asyncpageimageprovider.h \
+    #src/asyncsimpleimageprovider.h \
+    src/backend.h \
+    src/classicimagerunnable.h \
+    src/pagescheduler.h \
+    src/parsers/dummyparser.h \
+    src/parsers/libarchiveparser.h \
+    src/parsers/parseutils.h \
+    #src/parsers/popplerparser.h \
+    src/parsers/unarrparser.h \
+    src/simpleimagerunnable.h \
+    src/utils/imageproc.h \
+    src/parsers/parser.h \
+    src/strnatcmp/strnatcmp.h \
+    src/utils/utils.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -58,6 +73,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 ANDROID_ABIS = arm64-v8a
 
 DISTFILES += \
+    TODO \
     android/AndroidManifest.xml \
     android/build.gradle \
     android/gradle/wrapper/gradle-wrapper.jar \
@@ -65,10 +81,13 @@ DISTFILES += \
     android/gradlew \
     android/gradlew.bat \
     android/res/values/libs.xml \
-    ui.qml
+    src/ui/ui.qml \
+    src/ui/components/ReaderComponent.qml \
+    src/ui/components/NavigationDrawerComponent.qml \
+    src/ui/components/MiniViewComponent.qml
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
 
 RESOURCES += \
-    res.qrc
+    src/ui/res.qrc
 

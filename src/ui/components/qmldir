@@ -1,0 +1,4 @@
+module components
+NavigationDrawer 1.0 NavigationDrawerComponent.qml  
+Reader 1.0 ReaderComponent.qml
+MiniViewComponent 1.0 MiniViewComponent.qml

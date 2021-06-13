@@ -31,8 +31,8 @@ private:
     QUrl m_bookFilename;
     QUrl m_bgFilename;
     QUrl m_bookDir;
-    int m_pageIndex;
-    bool m_init;
+    int m_pageIndex{0};
+    bool m_init{true};
 
 
 signals:
