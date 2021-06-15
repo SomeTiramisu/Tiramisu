@@ -1,22 +1,26 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <QUrl>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include <filesystem>
 #include <QImage>
 #include <opencv2/core.hpp>
 
+
+using Path = std::filesystem::path;
+using ByteVect = std::vector<char>;
+
 class PageRequest {
 public:
-    PageRequest(int width, int height, int index, QUrl filename);
-    PageRequest() {};
+    PageRequest() = default;
+    PageRequest(int width, int height, int index, Path filename);
     PageRequest addIndex(int i) const;
-    ~PageRequest();
+    ~PageRequest() = default;
     int width() const {return m_width;};
     int height() const {return m_height;};
     int index() const {return m_index;};
-    QUrl filename() const {return m_filename;};
+    Path filename() const {return m_filename;};
+    bool valid() const {return m_valid;};
+    void setValid(bool valid);
     bool isLike(const PageRequest& a) const;
     bool isInRange(const PageRequest& a, int d) const;
     bool operator==(const PageRequest& a) const;
@@ -25,20 +29,17 @@ private:
     int m_width{-1};
     int m_height{-1};
     int m_index{-1};
-    QUrl m_filename;
+    Path m_filename;
+    bool m_valid{false};
 };
 
-
-class Utils {
-public:
-    static void cleanupPageImage(void* info) { //info is pointing to image data
-        uchar* data = reinterpret_cast<uchar*>(info);
-        delete[] data;
-        //qWarning("data deleted");
-    }
+struct PagePair {
+    cv::Mat img;
+    PageRequest req;
 };
-
-Q_DECLARE_METATYPE(PageRequest);
-Q_DECLARE_METATYPE(cv::Rect);
+struct PngPair {
+    ByteVect png;
+    cv::Rect roi;
+};
 
 #endif // UTILS_H

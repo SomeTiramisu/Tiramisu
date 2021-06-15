@@ -4,7 +4,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <memory>
 
-UnarrParser::UnarrParser(const std::filesystem::path& fn)
+UnarrParser::UnarrParser(const Path& fn)
     : m_filename(fn)
 {
     if (isSupported(fn)) {
@@ -32,7 +32,7 @@ UnarrParser::UnarrParser(const std::filesystem::path& fn)
     }
 }
 
-UnarrParser::UnarrParser(std::vector<char>& ramArchive)
+UnarrParser::UnarrParser(ByteVect& ramArchive)
     : m_isRam(true),
       m_ramArchive(ramArchive)
 {
@@ -61,7 +61,7 @@ UnarrParser::UnarrParser(std::vector<char>& ramArchive)
     }
 }
 
-std::vector<char> UnarrParser::at(int index) {
+ByteVect UnarrParser::at(int index) const {
     int n = m_headers[index].index;
     ar_stream *s{nullptr};
     if (m_isRam) {
@@ -78,7 +78,7 @@ std::vector<char> UnarrParser::at(int index) {
     ar_entry_uncompress(a, buf.get(), length);
     ar_close_archive(a);
     ar_close(s);
-    std::vector<char> array;
+    ByteVect array;
     array.assign(buf.get(), buf.get()+length);
     //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
     return array;
@@ -88,7 +88,7 @@ int UnarrParser::size() const {
     return m_size;
 }
 
-bool UnarrParser::isSupported(const std::filesystem::path& fn) {
+bool UnarrParser::isSupported(const Path& fn) {
     if (fn.empty()) {
         return false;
     }
@@ -107,7 +107,7 @@ bool UnarrParser::isSupported(const std::filesystem::path& fn) {
 
 }
 
-bool UnarrParser::isSupported(const std::vector<char>& ramArchive) {
+bool UnarrParser::isSupported(const ByteVect& ramArchive) {
     if (ramArchive.empty()) {
         return false;
     }

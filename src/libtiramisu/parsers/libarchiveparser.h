@@ -11,20 +11,20 @@ extern "C" {
 class LibarchiveParser: public ParserBase {
 
 public:
-    LibarchiveParser(const std::filesystem::path& fn);
-    LibarchiveParser(std::vector<char>& ramArchive);
+    LibarchiveParser(const Path& fn);
+    LibarchiveParser(ByteVect& ramArchive);
     ~LibarchiveParser() override {};
-    std::vector<char> at(int index) override;
+    ByteVect at(int index) const override;
     int size() const override;
-    static bool isSupported(const std::filesystem::path& fn);
-    static bool isSupported(const std::vector<char>&);
+    static bool isSupported(const Path& fn);
+    static bool isSupported(const ByteVect&);
 
 private:
     std::vector<header> m_headers;
     int m_size{0};
-    std::filesystem::path m_filename;
+    Path m_filename;
     bool m_isRam{false};
-    std::vector<char> m_ramArchive;
+    ByteVect m_ramArchive;
 };
 
 #endif // LIBARCHIVEPARSER_H

@@ -44,4 +44,6 @@ public slots:
     void resizeTimeout();
 };
 
+QImage toQImage(const cv::Mat& src);
+
 #endif // PAGEITEM_H

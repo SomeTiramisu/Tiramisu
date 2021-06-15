@@ -1,28 +1,24 @@
 #ifndef TIRAMISU_H
 #define TIRAMISU_H
 
-#include <QObject>
-#include <QUrl>
 #include "utils/utils.h"
 #include "pagepreloader.h"
 #include "pagescheduler.h"
 
-class Tiramisu: public QObject
+class Tiramisu
 {
-    Q_OBJECT
 public:
-    Tiramisu(QUrl filename = QUrl());
-    ~Tiramisu();
-    QImage get(PageRequest req);
+    Tiramisu();
+    cv::Mat get(PageRequest req);
     int bookSize() const {return m_bookSize;}
     int preloaderProgress() const { return m_preloader->progress();}
 
 private:
-    void setFilename(const QUrl& filename);
-    QUrl m_filename;
+    void setFilename(const Path& filename);
+    Path m_filename;
     int m_bookSize{0};
-    PageScheduler* m_scheduler{nullptr};
-    PagePreloader* m_preloader{nullptr};
+    std::unique_ptr<PageScheduler> m_scheduler;
+    std::unique_ptr<PagePreloader> m_preloader;
     PageRequest m_req;
 };
 

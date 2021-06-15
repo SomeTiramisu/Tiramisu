@@ -15,14 +15,6 @@ void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
     }
 }
 
-QImage ImageProc::toQImage(const Mat& src) {
-    if (src.empty()) {
-        return QImage();
-    }
-    QImage tmp(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
-    return tmp.copy();
-}
-
 cv::Mat ImageProc::fromVect(const std::vector<char>& src) {
     if (src.empty()) {
         return  cv::Mat();
@@ -32,9 +24,9 @@ cv::Mat ImageProc::fromVect(const std::vector<char>& src) {
     return img;
 }
 
-QByteArray ImageProc::toPng(const Mat &src) {
+ByteVect ImageProc::toPng(const Mat &src) {
     if (src.empty()) {
-        return QByteArray();
+        return ByteVect();
     }
     cv::Mat tmp;
     cvtColor(src, tmp, COLOR_RGBA2BGRA);
@@ -44,7 +36,9 @@ QByteArray ImageProc::toPng(const Mat &src) {
     params.push_back(1); //may be 2. 1 is too less
     cv::imencode(".png", tmp, array, params);
     const char* buf = reinterpret_cast<const char*>(array.data());
-    return QByteArray(buf, array.size());
+    ByteVect png;
+    png.assign(buf, buf+array.size());
+    return png;
 }
 
 void ImageProc::scale3(const Mat& src, Mat& dst, int view_width, int view_height) {

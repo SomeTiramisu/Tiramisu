@@ -8,7 +8,7 @@ class DummyParser: public ParserBase {
 public:
     DummyParser() {};
     ~DummyParser() override {};
-    std::vector<char> at(int index) override {
+    std::vector<char> at(int index) const override {
         Q_UNUSED(index)
         return std::vector<char>();
     }

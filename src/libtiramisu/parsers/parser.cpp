@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iterator>
 
-Parser::Parser(std::filesystem::path& filename) {
+Parser::Parser(Path& filename) {
     if (not filename.empty()) {
         ParserLib bookLib = getBookLib(filename);
         m_parser = std::make_unique<DummyParser>();
@@ -15,7 +15,7 @@ Parser::Parser(std::filesystem::path& filename) {
     }
 }
 
-Parser::Parser(std::vector<char>& ramArchive) {
+Parser::Parser(ByteVect& ramArchive) {
     ParserLib bookLib = getBookLib(ramArchive);
     m_parser = std::make_unique<DummyParser>();
     if (bookLib == ParserLib::Libarchive) {
@@ -26,7 +26,7 @@ Parser::Parser(std::vector<char>& ramArchive) {
     }
 }
 
-ParserLib Parser::getBookLib(const std::filesystem::path& fn) const {
+ParserLib Parser::getBookLib(const Path& fn) const {
     if (LibarchiveParser::isSupported(fn)) {
         return ParserLib::Libarchive;
     }
@@ -36,7 +36,7 @@ ParserLib Parser::getBookLib(const std::filesystem::path& fn) const {
     return ParserLib::Dummy;
 }
 
-ParserLib Parser::getBookLib(const std::vector<char>& ramArchive) const {
+ParserLib Parser::getBookLib(const ByteVect& ramArchive) const {
     if (LibarchiveParser::isSupported(ramArchive)) {
         return ParserLib::Libarchive;
     }
@@ -46,7 +46,7 @@ ParserLib Parser::getBookLib(const std::vector<char>& ramArchive) const {
     return ParserLib::Dummy;
 }
 
-std::vector<char> Parser::at(int index) {
+ByteVect Parser::at(int index) const {
     return m_parser->at(index);
 }
 

@@ -1,20 +1,20 @@
 #include "utils.h"
 
-PageRequest::PageRequest(int width, int height, int index, QUrl filename)
+PageRequest::PageRequest(int width, int height, int index, Path filename)
     : m_width(width),
       m_height(height),
       m_index(index),
-      m_filename(filename)
+      m_filename(filename),
+      m_valid(true)
 {
-    static const int typeId = qRegisterMetaType<PageRequest>();
-    Q_UNUSED(typeId)
 }
 
 PageRequest PageRequest::addIndex(int i) const {
     return PageRequest(m_width, m_height, m_index+i, m_filename);
 }
 
-PageRequest::~PageRequest() {
+void PageRequest::setValid(bool valid) {
+    m_valid = valid;
 }
 
 bool PageRequest::isLike(const PageRequest& a) const {

@@ -1,7 +1,6 @@
 #ifndef PARSEUTILS_H
 #define PARSEUTILS_H
 
-#include <filesystem>
 #include "../utils/utils.h"
 
 extern "C" {
@@ -25,7 +24,7 @@ struct header {
 class ParserBase {
 public:
     virtual ~ParserBase() = 0;
-    virtual std::vector<char> at(int index) = 0;
+    virtual ByteVect at(int index) const = 0;
     virtual int size() const = 0;
 };
 

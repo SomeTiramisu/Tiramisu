@@ -11,14 +11,14 @@ class Parser {
 
 public:
     Parser() = default;
-    Parser(std::filesystem::path& filename);
-    Parser(std::vector<char>&);
-    std::vector<char> at(int index);
+    Parser(Path& filename);
+    Parser(ByteVect&);
+    ByteVect at(int index) const;
     int size() const;
 
 private:
-    ParserLib getBookLib(const std::filesystem::path& fn) const;
-    ParserLib getBookLib(const std::vector<char>& ramArchive) const;
+    ParserLib getBookLib(const Path& fn) const;
+    ParserLib getBookLib(const ByteVect& ramArchive) const;
     std::unique_ptr<ParserBase> m_parser;
 };
 

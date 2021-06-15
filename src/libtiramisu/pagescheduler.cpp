@@ -1,38 +1,39 @@
 #include "pagescheduler.h"
-#include "runnables/cropscalerunnable.h"
+
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
-PageScheduler::PageScheduler(PagePreloader* preloader, QObject *parent)
-    : QObject(parent),
-      m_preloader(preloader),
+PageScheduler::PageScheduler(PagePreloader* preloader)
+    : m_preloader(preloader),
       m_imagePreload(20)
-{}
+{
+    m_pages.resize(m_preloader->size());
+    qWarning("scheduler created");
+}
 
 PageScheduler::~PageScheduler() {
-    m_pool.clear();
-    m_pool.waitForDone();
     qWarning("scheduler deleted");
 }
 
-QImage PageScheduler::getAsyncPage(PageRequest req) {
+cv::Mat PageScheduler::getPage(PageRequest req) {
     int index = req.index();
     int book_size = m_preloader->size();
     if (index<0 || index >= book_size) {
-        return QImage();
+        return cv::Mat();
     }
-    if (m_pages.value(req).matchStatus(RequestStatus::Recieved)) {
+    if (m_pages.at(index).req.valid() and not m_pages.at(index).img.empty()) {
         qWarning("Controller: already reviced %i", req.index());
-    } else if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
+        return m_pages.at(index).img;
+    } else if (m_pages.at(index).req.valid()) {
         qWarning("Controller: already requested, rerun local %i", req.index());
-        runLocalPage(req);
+        runPage(m_preloader, req, &m_pages);
     } else {
         qWarning("Controller: running locally %i", req.index());
-        runLocalPage(req);
+        runPage(m_preloader, req, &m_pages);
     }
     preloadPages(req);
     clearPages(req);
-    return m_pages.value(req).img;;
+    return m_pages.at(index).img;
 }
 
 void PageScheduler::preloadPages(PageRequest req) {
@@ -41,47 +42,34 @@ void PageScheduler::preloadPages(PageRequest req) {
     for (int i=1; i<m_imagePreload; i++) {
         PageRequest preq = req.addIndex(i);
         PageRequest mreq = req.addIndex(-i);
-        if (index+i<book_size && m_pages.value(preq).matchStatus(RequestStatus::Undefined)) {
+        if (index+i<book_size and not m_pages.at(preq.index()).req.valid()) {
             //qWarning("%i", preq.index());
-            runPage(preq, RequetPriority::Req);
+            runPage(m_preloader, preq, &m_pages);
             //runLocalPage(preq);
         }
-        if (index-i>=0 && m_pages.value(mreq).matchStatus(RequestStatus::Undefined)) {
+        if (index-i>=0 and not m_pages.at(mreq.index()).req.valid()) {
             //qWarning("%i", mreq.index());
-            runPage(mreq, RequetPriority::Req);
+            runPage(m_preloader, mreq, &m_pages);
             //runLocalPage(mreq);
         }
     }
 }
 
 void PageScheduler::clearPages(PageRequest req) {
-    QList<PageRequest> k = m_pages.keys();
-    for (QList<PageRequest>::iterator it=k.begin(); it !=k.end(); ++it) {
-        if(not it->isLike(req) || not it->isInRange(req, m_imagePreload)) {
-            m_pages.remove(*it);
+    for (int i = 0; i<m_pages.size(); i++) {
+        PagePair& p = m_pages.at(i);
+        if(not p.req.isLike(req) || not p.req.isInRange(req, m_imagePreload)) {
+            m_pages.at(i) = PagePair();
         }
     }
 }
 
-void PageScheduler::runPage(PageRequest req, RequetPriority priority) {
-    m_pages.insert(req, PagePair{RequestStatus::Requested, QImage()});
-    CropScaleRunnable *runnable = new CropScaleRunnable(m_preloader, req);
-    connect(runnable, &CropScaleRunnable::imageReady, this, &PageScheduler::handleImage);
-    m_pool.start(runnable, priority);
-}
-
-QImage PageScheduler::runLocalPage(PageRequest req) {
-    CropScaleRunnable runnable = CropScaleRunnable(m_preloader, req);
-    QImage img = runnable.runLocal();
-    qWarning("LOCAL(%i): %i %i", req.index(), img.width(), img.height() );
-    m_pages.insert(req, PagePair{RequestStatus::Recieved, img});
-    return img;
-}
-
-void PageScheduler::handleImage(PageRequest req, QImage img) {
-    //pendingReqs.isEmpty() ? qWarning("Controller: recieved!!! %i %i %i pending: None", req.index(), req.width(), req.height()): qWarning("Controller: recieved!!! %i %i %i pending: %i %i %i", req.index(), req.width(), req.height(), pendingReqs.head().index(), pendingReqs.head().width(), pendingReqs.head().height());
-    qWarning("Handled Sheduler");
-    if (m_pages.value(req).matchStatus(RequestStatus::Requested)) {
-        m_pages.insert(req, PagePair{RequestStatus::Recieved, img});
+void PageScheduler::runPage(PagePreloader* preloader, PageRequest req, std::vector<PagePair>* pages) {
+    PngPair pair = preloader->at(req.index());
+    cv::Mat img = ImageProc::fromVect(pair.png);
+    if (not img.empty()) {
+        ImageProc::cropScaleProcess(img, img, pair.roi, req.width(), req.height());
     }
+    qWarning("CropScaleRunnable: runningLocal: %i, (%i, %i) orig: (%i %i)", req.index(), req.width(), req.height(), img.cols, img.rows);
+    pages->at(req.index()) = PagePair{img, req};
 }

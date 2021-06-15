@@ -3,7 +3,7 @@
 #include <QtCore>
 #include <opencv2/imgcodecs.hpp>
 
-LibarchiveParser::LibarchiveParser(const std::filesystem::path& fn)
+LibarchiveParser::LibarchiveParser(const Path& fn)
     : m_filename(fn)
 {
     if (isSupported(fn)) {
@@ -32,7 +32,7 @@ LibarchiveParser::LibarchiveParser(const std::filesystem::path& fn)
     }
 }
 
-LibarchiveParser::LibarchiveParser(std::vector<char>& ramArchive)
+LibarchiveParser::LibarchiveParser(ByteVect& ramArchive)
     : m_isRam(true),
       m_ramArchive(ramArchive)
 {
@@ -62,7 +62,7 @@ LibarchiveParser::LibarchiveParser(std::vector<char>& ramArchive)
     }
 }
 
-std::vector<char> LibarchiveParser::at(int index) {
+ByteVect LibarchiveParser::at(int index) const {
     int n = m_headers[index].index;
     archive* a = archive_read_new();
     archive_read_support_filter_all(a);
@@ -80,7 +80,7 @@ std::vector<char> LibarchiveParser::at(int index) {
     std::unique_ptr<char[]> buf = std::make_unique<char[]>(length);
     archive_read_data(a, buf.get(), length);
     archive_read_free(a);
-    std::vector<char> array;
+    ByteVect array;
     array.assign(buf.get(), buf.get()+length);
     //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
     return array;
@@ -90,7 +90,7 @@ int LibarchiveParser::size() const {
     return m_size;
 }
 
-bool LibarchiveParser::isSupported(const std::filesystem::path& fn) {
+bool LibarchiveParser::isSupported(const Path& fn) {
     if (fn.empty()) {
         return false;
     }
@@ -106,7 +106,7 @@ bool LibarchiveParser::isSupported(const std::filesystem::path& fn) {
 
 }
 
-bool LibarchiveParser::isSupported(const std::vector<char>& ramArchive) {
+bool LibarchiveParser::isSupported(const ByteVect& ramArchive) {
     if (ramArchive.empty()) {
         return false;
     }

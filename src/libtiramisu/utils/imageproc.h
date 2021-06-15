@@ -2,17 +2,16 @@
 #define IMAGEPROC_H
 
 #include <opencv2/core.hpp>
-#include <QPixmap>
-#include <QImage>
+#include "utils.h"
+
 
 using namespace cv;
 
 class ImageProc
 {
 public:
-    static QImage toQImage(const Mat& src);
-    static cv::Mat fromVect(const std::vector<char>& src); //RGBA colors
-    static QByteArray toPng(const Mat& src); //assuming RGBA colors
+    static cv::Mat fromVect(const ByteVect& src); //RGBA colors
+    static ByteVect toPng(const Mat& src); //assuming RGBA colors
     static void createMask(const Mat& src, Mat& dst, bool inv=false);
     static void scale3(const Mat& src, Mat& dst, int view_width, int view_height);
     static Rect cropDetect(const Mat& src);

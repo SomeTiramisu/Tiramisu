@@ -1,33 +1,21 @@
 #include "tiramisu.h"
 
-Tiramisu::Tiramisu(QUrl filename)
-    : QObject(nullptr)
-{
-    qRegisterMetaType<cv::Rect>();
-
-    m_filename = filename;
-    m_preloader = new PagePreloader();
-    m_scheduler = new PageScheduler(m_preloader);
+Tiramisu::Tiramisu() {
+    m_preloader = std::make_unique<PagePreloader>();
+    m_scheduler = std::make_unique<PageScheduler>(m_preloader.get());
 }
 
-Tiramisu::~Tiramisu() {
-    m_scheduler->deleteLater();
-    m_preloader->deleteLater();
-}
-
-QImage Tiramisu::get(PageRequest req) {
+cv::Mat Tiramisu::get(PageRequest req) {
     if(req.filename() != m_filename) {
         setFilename(req.filename());
     }
-    return m_scheduler->getAsyncPage(req);
+    return m_scheduler->getPage(req);
 }
 
-void Tiramisu::setFilename(const QUrl &filename) {
+void Tiramisu::setFilename(const Path& filename) {
     m_filename = filename;
-    m_scheduler->deleteLater();
-    m_preloader->deleteLater();
-    m_preloader = new PagePreloader(filename);
-    m_scheduler = new PageScheduler(m_preloader);
+    m_preloader = std::make_unique<PagePreloader>(filename);
+    m_scheduler = std::make_unique<PageScheduler>(m_preloader.get());
     m_bookSize = m_preloader->size();
 }
 

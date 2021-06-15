@@ -9,8 +9,6 @@ set(tiramisu_SRCS
     utils/utils.cpp
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
-    runnables/cropdetectrunnable.cpp
-    runnables/cropscalerunnable.cpp
     utils/crop.cpp
 )
 
