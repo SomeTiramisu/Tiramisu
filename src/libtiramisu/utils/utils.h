@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include <filesystem>
-#include <QImage>
 #include <opencv2/core.hpp>
 
 

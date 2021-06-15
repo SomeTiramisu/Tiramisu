@@ -8,11 +8,11 @@ PageScheduler::PageScheduler(PagePreloader* preloader)
       m_imagePreload(20)
 {
     m_pages.resize(m_preloader->size());
-    qWarning("scheduler created");
+    //qWarning("scheduler created");
 }
 
 PageScheduler::~PageScheduler() {
-    qWarning("scheduler deleted");
+    //qWarning("scheduler deleted");
 }
 
 cv::Mat PageScheduler::getPage(PageRequest req) {
@@ -24,12 +24,12 @@ cv::Mat PageScheduler::getPage(PageRequest req) {
     }
     PagePair& p = m_pages.at(index);
     if (p.req.valid() and p.req.isLike(req) and not p.img.empty()) {
-        qWarning("Controller: already reviced %i", req.index());
+        //qWarning("Controller: already reviced %i", req.index());
     } else if (p.req.valid()) {
-        qWarning("Controller: already requested, rerun local %i", req.index());
+        //qWarning("Controller: already requested, rerun local %i", req.index());
         runPage(m_preloader, req, &m_pages);
     } else {
-        qWarning("Controller: running locally %i", req.index());
+        //qWarning("Controller: running locally %i", req.index());
         runPage(m_preloader, req, &m_pages);
     }
     preloadPages(req);
@@ -59,7 +59,7 @@ void PageScheduler::clearPages(PageRequest req) {
     for (int i = 0; i<m_pages.size(); i++) {
         PagePair& p = m_pages.at(i);
         if(not ((req.index() - m_imagePreload <= i) && (i <= req.index() + m_imagePreload))) {
-            qWarning("DEL: %i", i);
+            //qWarning("DEL: %i", i);
             m_pages.at(i) = PagePair();
         }
     }
@@ -71,6 +71,6 @@ void PageScheduler::runPage(PagePreloader* preloader, PageRequest req, std::vect
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, pair.roi, req.width(), req.height());
     }
-    qWarning("CropScaleRunnable: runningLocal: %i, (%i, %i) orig: (%i %i)", req.index(), req.width(), req.height(), img.cols, img.rows);
+    //qWarning("CropScaleRunnable: runningLocal: %i, (%i, %i) orig: (%i %i)", req.index(), req.width(), req.height(), img.cols, img.rows);
     pages->at(req.index()) = PagePair{img, req};
 }

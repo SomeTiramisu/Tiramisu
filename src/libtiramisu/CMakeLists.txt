@@ -15,10 +15,6 @@ set(tiramisu_SRCS
 add_library(tiramisu SHARED ${tiramisu_SRCS})
 
 target_link_libraries(tiramisu PRIVATE
-    Qt6::Qml
-    Qt6::Gui
-    Qt6::Quick
-    Qt6::Core
     opencv_core
     opencv_imgcodecs
     opencv_imgproc

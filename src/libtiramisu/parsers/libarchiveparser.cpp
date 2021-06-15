@@ -1,6 +1,5 @@
 #include "libarchiveparser.h"
 
-#include <QtCore>
 #include <opencv2/imgcodecs.hpp>
 
 LibarchiveParser::LibarchiveParser(const Path& fn)

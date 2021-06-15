@@ -9,7 +9,7 @@ PagePreloader::PagePreloader() {
 PagePreloader::PagePreloader(const Path& filename)
     : m_filename(filename)
 {
-    qWarning("preloader created");
+    //qWarning("preloader created");
     if (m_filename.empty()) {
         return;
     }
@@ -28,7 +28,7 @@ PagePreloader::PagePreloader(const Path& filename)
 }
 
 PagePreloader::~PagePreloader() {
-    qWarning("preloader deleted");
+    //qWarning("preloader deleted");
 }
 
 PngPair PagePreloader::at(int index) {

@@ -3,6 +3,7 @@
 
 #include <QQuickPaintedItem>
 #include <QTimer>
+#include <QImage>
 #include "../libtiramisu/tiramisu.h"
 
 class PageItem: public QQuickPaintedItem

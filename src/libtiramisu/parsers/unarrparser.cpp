@@ -1,6 +1,5 @@
 #include "unarrparser.h"
 
-#include <QtCore>
 #include <opencv2/imgcodecs.hpp>
 #include <memory>
 
