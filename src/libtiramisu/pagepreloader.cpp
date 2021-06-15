@@ -17,12 +17,14 @@ PagePreloader::PagePreloader(const Path& filename)
     std::ifstream file;
     file.open(m_filename.native(), std::ifstream::binary);
     std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
 
     m_parser =  std::make_unique<Parser>(ramArchive);
     m_pages.resize(m_parser->size());
     for (int i=0; i<m_parser->size(); i++) {
         runCrop(m_parser.get(), i, &m_pages);
     }
+    m_parser.reset();
 }
 
 PagePreloader::~PagePreloader() {
