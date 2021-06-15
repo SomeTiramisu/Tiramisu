@@ -11,7 +11,7 @@
 #include "parsers/parser.h"
 
 struct PngPair {
-    QByteArray png;
+    std::vector<char> png;
     cv::Rect roi;
 };
 
@@ -19,19 +19,19 @@ class PagePreloader: public QObject
 {
     Q_OBJECT
 public:
-    PagePreloader(QUrl filename = QUrl(), QObject* parent = nullptr);
+    PagePreloader(std::filesystem::path& filename, QObject* parent = nullptr);
     ~PagePreloader();
     PngPair at(int index);
     void runCrop(int index);
     void runLocalCrop(int index);
     int size() const;
-    QUrl filename() const;
+    std::filesystem::path filename() const;
     int progress();
 
 private:
-    Parser *m_parser{nullptr};
+    std::unique_ptr<Parser> m_parser;
     QVector<PngPair> m_pages;
-    QUrl m_filename;
+    std::filesystem::path m_filename;
     QThreadPool m_pool;
     bool isReady{false};
     int m_progress{0};
@@ -40,7 +40,7 @@ signals:
     void progressChanged();
 
 public slots:
-    void handleRoi(int index, QByteArray png, cv::Rect roi);
+    void handleRoi(int index, std::vector<char> png, cv::Rect roi);
 };
 
 #endif // PAGEPRELOADER_H

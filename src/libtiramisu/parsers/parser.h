@@ -1,29 +1,25 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <memory>
 #include "parseutils.h"
 #include "dummyparser.h"
 #include "libarchiveparser.h"
 #include "unarrparser.h"
-#include <QMutex>
 
 class Parser {
 
 public:
-    Parser(QUrl filename = QUrl(), bool isRam = false);
-    ~Parser();
-    QByteArray at(int index);
+    Parser() = default;
+    Parser(std::filesystem::path& filename);
+    Parser(std::vector<char>&);
+    std::vector<char> at(int index);
     int size() const;
-    QUrl filename() const;
 
 private:
-    ParserLib m_bookLib{ParserLib::Dummy};
-    QUrl m_filename;
-    inline static QMutex mutex;
-    ParserLib getBookLib(const QUrl& fn) const;
-    QByteArray m_ramArchive;
-    bool m_isRam{false};
-    ParserBase *m_parser{nullptr};
+    ParserLib getBookLib(const std::filesystem::path& fn) const;
+    ParserLib getBookLib(const std::vector<char>& ramArchive) const;
+    std::unique_ptr<ParserBase> m_parser;
 };
 
 #endif // PARSER_H

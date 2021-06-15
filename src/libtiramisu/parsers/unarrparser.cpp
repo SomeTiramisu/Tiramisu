@@ -2,12 +2,13 @@
 
 #include <QtCore>
 #include <opencv2/imgcodecs.hpp>
+#include <memory>
 
-UnarrParser::UnarrParser(const QUrl& fn)
+UnarrParser::UnarrParser(const std::filesystem::path& fn)
     : m_filename(fn)
 {
     if (isSupported(fn)) {
-        ar_stream *s  = ar_open_file(fn.toLocalFile().toStdString().c_str());
+        ar_stream *s  = ar_open_file(fn.native().c_str());
         ar_archive *a = ar_open_rar_archive(s);;
         int i = 0;
         m_size = 0;
@@ -27,16 +28,16 @@ UnarrParser::UnarrParser(const QUrl& fn)
         ar_close_archive(a);
         ar_close(s);
 
-        std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
+        std::sort(m_headers.begin(), m_headers.end(), &naturalCompare);
     }
 }
 
-UnarrParser::UnarrParser(QByteArray* ramArchive)
+UnarrParser::UnarrParser(std::vector<char>& ramArchive)
     : m_isRam(true),
       m_ramArchive(ramArchive)
 {
-    if (isSupported()) {
-        ar_stream *s = ar_open_memory(m_ramArchive->constData(), m_ramArchive->length());
+    if (isSupported(m_ramArchive)) {
+        ar_stream *s = ar_open_memory(m_ramArchive.data(), m_ramArchive.size());
         ar_archive *a = ar_open_rar_archive(s);
         int i = 0;
         m_size = 0;
@@ -56,30 +57,30 @@ UnarrParser::UnarrParser(QByteArray* ramArchive)
         ar_close_archive(a);
         ar_close(s);
 
-        std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
+        std::sort(m_headers.begin(), m_headers.end(), &naturalCompare);
     }
 }
 
-QByteArray UnarrParser::at(int index) {
+std::vector<char> UnarrParser::at(int index) {
     int n = m_headers[index].index;
     ar_stream *s{nullptr};
     if (m_isRam) {
-        s = ar_open_memory(m_ramArchive->constData(), m_ramArchive->length());
+        s = ar_open_memory(m_ramArchive.data(), m_ramArchive.size());
     } else {
-        s  = ar_open_file(m_filename.toLocalFile().toStdString().c_str());
+        s  = ar_open_file(m_filename.native().c_str());
     }
     ar_archive *a = ar_open_rar_archive(s);;
     for (int i=0; i<=n; i++) {
         ar_parse_entry(a);
     }
     size_t length = m_headers[index].length;
-    char* buf = new char[length];
-    ar_entry_uncompress(a, buf, length);
+    std::unique_ptr<char[]> buf = std::make_unique<char[]>(length);
+    ar_entry_uncompress(a, buf.get(), length);
     ar_close_archive(a);
     ar_close(s);
-    QByteArray array(buf, length);
+    std::vector<char> array;
+    array.assign(buf.get(), buf.get()+length);
     //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
-    delete[] buf;
     return array;
 }
 
@@ -87,11 +88,11 @@ int UnarrParser::size() const {
     return m_size;
 }
 
-bool UnarrParser::isSupported(const QUrl& fn) {
-    if (fn.isEmpty()) {
+bool UnarrParser::isSupported(const std::filesystem::path& fn) {
+    if (fn.empty()) {
         return false;
     }
-    ar_stream *s = ar_open_file(fn.toLocalFile().toStdString().c_str());
+    ar_stream *s = ar_open_file(fn.native().c_str());
     if (!s) {
         return false;
     }
@@ -106,21 +107,20 @@ bool UnarrParser::isSupported(const QUrl& fn) {
 
 }
 
-bool UnarrParser::isSupported() const {
-    if (m_isRam) {
-        ar_stream *s = ar_open_memory(m_ramArchive->constData(), m_ramArchive->length());
-        if (!s) {
-            return false;
-        }
-        ar_archive *a = ar_open_rar_archive(s);
-        if (!a) {
-            ar_close(s);
-            return false;
-        }
-        ar_close_archive(a);
-        ar_close(s);
-        return true;
-    } else {
-        return isSupported(m_filename);
+bool UnarrParser::isSupported(const std::vector<char>& ramArchive) {
+    if (ramArchive.empty()) {
+        return false;
     }
+    ar_stream *s = ar_open_memory(ramArchive.data(), ramArchive.size());
+    if (!s) {
+        return false;
+    }
+    ar_archive *a = ar_open_rar_archive(s);
+    if (!a) {
+        ar_close(s);
+        return false;
+    }
+    ar_close_archive(a);
+    ar_close(s);
+    return true;
 }

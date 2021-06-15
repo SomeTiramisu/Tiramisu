@@ -19,7 +19,7 @@ private:
     Parser* m_parser;
 
 signals:
-    void roiReady(int index, QByteArray png, cv::Rect roi);
+    void roiReady(int index, std::vector<char> png, cv::Rect roi);
 };
 
 #endif // CROPDETECTRUNNABLE_H

@@ -4,10 +4,6 @@
 #include "utils.h"
 #include "crop.h"
 
-extern "C" {
-#include "turbojpeg.h"
-}
-
 using namespace cv;
 
 void ImageProc::createMask(const Mat& src, Mat& dst, bool inv) {
@@ -27,14 +23,11 @@ QImage ImageProc::toQImage(const Mat& src) {
     return tmp.copy();
 }
 
-cv::Mat ImageProc::fromByteArray(const QByteArray& src) {
-    if (src.isEmpty()) {
+cv::Mat ImageProc::fromVect(const std::vector<char>& src) {
+    if (src.empty()) {
         return  cv::Mat();
     }
-    uchar* buf = new uchar[src.length()];
-    std::memcpy(buf, src.constData(), src.length());
-    cv::Mat img = imdecode(cv::Mat(1, src.length() , CV_8UC1, buf), cv::IMREAD_COLOR);
-    delete[] buf;
+    cv::Mat img = imdecode(cv::Mat(src, CV_8U), cv::IMREAD_COLOR);
     cvtColor(img, img, COLOR_BGR2RGBA);
     return img;
 }

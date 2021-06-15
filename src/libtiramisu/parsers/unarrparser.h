@@ -10,20 +10,20 @@ extern "C" {
 class UnarrParser: public ParserBase {
 
 public:
-    UnarrParser(const QUrl& fn);
-    UnarrParser(QByteArray* ramArchive);
+    UnarrParser(const std::filesystem::path& fn);
+    UnarrParser(std::vector<char>& ramArchive);
     ~UnarrParser() override {};
-    QByteArray at(int index) override;
+    std::vector<char> at(int index) override;
     int size() const override;
-    static bool isSupported(const QUrl& fn);
-    bool isSupported() const override;
+    static bool isSupported(const std::filesystem::path& fn);
+    static bool isSupported(const std::vector<char>&);
 
 private:
     std::vector<header> m_headers;
     int m_size{0};
-    QUrl m_filename;
+    std::filesystem::path m_filename;
     bool m_isRam{false};
-    QByteArray* m_ramArchive;
+    std::vector<char> m_ramArchive;
 };
 
 #endif // UNARRPARSER_H

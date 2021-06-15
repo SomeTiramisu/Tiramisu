@@ -8,8 +8,8 @@ CropDetectRunnable::CropDetectRunnable(Parser* parser, int index)
 {}
 
 void CropDetectRunnable::run() {
-    QByteArray png = m_parser->at(m_index);
-    cv::Mat img = ImageProc::fromByteArray(png);
+    std::vector<char> png = m_parser->at(m_index);
+    cv::Mat img = ImageProc::fromVect(png);
     cv::Rect roi;
     if (not img.empty() and m_index != 0) {
         roi = ImageProc::cropDetect(img);

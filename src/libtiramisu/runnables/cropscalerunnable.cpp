@@ -9,7 +9,7 @@ CropScaleRunnable::CropScaleRunnable(PagePreloader* preloader, const PageRequest
 
 void CropScaleRunnable::run() {
     PngPair pair = m_preloader->at(m_req.index());
-    cv::Mat img = ImageProc::fromByteArray(pair.png);
+    cv::Mat img = ImageProc::fromVect(pair.png);
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, pair.roi, m_req.width(), m_req.height());
     }
@@ -19,7 +19,7 @@ void CropScaleRunnable::run() {
 
 QImage CropScaleRunnable::runLocal() {
     PngPair pair = m_preloader->at(m_req.index());
-    cv::Mat img = ImageProc::fromByteArray(pair.png);
+    cv::Mat img = ImageProc::fromVect(pair.png);
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, pair.roi, m_req.width(), m_req.height());
     }

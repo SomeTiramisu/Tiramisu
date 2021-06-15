@@ -1,43 +1,32 @@
 #include "parser.h"
-#include <QtCore>
+#include <fstream>
+#include <iterator>
 
-Parser::Parser(QUrl filename, bool isRam)
-    : m_bookLib(getBookLib(filename)),
-      m_filename(filename),
-      m_isRam(isRam)
-{
-    if (m_isRam && not m_filename.isEmpty()) {
-        QFile file(m_filename.toLocalFile());
-        file.open(QIODevice::ReadOnly);
-        m_ramArchive = file.readAll();
-        m_parser = new DummyParser();
-        if (m_bookLib== ParserLib::Libarchive) {
-            delete m_parser;
-            m_parser = new LibarchiveParser(&m_ramArchive);
+Parser::Parser(std::filesystem::path& filename) {
+    if (not filename.empty()) {
+        ParserLib bookLib = getBookLib(filename);
+        m_parser = std::make_unique<DummyParser>();
+        if (bookLib == ParserLib::Libarchive) {
+            m_parser = std::make_unique<LibarchiveParser>(filename);
         }
-        if (m_bookLib== ParserLib::Unarr) {
-            delete m_parser;
-            m_parser = new UnarrParser(&m_ramArchive);
-        }
-    } else {
-        m_isRam = false; //case of isEmpty is true
-        m_parser = new DummyParser();
-        if (m_bookLib== ParserLib::Libarchive) {
-            delete m_parser;
-            m_parser = new LibarchiveParser(m_filename);
-        }
-        if (m_bookLib== ParserLib::Unarr) {
-            delete m_parser;
-            m_parser = new UnarrParser(m_filename);
+        if (bookLib == ParserLib::Unarr) {
+            m_parser = std::make_unique<UnarrParser>(filename);
         }
     }
 }
 
-Parser::~Parser() {
-    delete m_parser;
+Parser::Parser(std::vector<char>& ramArchive) {
+    ParserLib bookLib = getBookLib(ramArchive);
+    m_parser = std::make_unique<DummyParser>();
+    if (bookLib == ParserLib::Libarchive) {
+        m_parser = std::make_unique<LibarchiveParser>(ramArchive);
+    }
+    if (bookLib == ParserLib::Unarr) {
+        m_parser = std::make_unique<UnarrParser>(ramArchive);
+    }
 }
 
-ParserLib Parser::getBookLib(const QUrl& fn) const {
+ParserLib Parser::getBookLib(const std::filesystem::path& fn) const {
     if (LibarchiveParser::isSupported(fn)) {
         return ParserLib::Libarchive;
     }
@@ -47,15 +36,20 @@ ParserLib Parser::getBookLib(const QUrl& fn) const {
     return ParserLib::Dummy;
 }
 
-QByteArray Parser::at(int index) {
-    //QMutexLocker locker(&mutex);
+ParserLib Parser::getBookLib(const std::vector<char>& ramArchive) const {
+    if (LibarchiveParser::isSupported(ramArchive)) {
+        return ParserLib::Libarchive;
+    }
+    if (UnarrParser::isSupported(ramArchive)) {
+        return ParserLib::Unarr;
+    }
+    return ParserLib::Dummy;
+}
+
+std::vector<char> Parser::at(int index) {
     return m_parser->at(index);
 }
 
 int Parser::size() const {
     return m_parser->size();
-}
-
-QUrl Parser::filename() const {
-    return m_filename;
 }
