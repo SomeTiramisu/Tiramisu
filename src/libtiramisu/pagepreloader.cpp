@@ -19,10 +19,16 @@ PagePreloader::PagePreloader(const Path& filename)
     std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
+
+
     m_parser =  std::make_unique<Parser>(ramArchive);
     m_pages.resize(m_parser->size());
+
     for (int i=0; i<m_parser->size(); i++) {
-        runCrop(m_parser.get(), i, &m_pages);
+        m_pages.at(i).run(m_parser.get(), i);
+    }
+    for (int i=0; i<m_parser->size(); i++) {
+        m_pages.at(i).get();
     }
     m_parser.reset();
 }
@@ -32,18 +38,8 @@ PagePreloader::~PagePreloader() {
 }
 
 PngPair PagePreloader::at(int index) {
-    return m_pages.at(index);
-}
-
-void PagePreloader::runCrop(Parser* parser, int index, std::vector<PngPair>* pages) {
-    ByteVect png = parser->at(index);
-    cv::Mat img = ImageProc::fromVect(png);
-    cv::Rect roi;
-    if (not img.empty() and index != 0) {
-        roi = ImageProc::cropDetect(img);
-    }
-    //qWarning("CropDetectRunnable: running: %i", index);
-    pages->at(index) = PngPair{png, roi};
+            qWarning("FFF %i", index);
+    return m_pages.at(index).get();
 }
 
 int PagePreloader::size() const {

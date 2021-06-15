@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <opencv2/core.hpp>
+#include <QtCore>
 
 
 using Path = std::filesystem::path;

@@ -10,11 +10,13 @@ set(tiramisu_SRCS
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
     utils/crop.cpp
+    cropdetectrunner.cpp
 )
 
 add_library(tiramisu SHARED ${tiramisu_SRCS})
 
 target_link_libraries(tiramisu PRIVATE
+    Qt6::Core
     opencv_core
     opencv_imgcodecs
     opencv_imgproc
