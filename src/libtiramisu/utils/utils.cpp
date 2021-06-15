@@ -23,10 +23,6 @@ bool PageRequest::isLike(const PageRequest& a) const {
             && m_filename==a.filename());
 }
 
-bool PageRequest::isInRange(const PageRequest& a, int d) const {
-    return (a.index() - d <= m_index) && (m_index <= a.index() + d); //a voir
-}
-
 bool PageRequest::operator==(const PageRequest& a) const {
     return (m_width==a.width()
             && m_height==a.height()

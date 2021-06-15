@@ -40,7 +40,7 @@ void PagePreloader::runCrop(Parser* parser, int index, std::vector<PngPair>* pag
     if (not img.empty() and index != 0) {
         roi = ImageProc::cropDetect(img);
     }
-    qWarning("CropDetectRunnable: running: %i", index);
+    //qWarning("CropDetectRunnable: running: %i", index);
     pages->at(index) = PngPair{png, roi};
 }
 

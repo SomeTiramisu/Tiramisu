@@ -22,7 +22,6 @@ public:
     bool valid() const {return m_valid;};
     void setValid(bool valid);
     bool isLike(const PageRequest& a) const;
-    bool isInRange(const PageRequest& a, int d) const;
     bool operator==(const PageRequest& a) const;
     bool operator!=(const PageRequest& a) const;
 private:

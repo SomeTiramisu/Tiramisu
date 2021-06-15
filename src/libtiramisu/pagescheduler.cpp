@@ -16,15 +16,16 @@ PageScheduler::~PageScheduler() {
 }
 
 cv::Mat PageScheduler::getPage(PageRequest req) {
+    clearPages(req);
     int index = req.index();
     int book_size = m_preloader->size();
     if (index<0 || index >= book_size) {
         return cv::Mat();
     }
-    if (m_pages.at(index).req.valid() and not m_pages.at(index).img.empty()) {
+    PagePair& p = m_pages.at(index);
+    if (p.req.valid() and p.req.isLike(req) and not p.img.empty()) {
         qWarning("Controller: already reviced %i", req.index());
-        return m_pages.at(index).img;
-    } else if (m_pages.at(index).req.valid()) {
+    } else if (p.req.valid()) {
         qWarning("Controller: already requested, rerun local %i", req.index());
         runPage(m_preloader, req, &m_pages);
     } else {
@@ -32,7 +33,6 @@ cv::Mat PageScheduler::getPage(PageRequest req) {
         runPage(m_preloader, req, &m_pages);
     }
     preloadPages(req);
-    clearPages(req);
     return m_pages.at(index).img;
 }
 
@@ -58,7 +58,8 @@ void PageScheduler::preloadPages(PageRequest req) {
 void PageScheduler::clearPages(PageRequest req) {
     for (int i = 0; i<m_pages.size(); i++) {
         PagePair& p = m_pages.at(i);
-        if(not p.req.isLike(req) || not p.req.isInRange(req, m_imagePreload)) {
+        if(not ((req.index() - m_imagePreload <= i) && (i <= req.index() + m_imagePreload))) {
+            qWarning("DEL: %i", i);
             m_pages.at(i) = PagePair();
         }
     }
