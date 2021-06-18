@@ -26,6 +26,7 @@ LibarchiveParser::LibarchiveParser(const Path& fn)
             archive_read_data_skip(a);
             i++;
         }
+        archive_read_close(a);
         archive_read_free(a);
         std::sort(m_headers.begin(), m_headers.end(), &naturalCompare);
     }
@@ -56,6 +57,7 @@ LibarchiveParser::LibarchiveParser(ByteVect& ramArchive)
             archive_read_data_skip(a);
             i++;
         }
+        archive_read_close(a);
         archive_read_free(a);
         std::sort(m_headers.begin(), m_headers.end(), &naturalCompare);
     }
@@ -78,6 +80,7 @@ ByteVect LibarchiveParser::at(int index) const {
     size_t length = m_headers[index].length;
     std::unique_ptr<char[]> buf = std::make_unique<char[]>(length);
     archive_read_data(a, buf.get(), length);
+    archive_read_close(a);
     archive_read_free(a);
     ByteVect array;
     array.assign(buf.get(), buf.get()+length);
@@ -100,6 +103,7 @@ bool LibarchiveParser::isSupported(const Path& fn) {
     if (r != ARCHIVE_OK) {
         return false;
     }
+    archive_read_close(a);
     archive_read_free(a);
     return true;
 
@@ -116,6 +120,7 @@ bool LibarchiveParser::isSupported(const ByteVect& ramArchive) {
     if (r != ARCHIVE_OK) {
         return false;
     }
+    archive_read_close(a);
     archive_read_free(a);
     return true;
 }
