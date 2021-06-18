@@ -11,6 +11,7 @@ set(tiramisu_SRCS
     strnatcmp/strnatcmp.c
     utils/crop.cpp
     cropdetectrunner.cpp
+    cropscalerunner.cpp
 )
 
 add_library(tiramisu SHARED ${tiramisu_SRCS})

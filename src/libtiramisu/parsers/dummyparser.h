@@ -9,6 +9,7 @@ public:
     DummyParser() {};
     ~DummyParser() override {};
     std::vector<char> at(int index) const override {
+        (void)index;
         return std::vector<char>();
     }
     int size() const override {

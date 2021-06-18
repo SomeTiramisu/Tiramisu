@@ -9,20 +9,19 @@ class CropDetectRunner
 {
 public:
     CropDetectRunner() = default;
-    CropDetectRunner(const CropDetectRunner&) = delete;
-    CropDetectRunner(CropDetectRunner&&) = default;
-    ~CropDetectRunner();
-    void run(Parser* parser, int index);
-    PngPair get() const;
-    void reset();
-    bool valid() const;
+    CropDetectRunner(CropDetectRunner&& other) = default;
+    CropDetectRunner(Parser* parser);
+    void run(int index);
+    PngPair get(int index);
+    void clear();
+    CropDetectRunner& operator=(CropDetectRunner&& other) = default;
 
 private:
-    static void cropDetect(Parser* parser, int index, PngPair* res);
-    bool m_valid{false};
-    //std::mutex m_mut;
-    std::unique_ptr<PngPair> m_res;
-    std::unique_ptr<std::thread> m_th;
+    static PngPair cropDetect(Parser* parser, int index);
+    int m_index{0};
+    Parser* m_parser{nullptr};
+    PngPair m_res;
+    std::future<PngPair> m_future;
 
 };
 

@@ -2,45 +2,32 @@
 
 #include "utils/imageproc.h"
 
-CropDetectRunner::~CropDetectRunner() {
-    get();
-}
+CropDetectRunner::CropDetectRunner(Parser* parser)
+    : m_parser(parser)
+{}
 
-void CropDetectRunner::run(Parser *parser, int index) {
-    reset();
-    m_valid = true;
-    m_th = std::make_unique<std::thread>(&CropDetectRunner::cropDetect, parser, index, m_res.get());
-}
-
-PngPair CropDetectRunner::get() const {
-    if(not m_valid) {
-        throw "Runner not valid";
+void CropDetectRunner::run(int index) {
+    if(m_index != index) {
+        m_index = index;
+        m_future = std::async(&CropDetectRunner::cropDetect, m_parser, m_index);
     }
-    if(m_th) {
-        if(m_th->joinable()) {
-            m_th->join();
-        }
-        //m_th.reset();
+}
+
+PngPair CropDetectRunner::get(int index) {
+    run(index);
+    if(m_future.valid()) {
+        m_res = m_future.get();
     }
-    return *m_res.get();
+    return m_res;
 }
 
-void CropDetectRunner::reset() {
-    if(m_th) {
-        if(m_th->joinable()) {
-            m_th->join();
-        }
-        m_th.reset();
-    }
-    m_res = std::make_unique<PngPair>();
-    m_valid = false;
+void CropDetectRunner::clear() {
+    m_index = 0;
+    m_res = PngPair();
+    m_future = std::future<PngPair>();
 }
 
-bool CropDetectRunner::valid() const {
-    return m_valid;
-}
-
-void CropDetectRunner::cropDetect(Parser *parser, int index, PngPair* res) {
+PngPair CropDetectRunner::cropDetect(Parser *parser, int index) {
     ByteVect png = parser->at(index);
     cv::Mat img = ImageProc::fromVect(png);
     cv::Rect roi;
@@ -48,5 +35,5 @@ void CropDetectRunner::cropDetect(Parser *parser, int index, PngPair* res) {
         roi = ImageProc::cropDetect(img);
     }
     //qWarning("CropDetectRunnable: running: %i", index);
-    *res = PngPair{png, roi};
+    return PngPair{png, roi};
 }

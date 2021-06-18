@@ -2,6 +2,9 @@ set(APP_SRCS
     main.cpp
 )
 
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 qt6_add_resources(APP_SRCS resources.qrc)
 
 qt6_add_executable(tiramisuapp ${APP_SRCS})

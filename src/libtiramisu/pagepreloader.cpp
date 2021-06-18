@@ -3,13 +3,10 @@
 #include <fstream>
 #include "utils/imageproc.h"
 
-PagePreloader::PagePreloader() {
-}
-
 PagePreloader::PagePreloader(const Path& filename)
     : m_filename(filename)
 {
-    //qWarning("preloader created");
+    qWarning("preloader created");
     if (m_filename.empty()) {
         return;
     }
@@ -19,27 +16,18 @@ PagePreloader::PagePreloader(const Path& filename)
     std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 
-
-
     m_parser =  std::make_unique<Parser>(ramArchive);
     m_pages.resize(m_parser->size());
 
     for (int i=0; i<m_parser->size(); i++) {
-        m_pages.at(i).run(m_parser.get(), i);
-    }
-    for (int i=0; i<m_parser->size(); i++) {
-        m_pages.at(i).get();
-    }
-    m_parser.reset();
-}
-
-PagePreloader::~PagePreloader() {
-    //qWarning("preloader deleted");
+        m_pages.at(i) = CropDetectRunner(m_parser.get());
+        m_pages.at(i).run(i);
+    };
 }
 
 PngPair PagePreloader::at(int index) {
-            qWarning("FFF %i", index);
-    return m_pages.at(index).get();
+    qWarning("FFF %i", index);
+    return m_pages.at(index).get(index);
 }
 
 int PagePreloader::size() const {
@@ -50,6 +38,6 @@ Path PagePreloader::filename() const {
     return m_filename;
 }
 
-int PagePreloader::progress() {
+int PagePreloader::progress() const {
     return m_progress;
 }

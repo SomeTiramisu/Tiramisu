@@ -13,9 +13,9 @@ UnarrParser::UnarrParser(const Path& fn)
         m_size = 0;
         while (ar_parse_entry(a)) {
             header h = {
-                .filename = std::string(ar_entry_get_name(a)), //may need a *
-                .index = i,
-                .length = ar_entry_get_size(a)
+                std::string(ar_entry_get_name(a)), //may need a *
+                i,
+                ar_entry_get_size(a)
             };
             if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
                 m_headers.push_back(h);
@@ -42,9 +42,9 @@ UnarrParser::UnarrParser(ByteVect& ramArchive)
         m_size = 0;
         while (ar_parse_entry(a)) {
             header h = {
-                .filename = std::string(ar_entry_get_name(a)), //may need a *
-                .index = i,
-                .length = ar_entry_get_size(a)
+                std::string(ar_entry_get_name(a)), //may need a *
+                i,
+                ar_entry_get_size(a)
             };
             if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
                 m_headers.push_back(h);

@@ -23,8 +23,8 @@ void PageItem::setFilename(const QUrl &filename) {
 
 void PageItem::setIndex(int index) {
     m_index = index;
-    m_req = PageRequest(width(), height(), index, m_filename.toLocalFile().toStdString());
-    qWarning("Hello You %i", index);
+    m_req = PageRequest{index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
+    //qWarning("Hello You %i", index);
     //m_image = QImage("/home/guillaume/reader/000.jpg");
     m_image = toQImage(m_tiramisu.get(m_req));
     qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
@@ -48,7 +48,7 @@ void PageItem::onRotationChanged() {
 }
 
 void PageItem::resizeTimeout() {
-    m_req = PageRequest(width(), height(), m_index, m_filename.toLocalFile().toStdString());
+    m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     m_image = toQImage(m_tiramisu.get(m_req));
     m_tmpImage = QImage();
     this->update();

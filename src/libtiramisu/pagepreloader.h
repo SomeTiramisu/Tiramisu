@@ -10,13 +10,14 @@
 class PagePreloader
 {
 public:
-    PagePreloader();
+    PagePreloader() = default;
+    PagePreloader(PagePreloader&&) = default;
     PagePreloader(const Path& filename);
-    ~PagePreloader();
+    PagePreloader& operator=(PagePreloader&&) = default;
     PngPair at(int index);
     int size() const;
     std::filesystem::path filename() const;
-    int progress();
+    int progress() const;
 
 private:
     std::unique_ptr<Parser> m_parser;

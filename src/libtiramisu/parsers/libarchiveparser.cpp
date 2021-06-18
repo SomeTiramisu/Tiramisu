@@ -15,9 +15,9 @@ LibarchiveParser::LibarchiveParser(const Path& fn)
         archive_entry *entry;
         while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
             header h = {
-                .filename = std::string(archive_entry_pathname(entry)),
-                .index = i,
-                .length = static_cast<size_t>(archive_entry_size(entry))
+                std::string(archive_entry_pathname(entry)),
+                i,
+                static_cast<size_t>(archive_entry_size(entry))
             };
             if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
                 m_headers.push_back(h);
@@ -45,9 +45,9 @@ LibarchiveParser::LibarchiveParser(ByteVect& ramArchive)
         archive_entry *entry;
         while (archive_read_next_header(a, &entry) == ARCHIVE_OK) {
             header h = {
-                .filename = std::string(archive_entry_pathname(entry)),
-                .index = i,
-                .length = static_cast<size_t>(archive_entry_size(entry))
+                std::string(archive_entry_pathname(entry)),
+                i,
+                static_cast<size_t>(archive_entry_size(entry))
             };
             if (h.filename.rfind(".jpg") != std::string::npos || h.filename.rfind(".png") != std::string::npos) {
                 m_headers.push_back(h);

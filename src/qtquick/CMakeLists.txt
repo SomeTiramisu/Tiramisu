@@ -3,6 +3,9 @@ set(qmlplugin_SRCS
     pageitem.cpp
 )
 
+set(CMAKE_AUTOMOC ON)
+
+
 add_library(tiramisuqmlplugin SHARED ${qmlplugin_SRCS})
 
 target_link_libraries(tiramisuqmlplugin PRIVATE

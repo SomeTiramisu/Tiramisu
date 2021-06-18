@@ -1,5 +1,6 @@
 #include "utils.h"
 
+/*
 PageRequest::PageRequest(int width, int height, int index, Path filename)
     : m_width(width),
       m_height(height),
@@ -32,4 +33,4 @@ bool PageRequest::operator==(const PageRequest& a) const {
 
 bool PageRequest::operator!=(const PageRequest& a) const {
     return not operator==(a);
-}
+}*/

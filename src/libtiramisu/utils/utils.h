@@ -4,32 +4,26 @@
 #include <filesystem>
 #include <opencv2/core.hpp>
 #include <QtCore>
+#include <iostream>
 
 
 using Path = std::filesystem::path;
 using ByteVect = std::vector<char>;
 
-class PageRequest {
-public:
-    PageRequest() = default;
-    PageRequest(int width, int height, int index, Path filename);
-    PageRequest addIndex(int i) const;
-    ~PageRequest() = default;
-    int width() const {return m_width;};
-    int height() const {return m_height;};
-    int index() const {return m_index;};
-    Path filename() const {return m_filename;};
-    bool valid() const {return m_valid;};
-    void setValid(bool valid);
-    bool isLike(const PageRequest& a) const;
-    bool operator==(const PageRequest& a) const;
-    bool operator!=(const PageRequest& a) const;
-private:
-    int m_width{-1};
-    int m_height{-1};
-    int m_index{-1};
-    Path m_filename;
-    bool m_valid{false};
+struct PageRequest {
+    int index;
+    int width;
+    int height;
+    Path filename;
+    bool operator==(const PageRequest& other) const {
+        return index==other.index
+                && width==other.width
+                && height==other.height
+                && filename==other.filename;
+    };
+    bool operator!=(const PageRequest& other) const {
+        return !operator==(other);
+    };
 };
 
 struct PagePair {
