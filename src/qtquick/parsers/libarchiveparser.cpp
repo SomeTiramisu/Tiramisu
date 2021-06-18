@@ -27,6 +27,7 @@ LibarchiveParser::LibarchiveParser(const QUrl& fn)
             archive_read_data_skip(a);
             i++;
         }
+        archive_read_close(a);
         archive_read_free(a);
         std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
     }
@@ -57,6 +58,7 @@ LibarchiveParser::LibarchiveParser(QByteArray* ramArchive)
             archive_read_data_skip(a);
             i++;
         }
+        archive_read_close(a);
         archive_read_free(a);
         std::sort(m_headers.begin(), m_headers.end(), ParserUtils::naturalCompare);
     }
@@ -79,6 +81,7 @@ QByteArray LibarchiveParser::at(int index) {
     size_t length = m_headers[index].length;
     char* buf = new char[length]; //TODO: use voud buffer
     archive_read_data(a, buf, length);
+    archive_read_close(a);
     archive_read_free(a);
     QByteArray array(buf, length);
     //cv::Mat img = imdecode(cv::Mat(1, length, CV_8UC1, buf), cv::IMREAD_COLOR);
@@ -101,6 +104,7 @@ bool LibarchiveParser::isSupported(const QUrl& fn) {
     if (r != ARCHIVE_OK) {
         return false;
     }
+    archive_read_close(a);
     archive_read_free(a);
     return  true;
 
@@ -115,6 +119,7 @@ bool LibarchiveParser::isSupported() const {
         if (r != ARCHIVE_OK) {
             return false;
         }
+        archive_read_close(a);
         archive_read_free(a);
         return  true;
     } else {
