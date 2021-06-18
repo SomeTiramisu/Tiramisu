@@ -7,7 +7,7 @@ CropDetectRunner::CropDetectRunner(Parser* parser)
 {}
 
 void CropDetectRunner::run(int index) {
-    if(m_index != index) {
+    if(m_index != index || m_index == 0) {
         m_index = index;
         m_future = std::async(&CropDetectRunner::cropDetect, m_parser, m_index);
     }

@@ -76,7 +76,7 @@ void ImageProc::cropScaleProcess(const Mat &src, Mat &dst, const Rect &roi, int 
     Mat tmp;
     Mat mask;
     Rect froi(roi);
-    if (froi.empty()) { //fix for white images
+    if (froi.empty()) { //fix for white images or crop disabled
         froi = Rect(0,0, src.cols, src.rows);
     }
     scale3(src(froi), tmp, width, height);

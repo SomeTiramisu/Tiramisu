@@ -30,7 +30,7 @@ void CropScaleRunner::clear() {
 PagePair CropScaleRunner::cropScale(PagePreloader* preloader, const PageRequest& req) {
     PngPair p = preloader->at(req.index);
     cv::Mat img = ImageProc::fromVect(p.png);
-    if (not img.empty() and req.index != 0) {
+    if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, p.roi, req.width, req.height);
     }
     //qWarning("CropScaleRunnable: running: %i", index);
