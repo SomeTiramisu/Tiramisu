@@ -30,7 +30,7 @@ uint findBorderLeft(const Mat& src, uint top, uint bottom) {
     uint whitePixels = 0;
     uint blackPixels = 0;
 
-    for (y = top; y < bottom; y+=2) {
+    for (y = top; y < (int)bottom; y+=2) {
         if (isBlackPixel(pixels, width, 0, y)) {
             blackPixels++;
         } else if (isWhitePixel(pixels, width, 0, y)) {
@@ -47,10 +47,10 @@ uint findBorderLeft(const Mat& src, uint top, uint bottom) {
     }
 
     // Scan vertical lines in search of filled lines
-    for (x = 1; x < width; x++) {
+    for (x = 1; x < (int)width; x++) {
         uint filledCount = 0;
 
-        for (y = top; y < bottom; y+=2) {
+        for (y = top; y < (int)bottom; y+=2) {
             if (detectFunc(pixels, width, x, y)) {
                 filledCount++;
             }
@@ -80,7 +80,7 @@ uint findBorderRight(const Mat& src, uint top, uint bottom) {
     uint blackPixels = 0;
 
     uint lastX = width - 1;
-    for (y = top; y < bottom; y+=2) {
+    for (y = top; y < (int)bottom; y+=2) {
         if (isBlackPixel(pixels, width, lastX, y)) {
             blackPixels++;
         } else if (isWhitePixel(pixels, width, lastX, y)) {
@@ -100,7 +100,7 @@ uint findBorderRight(const Mat& src, uint top, uint bottom) {
     for (x = width - 2; x > 0; x--) {
         uint filledCount = 0;
 
-        for (y = top; y < bottom; y+=2) {
+        for (y = top; y < (int)bottom; y+=2) {
             if (detectFunc(pixels, width, x, y)) {
                 filledCount++;
             }
@@ -129,7 +129,7 @@ uint findBorderTop(const Mat& src) {
     uint whitePixels = 0;
     uint blackPixels = 0;
 
-    for (x = 0; x < width; x+=2) {
+    for (x = 0; x < (int)width; x+=2) {
         if (isBlackPixel(pixels, width, x, 0)) {
             blackPixels++;
         } else if (isWhitePixel(pixels, width, x, 0)) {
@@ -146,10 +146,10 @@ uint findBorderTop(const Mat& src) {
     }
 
     // Scan horizontal lines in search of filled lines
-    for (y = 1; y < height; y++) {
+    for (y = 1; y < (int)height; y++) {
         uint filledCount = 0;
 
-        for (x = 0; x < width; x+=2) {
+        for (x = 0; x < (int)width; x+=2) {
             if (detectFunc(pixels, width, x, y)) {
                 filledCount++;
             }
@@ -179,7 +179,7 @@ uint findBorderBottom(const Mat& src) {
     uint blackPixels = 0;
     uint lastY = height - 1;
 
-    for (x = 0; x < width; x+=2) {
+    for (x = 0; x < (int)width; x+=2) {
         if (isBlackPixel(pixels, width, x, lastY)) {
             blackPixels++;
         } else if (isWhitePixel(pixels, width, x, lastY)) {
@@ -199,7 +199,7 @@ uint findBorderBottom(const Mat& src) {
     for (y = height - 2; y > 0; y--) {
         uint filledCount = 0;
 
-        for (x = 0; x < width; x+=2) {
+        for (x = 0; x < (int)width; x+=2) {
             if (detectFunc(pixels, width, x, y)) {
                 filledCount++;
             }

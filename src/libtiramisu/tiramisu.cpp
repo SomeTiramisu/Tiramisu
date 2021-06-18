@@ -1,6 +1,6 @@
 #include "tiramisu.h"
 
-cv::Mat Tiramisu::get(PageRequest req) {
+cv::Mat Tiramisu::get(const PageRequest& req) {
     if(req.filename != m_filename) {
         setFilename(req.filename);
     } else if(req.filename.empty()) {

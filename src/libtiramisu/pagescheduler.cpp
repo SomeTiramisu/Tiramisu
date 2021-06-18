@@ -14,7 +14,7 @@ PageScheduler::PageScheduler(PagePreloader* preloader)
     qWarning("scheduler created");
 }
 
-cv::Mat PageScheduler::getPage(PageRequest req) {
+cv::Mat PageScheduler::getPage(const PageRequest& req) {
     seekPages(req);
     int index = req.index;
     int book_size = m_preloader->size();

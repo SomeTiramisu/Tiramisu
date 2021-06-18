@@ -8,7 +8,7 @@
 class Tiramisu
 {
 public:
-    cv::Mat get(PageRequest req);
+    cv::Mat get(const PageRequest& req);
     int bookSize() const {return m_bookSize;}
     int preloaderProgress() const { return m_preloader.progress();}
 
