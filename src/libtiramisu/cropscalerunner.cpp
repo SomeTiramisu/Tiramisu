@@ -9,7 +9,7 @@ CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
 void CropScaleRunner::run(const PageRequest& req) {
     if(m_req != req) {
         m_req = req;
-        m_future = std::async(&CropScaleRunner::cropScale, m_preloader, m_req);
+        m_future = std::async(std::launch::async, &CropScaleRunner::cropScale, m_preloader, m_req);
     }
 }
 
