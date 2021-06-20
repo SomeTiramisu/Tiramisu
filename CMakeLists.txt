@@ -17,7 +17,6 @@ find_package(LibArchive REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(UNARR REQUIRED libunarr)
 #pkg_check_modules(POPPLER REQUIRED poppler-cpp)
-pkg_check_modules(TURBOJPEG REQUIRED libturbojpeg)
 
 add_subdirectory(src)
 

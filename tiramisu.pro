@@ -12,5 +12,5 @@ libtiramisu.file = src/libtiramisu/tiramisu.pro
 app.depends = qtquick
 qtquick.depends = libtiramisu
 
-CONFIG += c++20
+CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000

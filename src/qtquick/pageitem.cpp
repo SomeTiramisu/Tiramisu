@@ -1,6 +1,7 @@
 #include "pageitem.h"
 
 #include <QPainter>
+#include <opencv2/core.hpp>
 
 PageItem::PageItem(QQuickItem *parent)
     : QQuickPaintedItem(parent)

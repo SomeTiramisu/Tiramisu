@@ -1,7 +1,7 @@
 #ifndef CROPSCALERUNNER_H
 #define CROPSCALERUNNER_H
 
-#include <thread>
+#include <future>
 #include "pagepreloader.h"
 #include "utils/utils.h"
 

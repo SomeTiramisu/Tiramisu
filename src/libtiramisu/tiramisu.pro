@@ -1,21 +1,23 @@
 TEMPLATE = lib
 
-CONFIG += qt plugin qmltypes
-QT += qml quick
+CONFIG += qt
+QT += core
+
+CONFIG += c++17
+QMAKE_CXXFLAGS += -std=c++17
 
 TARGET = tiramisu
 
 android {
-LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lturbojpeg
+LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 }
 !android {
-LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr -lturbojpeg
+LIBS += -larchive -lopencv_core -lopencv_imgproc -lopencv_imgcodecs -lunarr
 INCLUDEPATH += /usr/include/opencv4/
 }
 
 HEADERS += \
-    pageitem.h \
     pagepreloader.h \
     pagescheduler.h \
     parsers/dummyparser.h \
@@ -26,9 +28,10 @@ HEADERS += \
     strnatcmp/strnatcmp.h \
     utils/imageproc.h \
     utils/utils.h \
-    runnables/cropdetectrunnable.h \
-    runnables/cropscalerunnable.h \
-    utils/crop.h
+    utils/crop.h \
+    cropdetectrunner.h \
+    cropscalerunner.h \
+    tiramisu.h
 
 SOURCES += \
     pagepreloader.cpp \
@@ -40,6 +43,7 @@ SOURCES += \
     strnatcmp/strnatcmp.c \
     utils/imageproc.cpp \
     utils/utils.cpp \
-    runnables/cropdetectrunnable.cpp \
-    runnables/cropscalerunnable.cpp \
-    utils/crop.cpp
+    utils/crop.cpp \
+    cropdetectrunner.cpp \
+    cropscalerunner.cpp \
+    tiramisu.cpp

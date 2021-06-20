@@ -1,7 +1,7 @@
 #ifndef CROPDETECTRUNNER_H
 #define CROPDETECTRUNNER_H
 
-#include <thread>
+#include <future>
 #include "parsers/parser.h"
 #include "utils/utils.h"
 
