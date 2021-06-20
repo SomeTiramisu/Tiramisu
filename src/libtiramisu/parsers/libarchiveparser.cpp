@@ -9,7 +9,7 @@ LibarchiveParser::LibarchiveParser(const Path& fn)
         archive* a = archive_read_new();
         archive_read_support_filter_all(a);
         archive_read_support_format_zip(a);
-        archive_read_open_filename(a, m_filename.native().c_str(),  10240);
+        archive_read_open_filename(a, m_filename.c_str(),  10240);
         int i = 0;
         m_size = 0;
         archive_entry *entry;
@@ -71,7 +71,7 @@ ByteVect LibarchiveParser::at(int index) const {
     if (m_isRam) {
         archive_read_open_memory(a, m_ramArchive.data(), m_ramArchive.size());
     } else {
-        archive_read_open_filename(a, m_filename.native().c_str(),  10240);
+        archive_read_open_filename(a, m_filename.c_str(),  10240);
     }
     archive_entry *entry{nullptr};
     for (int i=0; i<=n; i++) {
@@ -99,7 +99,7 @@ bool LibarchiveParser::isSupported(const Path& fn) {
     archive *a = archive_read_new();
     archive_read_support_filter_all(a);
     archive_read_support_format_zip(a);
-    int r = archive_read_open_filename(a, fn.native().c_str(), 10240);
+    int r = archive_read_open_filename(a, fn.c_str(), 10240);
     if (r != ARCHIVE_OK) {
         return false;
     }

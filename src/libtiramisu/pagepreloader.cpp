@@ -12,7 +12,7 @@ PagePreloader::PagePreloader(const Path& filename)
     }
 
     std::ifstream file;
-    file.open(m_filename.native(), std::ifstream::binary);
+    file.open(m_filename, std::ifstream::binary);
     std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
 

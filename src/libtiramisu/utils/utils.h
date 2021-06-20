@@ -1,13 +1,12 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <filesystem>
 #include <opencv2/core.hpp>
 #include <QtCore>
 #include <iostream>
 
 
-using Path = std::filesystem::path;
+using Path = std::string;
 using ByteVect = std::vector<char>;
 
 struct PageRequest {

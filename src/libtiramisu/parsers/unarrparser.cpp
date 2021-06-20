@@ -7,7 +7,7 @@ UnarrParser::UnarrParser(const Path& fn)
     : m_filename(fn)
 {
     if (isSupported(fn)) {
-        ar_stream *s  = ar_open_file(fn.native().c_str());
+        ar_stream *s  = ar_open_file(fn.c_str());
         ar_archive *a = ar_open_rar_archive(s);;
         int i = 0;
         m_size = 0;
@@ -66,7 +66,7 @@ ByteVect UnarrParser::at(int index) const {
     if (m_isRam) {
         s = ar_open_memory(m_ramArchive.data(), m_ramArchive.size());
     } else {
-        s  = ar_open_file(m_filename.native().c_str());
+        s  = ar_open_file(m_filename.c_str());
     }
     ar_archive *a = ar_open_rar_archive(s);;
     for (int i=0; i<=n; i++) {
@@ -91,7 +91,7 @@ bool UnarrParser::isSupported(const Path& fn) {
     if (fn.empty()) {
         return false;
     }
-    ar_stream *s = ar_open_file(fn.native().c_str());
+    ar_stream *s = ar_open_file(fn.c_str());
     if (!s) {
         return false;
     }

@@ -16,7 +16,7 @@ public:
     PagePreloader& operator=(PagePreloader&&) = default;
     PngPair at(int index);
     int size() const;
-    std::filesystem::path filename() const;
+    Path filename() const;
     int progress() const;
 
 private:
