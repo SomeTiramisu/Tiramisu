@@ -11,11 +11,12 @@ TARGET = tiramisuqmlplugin
 #DESTDIR = ../../bin/qtquick/tiramisu
 
 android {
-LIBS += -L/home/guillaume/reader/cpp/reader/src/app/android/libs/arm64-v8a/ -lopencv_core
+LIBS += -L$$PWD/../app/android/libs/arm64-v8a/ -L$$OUT_PWD/../libtiramisu/ -lopencv_core -ltiramisu_arm64-v8a
+message($$OUT_PWD)
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 }
 !android {
-LIBS += -lopencv_core
+LIBS += -L$$OUT_PWD/../libtiramisu/ -lopencv_core -ltiramisu
 INCLUDEPATH += /usr/include/opencv4/
 }
 
