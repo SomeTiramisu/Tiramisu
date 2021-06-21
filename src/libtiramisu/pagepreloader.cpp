@@ -22,11 +22,12 @@ PagePreloader::PagePreloader(const Path& filename)
     for (int i=0; i<m_parser->size(); i++) {
         m_pages.at(i) = CropDetectRunner(m_parser.get());
         m_pages.at(i).run(i);
+        qWarning("adding %i to preloader.m_pages", i);
     };
 }
 
 PngPair PagePreloader::at(int index) {
-    qWarning("FFF %i", index);
+    qWarning("preloader.get(%i)", index);
     return m_pages.at(index).get(index);
 }
 
