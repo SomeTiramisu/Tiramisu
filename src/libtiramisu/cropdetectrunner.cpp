@@ -28,8 +28,8 @@ void CropDetectRunner::clear() {
 }
 
 PngPair CropDetectRunner::cropDetect(Parser *parser, int index) {
-    ByteVect png = parser->at(index);
-    cv::Mat img = ImageProc::fromVect(png);
+    ByteVect png(parser->at(index));
+    cv::Mat img(ImageProc::fromVect(png));
     cv::Rect roi;
     if (not img.empty() and index != 0) {
         roi = ImageProc::cropDetect(img);
