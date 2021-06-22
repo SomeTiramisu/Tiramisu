@@ -54,7 +54,7 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
 void CropScaleRunner::handleCropScale(const PagePair &res) {
     m_res = res;
     qWarning("DEBUG2");
-    m_slot(m_res);
-    //cv::Mat img = cv::imread("/home/guillaume/reader/000.jpg", IMREAD_COLOR);
-    //m_slot(PagePair{img, res.req});
+    //m_slot(m_res);
+    cv::Mat img = cv::imread("/home/guillaume/reader/000.jpg", IMREAD_COLOR);
+    m_slot(PagePair{img, res.req});
 }

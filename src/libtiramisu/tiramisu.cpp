@@ -7,6 +7,7 @@ void Tiramisu::get(const PageRequest& req, Slot<cv::Mat> slot) {
         slot(cv::Mat());
         return;
     }
+    m_req = req;
     m_slot = slot;
     m_scheduler.at(req, [this](const PagePair& res){this->handleSchedulerAt(res);});
 }
@@ -19,6 +20,7 @@ void Tiramisu::setFilename(const Path& filename) {
 }
 
 void Tiramisu::handleSchedulerAt(const PagePair& res) {
+    qWarning("DEBUG3");
     if(m_req==res.req) {
         m_slot(res.img);
     }
