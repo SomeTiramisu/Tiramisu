@@ -10,7 +10,7 @@
 using Path = std::string;
 using ByteVect = std::vector<char>;
 template <class T>
-using Slot = std::function<void(T)> ;
+using Slot = std::function<void(const T&)> ;
 
 struct PageRequest {
     int index{-1};

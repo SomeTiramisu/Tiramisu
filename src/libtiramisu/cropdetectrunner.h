@@ -18,7 +18,7 @@ public:
 
 private:
     void run();
-    static PngPair cropDetect(Parser* parser, int index);
+    static PngPair cropDetect(const ByteVect& png, int index);
     void handleCropDetect(const PngPair& res);
     int m_index{-1};
     Parser* m_parser{nullptr};

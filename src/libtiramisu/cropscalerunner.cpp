@@ -7,7 +7,7 @@ CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
 {}
 
 void CropScaleRunner::run() {
-    m_thread = std::thread([this]{this->handleCropScale(cropScale(this->m_preloader, this->m_req));});
+    m_thread = std::thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
     m_thread.detach();
 }
 
@@ -38,8 +38,7 @@ void CropScaleRunner::clear() {
     m_res = PagePair();
 }
 
-PagePair CropScaleRunner::cropScale(PagePreloader* preloader, const PageRequest& req) {
-    PngPair p(preloader->at(req.index));
+PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
     cv::Mat img(ImageProc::fromVect(p.png));
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, p.roi, req.width, req.height);
@@ -51,8 +50,4 @@ PagePair CropScaleRunner::cropScale(PagePreloader* preloader, const PageRequest&
 void CropScaleRunner::handleCropScale(const PagePair &res) {
     m_res = res;
     m_slot(m_res);
-}
-
-void CropScaleRunner::handlePreloaderAt(const PngPair& res) {
-
 }

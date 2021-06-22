@@ -7,7 +7,7 @@ CropDetectRunner::CropDetectRunner(Parser* parser)
 {}
 
 void CropDetectRunner::run() {
-    m_thread = std::thread([this]{this->handleCropDetect(cropDetect(this->m_parser, this->m_index));});
+    m_thread = std::thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
     m_thread.detach();
 }
 
@@ -38,8 +38,7 @@ void CropDetectRunner::clear() {
     m_res = PngPair();
 }
 
-PngPair CropDetectRunner::cropDetect(Parser *parser, int index) {
-    ByteVect png(parser->at(index));
+PngPair CropDetectRunner::cropDetect(const ByteVect& png, int index) {
     cv::Mat img(ImageProc::fromVect(png));
     cv::Rect roi;
     if (not img.empty() and index != 0) {

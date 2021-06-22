@@ -27,9 +27,9 @@ void PageItem::setIndex(int index) {
     m_req = PageRequest{index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     //qWarning("Hello You %i", index);
     //m_image = QImage("/home/guillaume/reader/000.jpg");
-    m_image = toQImage(m_tiramisu.get(m_req));
-    qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
-    this->update();
+    m_tiramisu.get(m_req, [this](const cv::Mat& img){this->handleSlot(img);});
+    //qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
+    //this->update();
     emit indexChanged();
 }
 
@@ -50,9 +50,9 @@ void PageItem::onRotationChanged() {
 
 void PageItem::resizeTimeout() {
     m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
-    m_image = toQImage(m_tiramisu.get(m_req));
+    m_tiramisu.get(m_req, [this](const cv::Mat& img){this->handleSlot(img);});
     m_tmpImage = QImage();
-    this->update();
+    //this->update();
 }
 
 
@@ -62,4 +62,9 @@ QImage toQImage(const cv::Mat& src) {
     }
     QImage tmp(src.data, src.cols, src.rows, src.step, QImage::Format_RGBA8888);
     return tmp.copy();
+}
+
+void PageItem::handleSlot(const cv::Mat& img) {
+    m_image = toQImage(img);
+    this->update();
 }

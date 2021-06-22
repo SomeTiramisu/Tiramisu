@@ -1,12 +1,14 @@
 #include "tiramisu.h"
 
-cv::Mat Tiramisu::get(const PageRequest& req) {
+void Tiramisu::get(const PageRequest& req, Slot<cv::Mat> slot) {
     if(req.filename != m_filename) {
         setFilename(req.filename);
     } else if(req.filename.empty()) {
-        return cv::Mat();
+        slot(cv::Mat());
+        return;
     }
-    return m_scheduler.getPage(req);
+    m_slot = slot;
+    m_scheduler.at(req, [this](const PagePair& res){this->handleSchedulerAt(res);});
 }
 
 void Tiramisu::setFilename(const Path& filename) {
@@ -16,3 +18,8 @@ void Tiramisu::setFilename(const Path& filename) {
     m_bookSize = m_preloader.size();
 }
 
+void Tiramisu::handleSchedulerAt(const PagePair& res) {
+    if(m_req==res.req) {
+        m_slot(res.img);
+    }
+}

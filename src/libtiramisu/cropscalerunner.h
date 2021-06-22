@@ -18,7 +18,7 @@ public:
 
 private:
     void run();
-    static PagePair cropScale(PagePreloader* preloader, const PageRequest& req);
+    static PagePair cropScale(const PngPair& p, const PageRequest& req);
     void handleCropScale(const PagePair& res);
     PageRequest m_req;
     PagePreloader* m_preloader{nullptr};

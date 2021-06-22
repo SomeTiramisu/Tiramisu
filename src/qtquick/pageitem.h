@@ -26,6 +26,7 @@ public:
     void paint(QPainter *painter) override;
 
 private:
+    void handleSlot(const cv::Mat&);
     QUrl m_filename;
     int m_index{0};
     Tiramisu m_tiramisu;
