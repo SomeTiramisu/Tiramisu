@@ -16,18 +16,19 @@ void CropDetectRunner::run() {
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {
     if(m_index<0) { //not requested
         m_index = index;
+        m_slot = slot;
         run();
         return;
     }
-    if(m_index == index && m_res != PngPair()) { //requested, not recieved
+    if(m_index == index && m_res == PngPair()) { //requested, not recieved
         m_slot=slot;
         return;
     }
-    m_slot(m_res);
+    slot(m_res); //recieved
 }
 
 void CropDetectRunner::get(int index) {
-    m_slot = Slot<PngPair>();
+    m_slot = [](const PngPair& res){(void)res;};
     if(m_index<0) { //not requested
         m_index = index;
         run();
@@ -52,5 +53,6 @@ PngPair CropDetectRunner::cropDetect(const ByteVect& png, int index) {
 
 void CropDetectRunner::handleCropDetect(const PngPair &res) {
     m_res = res;
+                                           qWarning("DEBUG");
     m_slot(m_res);
 }

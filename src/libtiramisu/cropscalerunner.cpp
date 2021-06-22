@@ -1,6 +1,7 @@
 #include "cropscalerunner.h"
 
 #include "utils/imageproc.h"
+#include <opencv2/imgcodecs.hpp>
 
 CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
     : m_preloader(preloader)
@@ -16,18 +17,19 @@ void CropScaleRunner::run() {
 void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
     if(m_req == PageRequest()) { //not requested
         m_req = req;
+        m_slot = slot;
         run();
         return;
     }
-    if(m_req == req && m_res != PagePair()) { //requested, not recieved
+    if(m_req == req && m_res == PagePair()) { //requested, not recieved
         m_slot=slot;
         return;
     }
-    m_slot(m_res);
+    slot(m_res); //recieved
 }
 
 void CropScaleRunner::get(const PageRequest &req) {
-    m_slot = Slot<PagePair>();
+    m_slot = [](const PagePair& res){(void)res;};
     if(m_req == PageRequest()) { //not requested
         m_req = req;
         run();
@@ -51,5 +53,8 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
 
 void CropScaleRunner::handleCropScale(const PagePair &res) {
     m_res = res;
+    qWarning("DEBUG2");
     m_slot(m_res);
+    //cv::Mat img = cv::imread("/home/guillaume/reader/000.jpg", IMREAD_COLOR);
+    //m_slot(PagePair{img, res.req});
 }
