@@ -1,8 +1,6 @@
 #include "cropscalerunner.h"
 
 #include "utils/imageproc.h"
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
 
 CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
     : m_preloader(preloader)
@@ -54,9 +52,6 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
 
 void CropScaleRunner::handleCropScale(const PagePair &res) {
     m_res = res;
-    qWarning("DEBUG2");
+    //qWarning("DEBUG2");
     m_slot(m_res);
-    //cv::Mat img = cv::imread("/home/guillaume/reader/000.jpg", IMREAD_COLOR);
-    //cv::cvtColor(img, img, cv::COLOR_BGR2RGBA);
-    //m_slot(PagePair{img, res.req});
 }

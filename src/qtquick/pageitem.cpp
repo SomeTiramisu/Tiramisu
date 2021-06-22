@@ -50,7 +50,7 @@ void PageItem::onRotationChanged() {
 }
 
 void PageItem::resizeTimeout() {
-    qWarning("TIMEOUT");
+    //qWarning("TIMEOUT");
     m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     m_tiramisu.get(m_req, [this](const cv::Mat& img){this->handleSlot(img);});
     m_tmpImage = QImage();
@@ -58,7 +58,7 @@ void PageItem::resizeTimeout() {
 }
 
 void PageItem::onImageChanged() {
-    qWarning("DEBUG5");
+    //qWarning("DEBUG5");
     this->update();
 }
 
@@ -71,12 +71,7 @@ QImage toQImage(const cv::Mat& src) {
 }
 
 void PageItem::handleSlot(const cv::Mat& img) {
-    if(img.empty()) {
-            qWarning("DEBUG4 EMPTY");
-    } else {
-        qWarning("DEBUG4");
-    }
+    //qWarning("DEBUG4");
     m_image = toQImage(img);
-    emit imageChanged();
-    //this->update();
+    emit imageChanged(); //workaround to call update from GUI thread
 }

@@ -53,6 +53,6 @@ PngPair CropDetectRunner::cropDetect(const ByteVect& png, int index) {
 
 void CropDetectRunner::handleCropDetect(const PngPair &res) {
     m_res = res;
-                                           qWarning("DEBUG");
+    //qWarning("DEBUG");
     m_slot(m_res);
 }
