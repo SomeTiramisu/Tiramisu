@@ -12,6 +12,12 @@ using ByteVect = std::vector<char>;
 template <class T>
 using Slot = std::function<void(const T&)> ;
 
+//untested
+template <class R, class T>
+Slot<T> makeSlot(R* t, void(*f)(const T&)) {
+    return [t, f](const T& r){t->f(r);};
+}
+
 struct PageRequest {
     int index{-1};
     int width{-1};

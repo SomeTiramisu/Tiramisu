@@ -50,6 +50,7 @@ void PageItem::onRotationChanged() {
 }
 
 void PageItem::resizeTimeout() {
+    qWarning("TIMEOUT");
     m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     m_tiramisu.get(m_req, [this](const cv::Mat& img){this->handleSlot(img);});
     m_tmpImage = QImage();

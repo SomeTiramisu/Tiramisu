@@ -14,7 +14,7 @@ void CropDetectRunner::run() {
 }
 
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {
-    if(m_index<0) { //not requested
+    if(m_index != index || m_index<0) { //not requested
         m_index = index;
         m_slot = slot;
         run();
