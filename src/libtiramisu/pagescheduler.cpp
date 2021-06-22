@@ -22,6 +22,7 @@ void PageScheduler::at(const PageRequest& req, const Slot<PagePair> slot) {
         slot(PagePair());
         return;
     }
+    qWarning("scheduler.get(%i)", req.index);
     m_pages.at(req.index).get(req, slot);
 }
 

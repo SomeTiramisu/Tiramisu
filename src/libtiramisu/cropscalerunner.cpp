@@ -4,7 +4,9 @@
 
 CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
     : m_preloader(preloader)
-{}
+{
+    m_slot = [](const PagePair& res){(void)res;};
+}
 
 void CropScaleRunner::run() {
     m_thread = std::thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
@@ -43,7 +45,7 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, p.roi, req.width, req.height);
     }
-    //qWarning("CropScaleRunnable: running: %i", index);
+    qWarning("CropScaleRunnable: running: %i", req.index);
     return PagePair{img, req};
 }
 

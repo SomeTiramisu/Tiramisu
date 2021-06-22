@@ -4,7 +4,9 @@
 
 CropDetectRunner::CropDetectRunner(Parser* parser)
     : m_parser(parser)
-{}
+{
+    m_slot = [](const PngPair& res){(void)res;};
+}
 
 void CropDetectRunner::run() {
     m_thread = std::thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
@@ -44,7 +46,7 @@ PngPair CropDetectRunner::cropDetect(const ByteVect& png, int index) {
     if (not img.empty() and index != 0) {
         roi = ImageProc::cropDetect(img);
     }
-    //qWarning("CropDetectRunnable: running: %i", index);
+    qWarning("CropDetectRunnable: running: %i", index);
     return PngPair{png, roi};
 }
 
