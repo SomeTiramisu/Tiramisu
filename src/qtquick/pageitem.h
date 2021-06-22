@@ -40,10 +40,12 @@ signals:
     void indexChanged();
     void bookSizeChanged();
     void preloaderProgressChanged();
+    void imageChanged();
 
 public slots:
     void onRotationChanged();
     void resizeTimeout();
+    void onImageChanged();
 };
 
 QImage toQImage(const cv::Mat& src);

@@ -10,6 +10,7 @@ PageItem::PageItem(QQuickItem *parent)
     connect(&m_resizeTimer, &QTimer::timeout, this, &PageItem::resizeTimeout);
     connect(this, &QQuickItem::widthChanged, this, &PageItem::onRotationChanged);
     connect(this, &QQuickItem::heightChanged, this, &PageItem::onRotationChanged);
+    connect(this, &PageItem::imageChanged, this, &PageItem::onImageChanged);
 }
 
 PageItem::~PageItem() {
@@ -55,6 +56,10 @@ void PageItem::resizeTimeout() {
     //this->update();
 }
 
+void PageItem::onImageChanged() {
+    qWarning("DEBUG5");
+    this->update();
+}
 
 QImage toQImage(const cv::Mat& src) {
     if (src.empty()) {
@@ -65,6 +70,12 @@ QImage toQImage(const cv::Mat& src) {
 }
 
 void PageItem::handleSlot(const cv::Mat& img) {
+    if(img.empty()) {
+            qWarning("DEBUG4 EMPTY");
+    } else {
+        qWarning("DEBUG4");
+    }
     m_image = toQImage(img);
-    this->update();
+    emit imageChanged();
+    //this->update();
 }

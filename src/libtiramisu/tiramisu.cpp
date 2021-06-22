@@ -22,6 +22,9 @@ void Tiramisu::setFilename(const Path& filename) {
 void Tiramisu::handleSchedulerAt(const PagePair& res) {
     qWarning("DEBUG3");
     if(m_req==res.req) {
+        if(res.img.empty()) {
+            qWarning("DEBUG3 EMPTY");
+        }
         m_slot(res.img);
     }
 }

@@ -21,7 +21,7 @@ PagePreloader::PagePreloader(const Path& filename)
 
     for (int i=0; i<m_parser->size(); i++) {
         m_pages.at(i) = CropDetectRunner(m_parser.get());
-        //m_pages.at(i).get(i);
+        m_pages.at(i).get(i);
         //qWarning("adding %i to preloader.m_pages", i);
     };
 }

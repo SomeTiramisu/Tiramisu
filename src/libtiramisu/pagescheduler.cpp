@@ -5,7 +5,7 @@
 
 PageScheduler::PageScheduler(PagePreloader* preloader)
     : m_preloader(preloader),
-      m_imagePreload(0)
+      m_imagePreload(20)
 {
     m_pages.resize(m_preloader->size());
     for (int i=0; i<m_preloader->size(); i++) {
