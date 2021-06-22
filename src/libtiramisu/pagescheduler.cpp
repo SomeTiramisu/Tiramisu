@@ -14,14 +14,15 @@ PageScheduler::PageScheduler(PagePreloader* preloader)
     qWarning("scheduler created");
 }
 
-cv::Mat PageScheduler::getPage(const PageRequest& req) {
+void PageScheduler::at(const PageRequest& req, const Slot<PagePair> slot) {
     seekPages(req);
     int index = req.index;
-    int book_size = m_preloader->size();
-    if (index<0 || index >= book_size) {
-        return cv::Mat();
+    int bookSize = m_preloader->size();
+    if (index<0 || index >= bookSize) {
+        slot(PagePair());
+        return;
     }
-    return m_pages.at(index).get(req).img;
+    m_pages.at(req.index).get(req, slot);
 }
 
 void PageScheduler::seekPages(const PageRequest& req) {
@@ -29,7 +30,7 @@ void PageScheduler::seekPages(const PageRequest& req) {
         if((req.index - m_imagePreload <= i) && (i <= req.index + m_imagePreload)) {
             PageRequest nreq{i, req.width, req.height, req.filename};
             //qWarning("SEEK %i", i);
-            m_pages.at(i).run(nreq);
+            m_pages.at(i).get(nreq);
         } else {
             m_pages.at(i).clear();
         }

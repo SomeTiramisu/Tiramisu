@@ -12,7 +12,7 @@ public:
     PageScheduler(PageScheduler&&) = default;
     PageScheduler(PagePreloader* preloader);
     PageScheduler& operator=(PageScheduler&&) = default;
-    cv::Mat getPage(const PageRequest& req);
+    void at(const PageRequest& req, const Slot<PagePair> slot);
 
 private:
     void seekPages(const PageRequest& req);

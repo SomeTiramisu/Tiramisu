@@ -14,7 +14,7 @@ public:
     PagePreloader(PagePreloader&&) = default;
     PagePreloader(const Path& filename);
     PagePreloader& operator=(PagePreloader&&) = default;
-    PngPair at(int index);
+    void at(int index, const Slot<PngPair>& slot);
     int size() const;
     Path filename() const;
     int progress() const;

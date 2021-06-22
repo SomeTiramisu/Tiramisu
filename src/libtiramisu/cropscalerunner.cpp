@@ -6,33 +6,53 @@ CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
     : m_preloader(preloader)
 {}
 
-void CropScaleRunner::run(const PageRequest& req) {
-    if(m_req != req) {
-        m_req = req;
-        m_future = std::async(std::launch::async, &CropScaleRunner::cropScale, m_preloader, m_req);
-    }
+void CropScaleRunner::run() {
+    m_thread = std::thread([this]{this->handleCropScale(cropScale(this->m_preloader, this->m_req));});
+    m_thread.detach();
 }
 
-PagePair CropScaleRunner::get(const PageRequest& req) {
-    run(req);
-    if(m_future.valid()) {
-        m_res = m_future.get();
+void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
+    if(m_req == PageRequest()) { //not requested
+        m_req = req;
+        run();
+        return;
     }
-    return m_res;
+    if(m_req == req && m_res != PagePair()) { //requested, not recieved
+        m_slot=slot;
+        return;
+    }
+    m_slot(m_res);
+}
+
+void CropScaleRunner::get(const PageRequest &req) {
+    m_slot = Slot<PagePair>();
+    if(m_req == PageRequest()) { //not requested
+        m_req = req;
+        run();
+        return;
+    }
 }
 
 void CropScaleRunner::clear() {
     m_req = PageRequest();
     m_res = PagePair();
-    m_future = std::future<PagePair>();
 }
 
 PagePair CropScaleRunner::cropScale(PagePreloader* preloader, const PageRequest& req) {
-    PngPair p = preloader->at(req.index);
-    cv::Mat img = ImageProc::fromVect(p.png);
+    PngPair p(preloader->at(req.index));
+    cv::Mat img(ImageProc::fromVect(p.png));
     if (not img.empty()) {
         ImageProc::cropScaleProcess(img, img, p.roi, req.width, req.height);
     }
     //qWarning("CropScaleRunnable: running: %i", index);
     return PagePair{img, req};
+}
+
+void CropScaleRunner::handleCropScale(const PagePair &res) {
+    m_res = res;
+    m_slot(m_res);
+}
+
+void CropScaleRunner::handlePreloaderAt(const PngPair& res) {
+
 }

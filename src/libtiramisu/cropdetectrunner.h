@@ -1,7 +1,7 @@
 #ifndef CROPDETECTRUNNER_H
 #define CROPDETECTRUNNER_H
 
-#include <future>
+#include <thread>
 #include "parsers/parser.h"
 #include "utils/utils.h"
 
@@ -11,17 +11,20 @@ public:
     CropDetectRunner() = default;
     CropDetectRunner(CropDetectRunner&& other) = default;
     CropDetectRunner(Parser* parser);
-    void run(int index);
-    PngPair get(int index);
+    void get(int index, const Slot<PngPair>& slot);
+    void get(int index);
     void clear();
     CropDetectRunner& operator=(CropDetectRunner&& other) = default;
 
 private:
+    void run();
     static PngPair cropDetect(Parser* parser, int index);
-    int m_index{0};
+    void handleCropDetect(const PngPair& res);
+    int m_index{-1};
     Parser* m_parser{nullptr};
     PngPair m_res;
-    std::future<PngPair> m_future;
+    std::thread m_thread;
+    Slot<PngPair> m_slot;
 
 };
 

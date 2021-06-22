@@ -6,34 +6,50 @@ CropDetectRunner::CropDetectRunner(Parser* parser)
     : m_parser(parser)
 {}
 
-void CropDetectRunner::run(int index) {
-    if(m_index != index || m_index == 0) {
-        m_index = index;
-        m_future = std::async(std::launch::async, &CropDetectRunner::cropDetect, m_parser, m_index);
-    }
+void CropDetectRunner::run() {
+    m_thread = std::thread([this]{this->handleCropDetect(cropDetect(this->m_parser, this->m_index));});
+    m_thread.detach();
 }
 
-PngPair CropDetectRunner::get(int index) {
-    run(index);
-    if(m_future.valid()) {
-        m_res = m_future.get();
+void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {
+    if(m_index<0) { //not requested
+        m_index = index;
+        run();
+        return;
     }
-    return m_res;
+    if(m_index == index && m_res != PngPair()) { //requested, not recieved
+        m_slot=slot;
+        return;
+    }
+    m_slot(m_res);
+}
+
+void CropDetectRunner::get(int index) {
+    m_slot = Slot<PngPair>();
+    if(m_index<0) { //not requested
+        m_index = index;
+        run();
+        return;
+    }
 }
 
 void CropDetectRunner::clear() {
-    m_index = 0;
+    m_index = -1;
     m_res = PngPair();
-    m_future = std::future<PngPair>();
 }
 
 PngPair CropDetectRunner::cropDetect(Parser *parser, int index) {
-    ByteVect png = parser->at(index);
-    cv::Mat img = ImageProc::fromVect(png);
+    ByteVect png(parser->at(index));
+    cv::Mat img(ImageProc::fromVect(png));
     cv::Rect roi;
     if (not img.empty() and index != 0) {
         roi = ImageProc::cropDetect(img);
     }
     //qWarning("CropDetectRunnable: running: %i", index);
     return PngPair{png, roi};
+}
+
+void CropDetectRunner::handleCropDetect(const PngPair &res) {
+    m_res = res;
+    m_slot(m_res);
 }
