@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iterator>
 
-Parser::Parser(Path& filename) {
+Parser::Parser(const Path& filename) {
     if (not filename.empty()) {
         ParserLib bookLib = getBookLib(filename);
         m_parser = std::make_unique<DummyParser>();
@@ -15,7 +15,7 @@ Parser::Parser(Path& filename) {
     }
 }
 
-Parser::Parser(ByteVect& ramArchive) {
+Parser::Parser(const ByteVect& ramArchive) {
     ParserLib bookLib = getBookLib(ramArchive);
     m_parser = std::make_unique<DummyParser>();
     if (bookLib == ParserLib::Libarchive) {

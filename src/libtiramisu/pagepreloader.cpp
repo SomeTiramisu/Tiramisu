@@ -11,12 +11,13 @@ PagePreloader::PagePreloader(const Path& filename)
         return;
     }
 
-    std::ifstream file;
-    file.open(m_filename, std::ifstream::binary);
-    std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-    file.close();
+    //std::ifstream file;
+    //file.open(m_filename, std::ifstream::binary);
+    //std::vector<char> ramArchive((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    //file.close();
+    //m_parser =  std::make_unique<Parser>(ramArchive);
+    m_parser = std::make_unique<Parser>(static_cast<std::string>(filename));
 
-    m_parser =  std::make_unique<Parser>(ramArchive);
     m_pages.resize(m_parser->size());
 
     for (int i=0; i<m_parser->size(); i++) {

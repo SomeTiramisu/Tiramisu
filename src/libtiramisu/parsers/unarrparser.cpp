@@ -31,7 +31,7 @@ UnarrParser::UnarrParser(const Path& fn)
     }
 }
 
-UnarrParser::UnarrParser(ByteVect& ramArchive)
+UnarrParser::UnarrParser(const ByteVect& ramArchive)
     : m_isRam(true),
       m_ramArchive(ramArchive)
 {

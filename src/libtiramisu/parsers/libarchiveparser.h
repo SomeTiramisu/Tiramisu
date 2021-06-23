@@ -12,7 +12,7 @@ class LibarchiveParser: public ParserBase {
 
 public:
     LibarchiveParser(const Path& fn);
-    LibarchiveParser(ByteVect& ramArchive);
+    LibarchiveParser(const ByteVect& ramArchive);
     ~LibarchiveParser() override {};
     ByteVect at(int index) const override;
     int size() const override;

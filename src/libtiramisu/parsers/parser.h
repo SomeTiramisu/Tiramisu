@@ -11,8 +11,8 @@ class Parser {
 
 public:
     Parser() = default;
-    Parser(Path& filename);
-    Parser(ByteVect&);
+    Parser(const Path& filename);
+    Parser(const ByteVect&);
     ByteVect at(int index) const;
     int size() const;
 

@@ -11,7 +11,7 @@ class UnarrParser: public ParserBase {
 
 public:
     UnarrParser(const Path& fn);
-    UnarrParser(ByteVect& ramArchive);
+    UnarrParser(const ByteVect& ramArchive);
     ~UnarrParser() override {};
     ByteVect at(int index) const override;
     int size() const override;

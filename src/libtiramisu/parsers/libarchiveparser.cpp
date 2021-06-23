@@ -32,7 +32,7 @@ LibarchiveParser::LibarchiveParser(const Path& fn)
     }
 }
 
-LibarchiveParser::LibarchiveParser(ByteVect& ramArchive)
+LibarchiveParser::LibarchiveParser(const ByteVect& ramArchive)
     : m_isRam(true),
       m_ramArchive(ramArchive)
 {
