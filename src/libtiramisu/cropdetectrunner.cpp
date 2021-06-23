@@ -10,8 +10,8 @@ CropDetectRunner::CropDetectRunner(Parser* parser)
 }
 
 void CropDetectRunner::run() {
-    m_thread = std::thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
-    m_thread.detach();
+    std::thread thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
+    thread.detach();
 }
 
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {

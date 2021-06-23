@@ -23,7 +23,6 @@ private:
     int m_index{-1};
     Parser* m_parser{nullptr};
     PngPair m_res;
-    std::thread m_thread;
     Slot<PngPair> m_slot;
 
 };

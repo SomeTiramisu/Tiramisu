@@ -23,7 +23,6 @@ private:
     PageRequest m_req;
     PagePreloader* m_preloader{nullptr};
     PagePair m_res;
-    std::thread m_thread;
     Slot<PagePair> m_slot;
 
 };
