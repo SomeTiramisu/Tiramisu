@@ -28,8 +28,8 @@ void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
 }
 
 void CropScaleRunner::get(const PageRequest &req) {
-    m_slot = [](const PagePair& res){(void)res;};
-    if(m_req == PageRequest()) { //not requested
+    //m_slot = [](const PagePair& res){(void)res;};
+    if(m_req != req || m_req == PageRequest()) { //not requested
         m_req = req;
         run();
         return;

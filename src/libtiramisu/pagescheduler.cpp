@@ -15,7 +15,6 @@ PageScheduler::PageScheduler(PagePreloader* preloader)
 }
 
 void PageScheduler::at(const PageRequest& req, const Slot<PagePair> slot) {
-    seekPages(req);
     int index = req.index;
     int bookSize = m_preloader->size();
     if (index<0 || index >= bookSize) {
@@ -24,6 +23,7 @@ void PageScheduler::at(const PageRequest& req, const Slot<PagePair> slot) {
     }
     qWarning("scheduler.get(%i)", req.index);
     m_pages.at(req.index).get(req, slot);
+    seekPages(req);
 }
 
 void PageScheduler::seekPages(const PageRequest& req) {
