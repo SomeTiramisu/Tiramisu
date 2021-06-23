@@ -6,6 +6,7 @@
 #include "utils/utils.h"
 #include "parsers/parser.h"
 #include "cropdetectrunner.h"
+#include "threadpool.h"
 
 class PagePreloader
 {
@@ -25,6 +26,8 @@ private:
     Path m_filename;
     bool isReady{false};
     int m_progress{0};
+    ThreadPool m_pool;
+
 };
 
 #endif // PAGEPRELOADER_H

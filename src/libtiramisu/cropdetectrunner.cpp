@@ -3,15 +3,17 @@
 #include "utils/imageproc.h"
 #include "threadpool.h"
 
-CropDetectRunner::CropDetectRunner(Parser* parser)
-    : m_parser(parser)
+CropDetectRunner::CropDetectRunner(Parser* parser, ThreadPool* pool)
+    : m_parser(parser),
+      m_pool(pool)
 {
     m_slot = [](const PngPair& res){(void)res;};
 }
 
 void CropDetectRunner::run() {
-    std::thread thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
-    thread.detach();
+    //std::thread thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
+    //thread.detach();
+    m_pool->start([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
 }
 
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {

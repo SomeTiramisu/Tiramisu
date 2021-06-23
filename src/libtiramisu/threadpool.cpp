@@ -32,10 +32,12 @@ void ThreadPool::waitForDone() {
 
 ThFunction ThreadPool::makeFunction(const ThFunction &f, int i) {
     return [this, f, i]{
+        qWarning("Running first on %i", i);
         f();
         while(not this->m_toRun.empty()) {
             ThFunction f2 = this->makeFunction(m_toRun.front(), i);
             m_toRun.pop();
+            qWarning("Running on %i", i);
             f2();
         }
         m_threadsReady.push(i);
