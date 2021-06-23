@@ -19,6 +19,7 @@ private:
     std::vector<CropScaleRunner> m_pages;
     PagePreloader* m_preloader{nullptr};
     int m_imagePreload;
+    QThreadPool* m_pool{QThreadPool::globalInstance()};
 };
 
 #endif // PAGESCHEDULER_H

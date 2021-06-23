@@ -9,7 +9,7 @@ PageScheduler::PageScheduler(PagePreloader* preloader)
 {
     m_pages.resize(m_preloader->size());
     for (int i=0; i<m_preloader->size(); i++) {
-        m_pages.at(i) = CropScaleRunner(m_preloader);
+        m_pages.at(i) = CropScaleRunner(m_preloader, m_pool);
     };
     qWarning("scheduler created");
 }

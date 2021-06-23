@@ -10,7 +10,7 @@ class CropScaleRunner
 public:
     CropScaleRunner() = default;
     CropScaleRunner(CropScaleRunner&& other) = default;
-    CropScaleRunner(PagePreloader*);
+    CropScaleRunner(PagePreloader*, QThreadPool* pool);
     void get(const PageRequest& req, const Slot<PagePair>& slot);
     void get(const PageRequest& req);
     void clear();
@@ -22,6 +22,7 @@ private:
     void handleCropScale(const PagePair& res);
     PageRequest m_req;
     PagePreloader* m_preloader{nullptr};
+    QThreadPool* m_pool{nullptr};
     PagePair m_res;
     Slot<PagePair> m_slot;
 

@@ -3,7 +3,7 @@
 #include "utils/imageproc.h"
 #include "threadpool.h"
 
-CropDetectRunner::CropDetectRunner(Parser* parser, ThreadPool* pool)
+CropDetectRunner::CropDetectRunner(Parser* parser, QThreadPool* pool)
     : m_parser(parser),
       m_pool(pool)
 {
@@ -13,7 +13,7 @@ CropDetectRunner::CropDetectRunner(Parser* parser, ThreadPool* pool)
 void CropDetectRunner::run() {
     //std::thread thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
     //thread.detach();
-    m_pool->start([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
+    m_pool->start(QRunnable::create([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));}));
 }
 
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {

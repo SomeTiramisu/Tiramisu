@@ -2,15 +2,17 @@
 
 #include "utils/imageproc.h"
 
-CropScaleRunner::CropScaleRunner(PagePreloader* preloader)
-    : m_preloader(preloader)
+CropScaleRunner::CropScaleRunner(PagePreloader* preloader, QThreadPool* pool)
+    : m_preloader(preloader),
+      m_pool(pool)
 {
     m_slot = [](const PagePair& res){(void)res;};
 }
 
 void CropScaleRunner::run() {
-    std::thread thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
-    thread.detach();
+    //std::thread thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
+    //thread.detach();
+    m_pool->start(QRunnable::create([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});}));
 }
 
 void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
