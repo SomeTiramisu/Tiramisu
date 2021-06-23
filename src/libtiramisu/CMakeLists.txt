@@ -12,6 +12,7 @@ set(tiramisu_SRCS
     utils/crop.cpp
     cropdetectrunner.cpp
     cropscalerunner.cpp
+    threadpool.cpp
 )
 
 add_library(tiramisu SHARED ${tiramisu_SRCS})

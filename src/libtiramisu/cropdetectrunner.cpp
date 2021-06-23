@@ -1,6 +1,7 @@
 #include "cropdetectrunner.h"
 
 #include "utils/imageproc.h"
+#include "threadpool.h"
 
 CropDetectRunner::CropDetectRunner(Parser* parser)
     : m_parser(parser)
