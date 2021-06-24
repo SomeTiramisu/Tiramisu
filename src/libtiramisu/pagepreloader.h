@@ -19,6 +19,8 @@ public:
     int size() const;
     Path filename() const;
     int progress() const;
+    void connectProgressSlot(const Slot<int>& slot);
+    void connectBookSizeSlot(const Slot<int>& slot);
 
 private:
     std::unique_ptr<Parser> m_parser;
@@ -26,6 +28,8 @@ private:
     Path m_filename;
     bool isReady{false};
     int m_progress{0};
+    Slot<int> m_progressSlot;
+    Slot<int> m_bookSizeSlot;
     QThreadPool* m_pool{nullptr};
 
 };

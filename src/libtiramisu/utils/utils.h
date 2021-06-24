@@ -17,6 +17,10 @@ template <class R, class T>
 Slot<T> makeSlot(R* t, void(*f)(const T&)) {
     return [t, f](const T& r){t->f(r);};
 }
+template <class R, class T>
+Slot<T> makeDefaultSlot(R* t, void(*f)(const T&)) {
+    return [t, f](const T& r){t->f(r);};
+}
 
 struct PageRequest {
     int index{-1};

@@ -19,14 +19,16 @@ public:
     ~PageItem() override;
     QUrl filename() const {return m_filename;};
     int index() const {return m_index;};
-    int bookSize() const {return m_tiramisu.bookSize();}
-    int preloaderProgress() const { return m_tiramisu.preloaderProgress();}
+    int bookSize() const {return m_bookSize;}
+    int preloaderProgress() const { return m_preloaderProgress;}
     void setFilename(const QUrl& filename);
     void setIndex(int index);
     void paint(QPainter *painter) override;
 
 private:
     QUrl m_filename;
+    int m_bookSize{0};
+    int m_preloaderProgress{0};
     int m_index{0};
     Tiramisu m_tiramisu;
     PageRequest m_req;

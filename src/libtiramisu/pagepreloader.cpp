@@ -44,3 +44,11 @@ Path PagePreloader::filename() const {
 int PagePreloader::progress() const {
     return m_progress;
 }
+
+void PagePreloader::connectProgressSlot(const Slot<int> &slot) {
+    m_progressSlot = slot;
+}
+
+void PagePreloader::connectBookSizeSlot(const Slot<int> &slot) {
+    m_bookSizeSlot = slot;
+}

@@ -11,6 +11,19 @@ PageItem::PageItem(QQuickItem *parent)
     connect(this, &QQuickItem::widthChanged, this, &PageItem::onRotationChanged);
     connect(this, &QQuickItem::heightChanged, this, &PageItem::onRotationChanged);
     connect(this, &PageItem::imageChanged, this, &PageItem::onImageChanged);
+    m_tiramisu.connectBookSize([this](int bookSize){
+        this->m_bookSize = bookSize;
+        emit bookSizeChanged();
+    });
+    m_tiramisu.connectImage([this](const cv::Mat& img){
+        //qWarning("DEBUG4");
+        this->m_image =toQImage(img);
+        emit imageChanged(); //workaround to call update from GUI thread
+    });
+    m_tiramisu.connectPreloaderProgress([this](int preloaderProgress){
+        this->m_preloaderProgress = preloaderProgress;
+        emit preloaderProgressChanged();
+    });
 }
 
 PageItem::~PageItem() {
@@ -28,11 +41,7 @@ void PageItem::setIndex(int index) {
     m_req = PageRequest{index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     //qWarning("Hello You %i", index);
     //m_image = QImage("/home/guillaume/reader/000.jpg");
-    m_tiramisu.get(m_req, [this](const cv::Mat& img){
-        //qWarning("DEBUG4");
-        this->m_image =toQImage(img);
-        emit imageChanged(); //workaround to call update from GUI thread
-    });
+    m_tiramisu.get(m_req);
     //qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
     //this->update();
     emit indexChanged();
@@ -56,11 +65,7 @@ void PageItem::onRotationChanged() {
 void PageItem::resizeTimeout() {
     //qWarning("TIMEOUT");
     m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
-    m_tiramisu.get(m_req, [this](const cv::Mat& img){
-        //qWarning("DEBUG4");
-        this->m_image =toQImage(img);
-        emit imageChanged(); //workaround to call update from GUI thread
-    });
+    m_tiramisu.get(m_req);
     m_tmpImage = QImage();
     //this->update();
 }
