@@ -13,7 +13,7 @@ class PagePreloader
 public:
     PagePreloader() = default;
     PagePreloader(PagePreloader&&) = default;
-    PagePreloader(const Path& filename);
+    PagePreloader(const Path& filename, QThreadPool* pool);
     PagePreloader& operator=(PagePreloader&&) = default;
     void at(int index, const Slot<PngPair>& slot);
     int size() const;
@@ -26,7 +26,7 @@ private:
     Path m_filename;
     bool isReady{false};
     int m_progress{0};
-    QThreadPool* m_pool{QThreadPool::globalInstance()};
+    QThreadPool* m_pool{nullptr};
 
 };
 

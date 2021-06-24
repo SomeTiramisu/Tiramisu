@@ -21,6 +21,7 @@ private:
     PagePreloader m_preloader;
     PageRequest m_req;
     Slot<cv::Mat> m_slot;
+    QThreadPool m_pool;
 };
 
 #endif // TIRAMISU_H

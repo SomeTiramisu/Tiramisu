@@ -3,9 +3,10 @@
 #include "utils/imageproc.h"
 #include "parsers/parser.h"
 
-PageScheduler::PageScheduler(PagePreloader* preloader)
+PageScheduler::PageScheduler(PagePreloader* preloader, QThreadPool* pool)
     : m_preloader(preloader),
-      m_imagePreload(5)
+      m_imagePreload(5),
+      m_pool(pool)
 {
     m_pages.resize(m_preloader->size());
     for (int i=0; i<m_preloader->size(); i++) {

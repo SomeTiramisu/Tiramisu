@@ -10,7 +10,7 @@ class PageScheduler
 public:
     PageScheduler() = default;
     PageScheduler(PageScheduler&&) = default;
-    PageScheduler(PagePreloader* preloader);
+    PageScheduler(PagePreloader* preloader, QThreadPool* pool);
     PageScheduler& operator=(PageScheduler&&) = default;
     void at(const PageRequest& req, const Slot<PagePair> slot);
 
@@ -19,7 +19,7 @@ private:
     std::vector<CropScaleRunner> m_pages;
     PagePreloader* m_preloader{nullptr};
     int m_imagePreload;
-    QThreadPool* m_pool{QThreadPool::globalInstance()};
+    QThreadPool* m_pool{nullptr};
 };
 
 #endif // PAGESCHEDULER_H

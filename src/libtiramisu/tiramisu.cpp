@@ -14,8 +14,8 @@ void Tiramisu::get(const PageRequest& req, Slot<cv::Mat> slot) {
 
 void Tiramisu::setFilename(const Path& filename) {
     m_filename = filename;
-    m_preloader = PagePreloader(filename);
-    m_scheduler = PageScheduler(&m_preloader);
+    m_preloader = PagePreloader(filename, &m_pool);
+    m_scheduler = PageScheduler(&m_preloader, &m_pool);
     m_bookSize = m_preloader.size();
 }
 

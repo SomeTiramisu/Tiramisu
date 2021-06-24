@@ -3,8 +3,9 @@
 #include <fstream>
 #include "utils/imageproc.h"
 
-PagePreloader::PagePreloader(const Path& filename)
-    : m_filename(filename)
+PagePreloader::PagePreloader(const Path& filename, QThreadPool* pool)
+    : m_filename(filename),
+      m_pool(pool)
 {
     qWarning("preloader created");
     if (m_filename.empty()) {
