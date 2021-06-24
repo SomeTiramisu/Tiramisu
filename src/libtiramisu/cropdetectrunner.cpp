@@ -13,7 +13,11 @@ CropDetectRunner::CropDetectRunner(Parser* parser, QThreadPool* pool)
 void CropDetectRunner::run() {
     //std::thread thread([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));});
     //thread.detach();
-    m_pool->start(QRunnable::create([this]{this->handleCropDetect(cropDetect(this->m_parser->at(this->m_index), this->m_index));}));
+    m_pool->start(QRunnable::create([this]{
+        this->m_res = cropDetect(this->m_parser->at(this->m_index), this->m_index);
+        //qWarning("DEBUG");
+        this->m_slot(this->m_res);
+    }));
 }
 
 void CropDetectRunner::get(int index, const Slot<PngPair>& slot) {
@@ -52,10 +56,4 @@ PngPair CropDetectRunner::cropDetect(const ByteVect& png, int index) {
     }
     qWarning("CropDetectRunnable: running: %i", index);
     return PngPair{png, roi};
-}
-
-void CropDetectRunner::handleCropDetect(const PngPair &res) {
-    m_res = res;
-    //qWarning("DEBUG");
-    m_slot(m_res);
 }

@@ -12,7 +12,13 @@ CropScaleRunner::CropScaleRunner(PagePreloader* preloader, QThreadPool* pool)
 void CropScaleRunner::run() {
     //std::thread thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
     //thread.detach();
-    m_pool->start(QRunnable::create([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});}));
+    m_pool->start(QRunnable::create([this]{
+        this->m_preloader->at(this->m_req.index, [this](const PngPair& res){
+            this->m_res = cropScale(res, m_req);
+            //qWarning("DEBUG2");
+            this->m_slot(this->m_res);
+        });
+    }));
 }
 
 void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
@@ -50,10 +56,4 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
     }
     qWarning("CropScaleRunnable: running: %i", req.index);
     return PagePair{img, req};
-}
-
-void CropScaleRunner::handleCropScale(const PagePair &res) {
-    m_res = res;
-    //qWarning("DEBUG2");
-    m_slot(m_res);
 }

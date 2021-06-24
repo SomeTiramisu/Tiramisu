@@ -13,7 +13,6 @@ public:
     int preloaderProgress() const { return m_preloader.progress();}
 
 private:
-    void handleSchedulerAt(const PagePair& res);
     void setFilename(const Path& filename);
     Path m_filename;
     int m_bookSize{0};

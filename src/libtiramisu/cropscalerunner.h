@@ -19,7 +19,6 @@ public:
 private:
     void run();
     static PagePair cropScale(const PngPair& p, const PageRequest& req);
-    void handleCropScale(const PagePair& res);
     PageRequest m_req;
     PagePreloader* m_preloader{nullptr};
     QThreadPool* m_pool{nullptr};
