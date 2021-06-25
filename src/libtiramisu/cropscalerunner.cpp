@@ -2,51 +2,56 @@
 
 #include "utils/imageproc.h"
 
-CropScaleRunner::CropScaleRunner(PagePreloader* preloader, QThreadPool* pool)
-    : m_preloader(preloader),
-      m_pool(pool)
+CropScaleRunner::CropScaleRunner(Parser* parser, QThreadPool* pool)
+    : m_pool(pool),
+      m_parser(parser)
 {
     m_slot = [](const PagePair& res){(void)res;};
 }
 
-void CropScaleRunner::run() {
-    //std::thread thread([this]{this->m_preloader->at(this->m_req.index, [this](const PngPair& res){this->handleCropScale(cropScale(res, m_req));});});
-    //thread.detach();
+void CropScaleRunner::runScale() {
     m_pool->start(QRunnable::create([this]{
-        this->m_preloader->at(this->m_req.index, [this](const PngPair& res){
-            this->m_res = cropScale(res, m_req);
-            //qWarning("DEBUG2");
-            this->m_slot(this->m_res);
-        });
+        if(!m_pngRes.has_value()) {
+            m_pngRes = cropDetect(m_parser->at(m_req.index), m_req.index);
+        }
+        m_pageRes = cropScale(m_pngRes.value(), m_req);
+        //qWarning("DEBUG2");
+        this->m_slot(this->m_pageRes.value());
     }));
 }
 
-void CropScaleRunner::get(const PageRequest& req, const Slot<PagePair>& slot) {
-    if(m_req != req || m_req == PageRequest()) { //not requested
-        m_req = req;
-        m_slot = slot;
-        run();
-        return;
-    }
-    if(m_req == req && m_res == PagePair()) { //requested, not recieved
-        m_slot=slot;
-        return;
-    }
-    slot(m_res); //recieved
+void CropScaleRunner::runDetect() {
+    m_pool->start(QRunnable::create([this]{
+        m_pngRes = cropDetect(m_parser->at(m_req.index), m_req.index);
+    }));
 }
 
-void CropScaleRunner::get(const PageRequest &req) {
-    //m_slot = [](const PagePair& res){(void)res;};
-    if(m_req != req || m_req == PageRequest()) { //not requested
+void CropScaleRunner::get(const PageRequest& req) {
+    if(m_req!=req || !m_pageRes.has_value()) { //not requested
         m_req = req;
-        run();
+        runScale();
+        return;
+    }
+    if(m_req==req) {  //requested, not recieved
+        //return;
+    }
+    m_slot(m_pageRes.value()); //recieved
+}
+
+void CropScaleRunner::preload(const PageRequest &req) {
+    if(!m_pngRes.has_value()) { //not requested
+        m_req = req;
+        runDetect();
         return;
     }
 }
 
 void CropScaleRunner::clear() {
-    m_req = PageRequest();
-    m_res = PagePair();
+    m_pageRes.reset();
+}
+
+void CropScaleRunner::connectSlot(const Slot<PagePair> &slot) {
+    m_slot = slot;
 }
 
 PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
@@ -56,4 +61,14 @@ PagePair CropScaleRunner::cropScale(const PngPair& p, const PageRequest& req) {
     }
     qWarning("CropScaleRunnable: running: %i", req.index);
     return PagePair{img, req};
+}
+
+PngPair CropScaleRunner::cropDetect(const ByteVect &png, int index) {
+    cv::Mat img(ImageProc::fromVect(png));
+    cv::Rect roi;
+    if (not img.empty() and index != 0) {
+        roi = ImageProc::cropDetect(img);
+    }
+    qWarning("CropDetectRunnable: running: %i", index);
+    return PngPair{png, roi};
 }

@@ -1,26 +1,25 @@
 #include "tiramisu.h"
 
+Tiramisu::Tiramisu() {
+    m_scheduler.connectPageSlot([this](const PagePair& res){
+        //qWarning("DEBUG3");
+        if(m_req==res.req) {
+            //qWarning("PASSED");
+            m_schedulerImageSlot(res.img);
+        }
+    });
+    m_scheduler.connectSizeSlot([this](const int& res){
+        m_bookSizeSlot(res);
+    });
+}
+
 void Tiramisu::get(const PageRequest& req) {
-    if(req.filename != m_filename) {
-        setFilename(req.filename);
-    } else if(req.filename.empty()) {
+    if(req.filename.empty()) {
         m_schedulerImageSlot(cv::Mat());
         return;
     }
     m_req = req;
-    m_scheduler.at(req, [this](const PagePair& res){
-        //qWarning("DEBUG3");
-        if(this->m_req==res.req) {
-            //qWarning("PASSED");
-            this->m_schedulerImageSlot(res.img);
-        }
-    });
-}
-
-void Tiramisu::setFilename(const Path& filename) {
-    m_filename = filename;
-    m_preloader = PagePreloader(filename, &m_pool);
-    m_scheduler = PageScheduler(&m_preloader, &m_pool);
+    m_scheduler.at(req);
 }
 
 void Tiramisu::connectPreloaderProgress(const Slot<int>& slot) {

@@ -33,7 +33,6 @@ void PageItem::setFilename(const QUrl &filename) {
     m_filename = filename;
     setIndex(0);
     emit filenameChanged();
-    emit bookSizeChanged();
 }
 
 void PageItem::setIndex(int index) {
@@ -43,7 +42,6 @@ void PageItem::setIndex(int index) {
     //m_image = QImage("/home/guillaume/reader/000.jpg");
     m_tiramisu.get(m_req);
     //qWarning("ITEM(%i): %i %i",m_index, m_image.width(), m_image.height());
-    //this->update();
     emit indexChanged();
 }
 
@@ -67,7 +65,6 @@ void PageItem::resizeTimeout() {
     m_req = PageRequest{m_index, (int)width(), (int)height(), m_filename.toLocalFile().toStdString()};
     m_tiramisu.get(m_req);
     m_tmpImage = QImage();
-    //this->update();
 }
 
 void PageItem::onImageChanged() {

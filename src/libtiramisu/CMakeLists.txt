@@ -1,6 +1,5 @@
 set(tiramisu_SRCS
     tiramisu.cpp
-    pagepreloader.cpp
     pagescheduler.cpp
     parsers/parser.cpp
     parsers/parseutils.cpp
@@ -10,9 +9,8 @@ set(tiramisu_SRCS
     utils/imageproc.cpp
     strnatcmp/strnatcmp.c
     utils/crop.cpp
-    cropdetectrunner.cpp
     cropscalerunner.cpp
-    threadpool.cpp
+    #threadpool.cpp
 )
 
 add_library(tiramisu SHARED ${tiramisu_SRCS})
