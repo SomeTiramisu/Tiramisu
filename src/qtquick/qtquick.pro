@@ -11,7 +11,7 @@ TARGET = tiramisuqmlplugin
 #DESTDIR = ../../bin/qtquick/tiramisu
 
 android {
-LIBS += -L$$PWD/../app/android/libs/arm64-v8a/ -L$$OUT_PWD/../libtiramisu/ -lopencv_core -ltiramisu_arm64-v8a
+LIBS += -L$$PWD/../app/android.qt5/libs/arm64-v8a/ -L$$OUT_PWD/../libtiramisu/ -lopencv_core -ltiramisu_arm64-v8a
 message($$OUT_PWD)
 INCLUDEPATH += /home/guillaume/reader/cpp/reader/include/
 }

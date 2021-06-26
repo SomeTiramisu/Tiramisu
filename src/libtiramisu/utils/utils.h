@@ -5,9 +5,12 @@
 #include <QtCore>
 #include <iostream>
 #include <functional>
+#include <optional>
 
 
 using Path = std::string;
+//template <class T>
+//using Option = std::optional<T>;
 using ByteVect = std::vector<char>;
 template <class T>
 using Slot = std::function<void(const T&)> ;
@@ -48,6 +51,7 @@ struct PagePair {
         return !operator==(other);
     }
 };
+
 struct PngPair {
     ByteVect png;
     cv::Rect roi;
@@ -58,5 +62,31 @@ struct PngPair {
         return !operator==(other);
     }
 };
-
+/*
+template <class T>
+class Option { //because ndk r21 do not know <optional> for some reasons
+public:
+    bool has_value() const {
+        return v!=nullptr;
+    }
+    T& value() const {
+        if(!v) {
+            throw std::terminate;
+        }
+        return *v;
+    }
+    template<class U=T>
+    Option& operator=(U&& value) {
+        if(*v != value) {
+            v = std::make_unique<T>(value);
+        }
+        return *this;
+    }
+    void reset() {
+        v.reset();
+    }
+private:
+    std::unique_ptr<T> v;
+};
+*/
 #endif // UTILS_H

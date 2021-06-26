@@ -32,9 +32,6 @@ void CropScaleRunner::get(const PageRequest& req) {
         runScale();
         return;
     }
-    if(m_req==req) {  //requested, not recieved
-        //return;
-    }
     m_slot(m_pageRes.value()); //recieved
 }
 
