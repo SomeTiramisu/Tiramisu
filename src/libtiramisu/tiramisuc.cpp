@@ -1,6 +1,7 @@
 #include "tiramisuc.h"
 
 void tiramisu_init(tiramisu_t* t) {
+    t = new tiramisu_t;
     t->m_scheduler.connectPageSlot([t](const PagePair& res){
         if(t->m_req==res.req) {
             t->m_schedulerImageSlot(res.img);
@@ -9,6 +10,10 @@ void tiramisu_init(tiramisu_t* t) {
     t->m_scheduler.connectSizeSlot([t](const int& res){
         t->m_bookSizeSlot(res);
     });
+}
+
+void tiramisu_free(tiramisu_t* t) {
+    delete t;
 }
 
 void tiramisu_get(tiramisu_t* t, int index, int width, int height, char* filename, size_t length) {
@@ -27,5 +32,7 @@ void tiramisu_connect_book_size(tiramisu_t* t, void (*slot)(int)) {
     t->m_bookSizeSlot = slot;
 }
 void tiramisu_connect_image(tiramisu_t* t, void (*slot)(char*, size_t)) {
-    t->m_schedulerImageSlot = slot;
+    t->m_schedulerImageSlot = [slot](const cv::Mat& res){
+        (*slot)(reinterpret_cast<char*>(res.data), res.rows*res.cols*res.elemSize());
+    };
 }
